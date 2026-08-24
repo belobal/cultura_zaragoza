@@ -25,9 +25,21 @@ ICON_URL="$HOST/static/icons/icon-512.png"
 MASK_URL="$HOST/static/icons/icon-maskable-512.png"
 
 echo "Checking PWA at $HOST ..."
-curl -fsS "$HOST/healthz" >/dev/null
-curl -fsS "$MANIFEST_URL" >/dev/null
-curl -fsS "$ICON_URL" >/dev/null
+wait_ok() {
+  local url="$1"
+  local i
+  for i in $(seq 1 20); do
+    if curl -fsS --max-time 60 "$url" >/dev/null; then
+      return 0
+    fi
+    sleep 3
+  done
+  echo "Timeout waiting for $url" >&2
+  return 1
+}
+wait_ok "$HOST/healthz"
+wait_ok "$MANIFEST_URL"
+wait_ok "$ICON_URL"
 
 PAYLOAD=$(cat <<EOF
 {
