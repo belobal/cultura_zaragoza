@@ -2,13 +2,14 @@
 
 Webapp en Flask para consultar la agenda cultural de Zaragoza combinando:
 
-- [Taquilla.com Zaragoza](https://www.taquilla.com/zaragoza)
 - Agenda en iframe de Rock & Blues Café (SweetCaroline)
 - [Sala Creedence](https://creedencesound.com/sala-creedence-conciertos-y-sesiones)
 - [Zaragoza Cultura (Ayuntamiento)](https://www.zaragoza.es/sede/servicio/cultura/)
 - [Centros Cívicos (Ayuntamiento)](https://www.zaragoza.es/sede/portal/centroscivicos/servicio/cultura/evento/list?idPortal=7) (solo temática música y teatro)
 - [Conciertos.Club Zaragoza](https://conciertos.club/zaragoza) (agenda transversal de conciertos y salas)
 - [La Lata de Bombillas](https://lalatadebombillas.es/) (The Events Calendar) y su [web de venta de entradas](https://entradas.lalatadebombillas.es/web/?menu=36&pagina=&siteID=latadebombillas) (enlaces a taquilla propia, Dice, Enterticket, etc.)
+
+> **Nota:** [Taquilla.com](https://www.taquilla.com/) no se usa: sus listados no filtran bien por ciudad (mezclan fechas de otras localidades). Cualquier evento cuyo enlace sea `taquilla.com` se descarta.
 
 Todo con scraping y caché en disco.
 
@@ -58,7 +59,6 @@ Ver **[DEPLOY.md](DEPLOY.md)**: hosting gratuito en Render (HTTPS) + empaquetado
 
 Ficheros de eventos:
 
-- `cache/events.json` (Taquilla)
 - `cache/rockandbluescafe_events.json`
 - `cache/lalata_events.json`
 - `cache/zaragoza_cultura_events.json`

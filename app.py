@@ -17,7 +17,6 @@ from scraper.ibercaja_teatro_principal import get_events as get_ibercaja_teatro_
 from scraper.lalata import get_events as get_lata_events
 from scraper.belushi import get_events as get_belushi_events
 from scraper.rockandbluescafe import get_events as get_rock_events
-from scraper.taquilla import get_events as get_taquilla_events
 from scraper.zaragozala import get_events as get_zaragozala_events
 from scraper.zaragoza_cultura import get_events as get_zaragoza_events
 from scraper.aragonenvivo import get_events as get_aragonenvivo_events
@@ -507,6 +506,19 @@ def _is_deportes_event(e: dict) -> bool:
     return cat == "deportes en zaragoza" or cat.startswith("deportes en zaragoza")
 
 
+def _is_taquilla_com_event(e: dict) -> bool:
+    """
+    Taquilla.com listings mix cities poorly (date-first, not Zaragoza-only).
+    Drop any event whose detail link points at www.taquilla.com.
+    """
+    url = (e.get("detail_url") or "").strip().lower()
+    return "taquilla.com" in url
+
+
+def _filter_out_taquilla_com(events: List[dict]) -> List[dict]:
+    return [e for e in events if not _is_taquilla_com_event(e)]
+
+
 def _filter_out_deportes(events: List[dict]) -> List[dict]:
     return [e for e in events if not _is_deportes_event(e)]
 
@@ -688,6 +700,7 @@ def _merge_source_results(chunks: List[List[dict]]) -> List[dict]:
             e["category_slug"] = "conciertos-en-zaragoza"
     events = _drop_conciertos_club_if_duplicate_sala(events)
     events = _filter_out_deportes(events)
+    events = _filter_out_taquilla_com(events)
     for e in events:
         _shorten_category_display(e)
         _shorten_venue_display(e)
@@ -708,7 +721,7 @@ def _safe_fetch(fn: Callable[[], List[dict]]) -> List[dict]:
 
 def _load_all_sources_parallel() -> List[dict]:
     fetchers: List[Callable[[], List[dict]]] = [
-        get_taquilla_events,
+        # Taquilla.com omitted: city filter is unreliable (see _filter_out_taquilla_com).
         get_rock_events,
         get_lata_events,
         get_zaragozala_events,
@@ -738,7 +751,6 @@ def get_events_cached():
         if os.environ.get("AGGREGATOR_SEQUENTIAL", "0") == "1":
             events = _merge_source_results(
                 [
-                    get_taquilla_events(),
                     get_rock_events(),
                     get_lata_events(),
                     get_zaragozala_events(),
