@@ -1,1 +1,8 @@
-[]
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.cultura.zaragoza",
+    "sha256_cert_fingerprints": ["7E:4D:09:1D:7F:AD:42:27:15:E9:4F:FE:F2:06:E1:F9:CB:E9:05:A0:4F:FD:EB:C3:41:20:12:D3:C8:0B:86:B6"]
+  }
+}]

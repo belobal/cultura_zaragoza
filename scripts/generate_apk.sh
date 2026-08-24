@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Generate an Android package zip via PWABuilder's packaging API.
+# Generate an Android package zip via PWABuilder CloudAPK.
 # Usage: ./scripts/generate_apk.sh https://your-app.onrender.com
 set -euo pipefail
 
@@ -23,6 +23,7 @@ OUT_ZIP="$OUT_DIR/cultura-zaragoza-android.zip"
 MANIFEST_URL="$HOST/manifest.webmanifest"
 ICON_URL="$HOST/static/icons/icon-512.png"
 MASK_URL="$HOST/static/icons/icon-maskable-512.png"
+API="https://pwabuilder-cloudapk.azurewebsites.net/generateAppPackage"
 
 echo "Checking PWA at $HOST ..."
 wait_ok() {
@@ -40,6 +41,27 @@ wait_ok() {
 wait_ok "$HOST/healthz"
 wait_ok "$MANIFEST_URL"
 wait_ok "$ICON_URL"
+
+# Default: unsigned package (fine for local install testing).
+# For a signed package, set APK_SIGNING_MODE=new and the APK_KEY_* env vars.
+SIGNING_MODE="${APK_SIGNING_MODE:-none}"
+if [[ "$SIGNING_MODE" == "new" ]]; then
+  SIGNING_JSON=$(cat <<EOF
+  "signingMode": "new",
+  "signing": {
+    "fullName": "${APK_KEY_NAME:-Cultura Zaragoza}",
+    "organization": "${APK_KEY_ORG:-Cultura Zaragoza}",
+    "organizationalUnit": "Mobile",
+    "countryCode": "ES",
+    "alias": "${APK_KEY_ALIAS:-cultura}",
+    "keyPassword": "${APK_KEY_PASSWORD:?Set APK_KEY_PASSWORD}",
+    "storePassword": "${APK_STORE_PASSWORD:?Set APK_STORE_PASSWORD}"
+  }
+EOF
+)
+else
+  SIGNING_JSON='"signingMode": "none", "signing": null'
+fi
 
 PAYLOAD=$(cat <<EOF
 {
@@ -62,13 +84,7 @@ PAYLOAD=$(cat <<EOF
   "orientation": "default",
   "appVersion": "1.0.0",
   "appVersionCode": 1,
-  "signingMode": "new",
-  "signing": {
-    "fullName": "Cultura Zaragoza",
-    "organization": "Cultura Zaragoza",
-    "organizationalUnit": "Mobile",
-    "countryCode": "ES"
-  },
+  $SIGNING_JSON,
   "includeSourceCode": false,
   "isChromeOSOnly": false,
   "fallbackType": "customtabs",
@@ -85,12 +101,12 @@ PAYLOAD=$(cat <<EOF
 EOF
 )
 
-API="https://android.pwabuilder.com/generateAppPackage"
-echo "Requesting package from PWABuilder ..."
+echo "Requesting package from PWABuilder CloudAPK ..."
 HTTP_CODE=$(curl -sS -o "$OUT_ZIP" -w "%{http_code}" \
   -X POST "$API" \
   -H "Content-Type: application/json" \
-  -d "$PAYLOAD")
+  -d "$PAYLOAD" \
+  --max-time 300)
 
 if [[ "$HTTP_CODE" != "200" ]]; then
   echo "PWABuilder returned HTTP $HTTP_CODE" >&2
@@ -99,7 +115,6 @@ if [[ "$HTTP_CODE" != "200" ]]; then
   exit 1
 fi
 
-# Detect zip magic
 if ! unzip -t "$OUT_ZIP" >/dev/null 2>&1; then
   echo "Response is not a zip; saving as text for inspection." >&2
   mv "$OUT_ZIP" "$OUT_DIR/pwabuilder-response.txt"
@@ -109,4 +124,5 @@ fi
 
 unzip -l "$OUT_ZIP"
 echo "Saved: $OUT_ZIP"
-echo "Next: install the .apk on your phone, and copy assetlinks.json to static/.well-known/ then redeploy."
+echo "Extract with: unzip -o '$OUT_ZIP' -d '$OUT_DIR'"
+echo "Next: copy assetlinks.json to static/.well-known/ and redeploy."
