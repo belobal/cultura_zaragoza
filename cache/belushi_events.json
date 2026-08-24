@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "fetched_at": "2026-06-12T15:09:56.656315",
+  "events": [
+    {
+      "title": "PERDEDORES",
+      "category": "Comedia",
+      "category_slug": "comedia",
+      "venue": "Belushi Club de Comedia",
+      "venue_slug": "belushi-club-de-comedia",
+      "time_text": "20:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.atrapalo.com/entradas/perdedor-es_e4947113/",
+      "source": "belushi",
+      "date_from": "2026-06-12",
+      "date_to": "2026-06-12"
+    },
+    {
+      "title": "EN SOLITARIO",
+      "category": "Comedia",
+      "category_slug": "comedia",
+      "venue": "Belushi Club de Comedia",
+      "venue_slug": "belushi-club-de-comedia",
+      "time_text": "19:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradium.com/events/josan-bailac-en-solitario",
+      "source": "belushi",
+      "date_from": "2026-06-13",
+      "date_to": "2026-06-13"
+    },
+    {
+      "title": "OVARIOS VARIOS SECOS",
+      "category": "Comedia",
+      "category_slug": "comedia",
+      "venue": "Belushi Club de Comedia",
+      "venue_slug": "belushi-club-de-comedia",
+      "time_text": "19:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradium.com/events/monologo-ovarios-varios-secos",
+      "source": "belushi",
+      "date_from": "2026-06-14",
+      "date_to": "2026-06-14"
+    }
+  ]
+}

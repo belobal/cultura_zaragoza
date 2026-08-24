@@ -1,0 +1,387 @@
+{
+  "schema_version": 2,
+  "saved_at": "2026-08-24T16:19:39.673729",
+  "coords": {
+    "rock-y-blues-cafe": {
+      "lat": 41.6529019,
+      "lon": -0.8803554
+    },
+    "sala-oasis-club": {
+      "lat": 41.6552154,
+      "lon": -0.8855983
+    },
+    "pabellon-de-deportes-principe-felipe": null,
+    "auditorio-de-zaragoza": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
+    "teatro-de-las-esquinas": {
+      "lat": 41.6471851,
+      "lon": -0.907778
+    },
+    "centro-joaquin-roncal": {
+      "lat": 41.654675,
+      "lon": -0.8793953
+    },
+    "sala-lopez": {
+      "lat": 41.6584954,
+      "lon": -0.8748586
+    },
+    "teatro-principal-de-zaragoza": {
+      "lat": 41.6520494,
+      "lon": -0.8792281
+    },
+    "iglesia-de-santo-tomas-de-aquino": {
+      "lat": 41.6547595,
+      "lon": -0.8846108
+    },
+    "puerto-venecia-zaragoza": {
+      "lat": 41.6087641,
+      "lon": -0.8871872
+    },
+    "hde-club": null,
+    "palacio-de-congresos-de-zaragoza": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
+    "belushi-club-de-comedia": null,
+    "hotel-tibur": {
+      "lat": 41.6550146,
+      "lon": -0.876391
+    },
+    "la-lata-de-bombillas": {
+      "lat": 41.654843,
+      "lon": -0.878602
+    },
+    "sala-lopez-zaragoza": {
+      "lat": 41.6584954,
+      "lon": -0.8748586
+    },
+    "auditorio-de-zaragoza-princesa-leonor": null,
+    "teatro-principal": {
+      "lat": 41.6520494,
+      "lon": -0.8792281
+    },
+    "pabellon-principe-felipe": {
+      "lat": 41.6353666,
+      "lon": -0.8662366
+    },
+    "teatro-del-mercado": {
+      "lat": 41.6571208,
+      "lon": -0.8890132
+    },
+    "centro-civico-valdefierro-pilar-adiego": null,
+    "centro-civico-torrero": {
+      "lat": 41.6300768,
+      "lon": -0.8830708
+    },
+    "centro-civico-manuel-vazquez-guardiola-oliver": null,
+    "centro-civico-rio-ebro-edificio-jose-marti": null,
+    "centro-civico-universidad": {
+      "lat": 41.6395049,
+      "lon": -0.9008242
+    },
+    "centro-civico-distrito-14-la-jota": null,
+    "centro-civico-teodoro-sanchez-punter-san-jose": {
+      "lat": 41.6379701,
+      "lon": -0.8726825
+    },
+    "teatro-principal-zaragoza": {
+      "lat": 41.6520494,
+      "lon": -0.8792281
+    },
+    "sala-creedence-zaragoza": {
+      "lat": 41.6529921,
+      "lon": -0.8852877
+    },
+    "salon-de-actos-la-ermita-cc-miralbueno": {
+      "lat": 41.6588073,
+      "lon": -0.9402198
+    },
+    "centro-civico-antonio-beltran-martinez-garrapinillos": {
+      "lat": 41.6847464,
+      "lon": -1.0270742
+    },
+    "centro-civico-santa-isabel": {
+      "lat": 41.6662503,
+      "lon": -0.8306444
+    },
+    "centro-civico-rio-ebro-edificio-fernandez-ordonez": null,
+    "centro-civico-la-cartuja-baja": null,
+    "centro-civico-salvador-allende-las-fuentes": null,
+    "centro-civico-delicias": null,
+    "centro-civico-isaac-valero-casablanca": null,
+    "sala-venecia-centro-civico-torrero": null,
+    "biblioteca-publica-inocencio-ruiz-lasala-santa-isabel": null,
+    "centro-civico-estacion-del-norte": null,
+    "centro-civico-penaflor": null,
+    "el-corazon-verde": {
+      "lat": 41.6316331,
+      "lon": -0.8912811
+    },
+    "oasis-club-teatro": {
+      "lat": 41.6552154,
+      "lon": -0.8855983
+    },
+    "sala-creedence": {
+      "lat": 41.6529921,
+      "lon": -0.8852877
+    },
+    "la-casa-del-loco": {
+      "lat": 41.6537691,
+      "lon": -0.8768597
+    },
+    "colegio-escuelas-pias": {
+      "lat": 41.6360109,
+      "lon": -0.8909053
+    },
+    "auditorio-de-zaragoza-sala-mozart": null,
+    "gran-hotel-de-zaragoza-nh-collection": null,
+    "el-plata": {
+      "lat": 41.6529311,
+      "lon": -0.8801118
+    },
+    "sala-z": {
+      "lat": 41.6402126,
+      "lon": -0.8851126
+    },
+    "auditorio-de-zaragoza-sala-multiusos": null,
+    "la-ley-seca": {
+      "lat": 41.6386748,
+      "lon": -0.8873044
+    },
+    "centro-civico-la-almozara": {
+      "lat": 41.6618982,
+      "lon": -0.9007191
+    },
+    "centro-civico-miralbueno": {
+      "lat": 41.6595621,
+      "lon": -0.9433448
+    },
+    "centro-civico-joaquin-carbonell-casetas": null,
+    "teatro-reina-sofia": null,
+    "sala-utopia": {
+      "lat": 41.6434897,
+      "lon": -0.8957836
+    },
+    "pabellon-multiusos-montanana": null,
+    "plaza-de-espana-monzalbarba": null,
+    "centro-civico-juslibol": {
+      "lat": 41.6943012,
+      "lon": -0.9008618
+    },
+    "pabellon-deportivo-municipal-la-cartuja": {
+      "lat": 41.6079061,
+      "lon": -0.8250302
+    },
+    "el-refectorio-de-la-cartuja": null,
+    "sala-oasis-club-zaragoza": {
+      "lat": 41.6552154,
+      "lon": -0.8855983
+    },
+    "fnac-plaza-espana": null,
+    "ambito-cultural": null,
+    "rock-y-blues": {
+      "lat": 41.6529019,
+      "lon": -0.8803554
+    },
+    "plaza-del-pilar": {
+      "lat": 41.6562964,
+      "lon": -0.878942
+    },
+    "sala-oasis": {
+      "lat": 41.6552154,
+      "lon": -0.8855983
+    },
+    "teatro-bicho": null,
+    "caixaforum-zaragoza": {
+      "lat": 41.6523224,
+      "lon": -0.8940986
+    },
+    "plaza-de-san-bruno": {
+      "lat": 41.6548967,
+      "lon": -0.8749586
+    },
+    "campus-universitario-plaza-san-francisco": null,
+    "cmu-pedro-cerbuna": {
+      "lat": 41.6411373,
+      "lon": -0.9018874
+    },
+    "edificio-paraninfo": {
+      "lat": 41.6473228,
+      "lon": -0.8866786
+    },
+    "libreria-calamo": {
+      "lat": 41.6409384,
+      "lon": -0.8937169
+    },
+    "palacio-de-la-aljaferia": {
+      "lat": 41.6564913,
+      "lon": -0.89666
+    },
+    "real-apilla-de-santa-isabel-de-portugal": null,
+    "edificio-grupo-san-valero": null,
+    "teatro-de-la-estacion": {
+      "lat": 41.6567455,
+      "lon": -0.8943048
+    },
+    "centro-ibercaja-actur": {
+      "lat": 41.6781679,
+      "lon": -0.8889146
+    },
+    "plaza-de-la-seo": {
+      "lat": 41.6552644,
+      "lon": -0.8759079
+    },
+    "centro-de-documentacion-del-agua-y-el-medio-ambiente": {
+      "lat": 41.6584356,
+      "lon": -0.8886546
+    },
+    "estadio-de-la-romareda": {
+      "lat": 41.6397807,
+      "lon": -0.9040757
+    },
+    "centro-civico-rio-ebro-edif-fernandez-ordonez": null,
+    "parque-san-francisco": {
+      "lat": 41.6407827,
+      "lon": -0.8943129
+    },
+    "recinto-ferial": {
+      "lat": 41.6438058,
+      "lon": -0.9070246
+    },
+    "parque-delicias": {
+      "lat": 41.6472749,
+      "lon": -0.9116654
+    },
+    "iaacc-pablo-serrano": {
+      "lat": 41.6514904,
+      "lon": -0.8900241
+    },
+    "nombre-del-lugar": null,
+    "teatro-arbole": {
+      "lat": 41.6676183,
+      "lon": -0.9100631
+    },
+    "varios-lugares": null,
+    "iglesia-de-san-pablo": {
+      "lat": 41.6561094,
+      "lon": -0.8859361
+    },
+    "jardin-de-invierno": {
+      "lat": 41.6317771,
+      "lon": -0.8927026
+    },
+    "ibercaja-estadio": {
+      "lat": 41.6841299,
+      "lon": -0.8956119
+    },
+    "parque-de-los-incredulos": {
+      "lat": 41.6291202,
+      "lon": -0.9082177
+    },
+    "parque-grande-jose-antonio-labordeta": {
+      "lat": 41.6331968,
+      "lon": -0.8950933
+    },
+    "barrio-de-delicias": {
+      "lat": 41.643987,
+      "lon": -0.9119302
+    },
+    "el-refugio-del-crapula": {
+      "lat": 41.6524137,
+      "lon": -0.8741982
+    },
+    "la-campana-underground": {
+      "lat": 41.6564493,
+      "lon": -0.88126
+    },
+    "moliner-7": {
+      "lat": 41.6393441,
+      "lon": -0.8853335
+    },
+    "anfiteatro-xior": {
+      "lat": 41.6536655,
+      "lon": -0.8888237
+    },
+    "centro-civico-salvador-allende-antiguo-matadero": null,
+    "centro-civico-teodoro-sanchez-punter": {
+      "lat": 41.6379701,
+      "lon": -0.8726825
+    },
+    "parque-del-agua-zaragoza": {
+      "lat": 41.6724021,
+      "lon": -0.9040997
+    },
+    "la-casa-de-zitas": null,
+    "centro-civico-oliver": {
+      "lat": 41.6393125,
+      "lon": -0.930459
+    },
+    "camping-ciudad-de-zaragoza": {
+      "lat": 41.6377095,
+      "lon": -0.9428532
+    },
+    "camping-de-zaragoza": {
+      "lat": 41.6382308,
+      "lon": -0.9413167
+    },
+    "alma-mater-museum": {
+      "lat": 41.6555423,
+      "lon": -0.875469
+    },
+    "casa-de-la-mujer": {
+      "lat": 41.6540176,
+      "lon": -0.8756234
+    },
+    "la-lonja": {
+      "lat": 41.683976,
+      "lon": -0.8544861
+    },
+    "oficina-de-turismo-plaza-del-pilar": {
+      "lat": 41.6551399,
+      "lon": -0.8783049
+    },
+    "iglesia-de-la-magdalena": {
+      "lat": 41.6558818,
+      "lon": -0.8931379
+    },
+    "espazio-felino-shanti": null,
+    "monasterio-de-la-resurreccion": null,
+    "recinto-expo": null,
+    "hotel-vincci-zaragoza-zentro": {
+      "lat": 41.6508827,
+      "lon": -0.8782637
+    },
+    "centro-civico-de-casetas": {
+      "lat": 41.7194011,
+      "lon": -1.0272258
+    },
+    "paraninfo-de-la-universidad-de-zaragoza": null,
+    "centro-civico-salvador-allende": {
+      "lat": 41.6447857,
+      "lon": -0.8686244
+    },
+    "pabellon-de-festejos-penaflor": null,
+    "sala-multiusos-del-auditorio": null,
+    "hotel-nh-collection-gran-hotel-de-zaragoza": {
+      "lat": 41.649009,
+      "lon": -0.8814732
+    },
+    "aura-restaurante": {
+      "lat": 41.6617279,
+      "lon": -0.888782
+    },
+    "espacio-zity-recinto-ferial-de-valdespartera": null,
+    "roze": null,
+    "jardin-de-invierno-parque-jose-antonio-labordeta": null,
+    "museo-del-puerto-fluvial-de-caesaraugusta": {
+      "lat": 41.6552346,
+      "lon": -0.8748477
+    },
+    "plaza-aragon-monzalbarba": {
+      "lat": 41.7027758,
+      "lon": -0.9701093
+    }
+  }
+}

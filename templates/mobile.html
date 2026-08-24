@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#8b1e2f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Cultura ZGZ" />
+    <title>Cultura Zaragoza · Semana</title>
+    <link rel="icon" type="image/png" href="{{ url_for('favicon_png') }}" sizes="any" />
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <style>
+      :root {
+        --brand: #8b1e2f;
+        --brand-dark: #6f1524;
+        --ink: #1a1412;
+        --muted: #5c534e;
+        --line: #e8e0db;
+        --bg: #f7f2ee;
+        --surface: #fffdfb;
+        --chip: #f0e8e3;
+        --ok: #1f6b4a;
+        --radius: 14px;
+        --safe-b: env(safe-area-inset-bottom, 0px);
+        --safe-t: env(safe-area-inset-top, 0px);
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(120% 80% at 10% -10%, #f3d9d4 0%, transparent 55%),
+          radial-gradient(90% 60% at 100% 0%, #e8efe8 0%, transparent 45%),
+          var(--bg);
+        -webkit-tap-highlight-color: transparent;
+      }
+      a { color: inherit; }
+      .app {
+        max-width: 480px;
+        margin: 0 auto;
+        min-height: 100%;
+        padding: calc(12px + var(--safe-t)) 14px calc(88px + var(--safe-b));
+      }
+      .top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        min-width: 0;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        flex-shrink: 0;
+      }
+      .brand h1 {
+        margin: 0;
+        font-size: 1.15rem;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+      .brand p {
+        margin: 2px 0 0;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .desktop-link {
+        font-size: 0.75rem;
+        color: var(--brand);
+        text-decoration: none;
+        white-space: nowrap;
+        padding: 6px 0;
+      }
+      .week-range {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin: 0 0 10px;
+      }
+      .date-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 8px;
+        align-items: end;
+        margin-bottom: 12px;
+      }
+      .date-field label {
+        display: block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .date-field input[type="date"] {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 8px;
+        font: inherit;
+        font-size: 0.88rem;
+        background: var(--surface);
+        color: var(--ink);
+      }
+      .btn-week {
+        border: 1px solid var(--line);
+        background: var(--chip);
+        border-radius: 12px;
+        padding: 10px 10px;
+        font: inherit;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--ink);
+        cursor: pointer;
+        white-space: nowrap;
+        height: 42px;
+      }
+      .week-strip {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        margin-bottom: 12px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+      }
+      .week-strip::-webkit-scrollbar { display: none; }
+      .day-chip {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 8px 10px;
+        min-width: 3.4rem;
+        text-align: center;
+        cursor: pointer;
+        color: var(--ink);
+      }
+      .day-chip .wd {
+        display: block;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+      }
+      .day-chip .num {
+        display: block;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+      .day-chip.active {
+        background: var(--brand);
+        border-color: var(--brand);
+        color: #fff;
+      }
+      .day-chip.active .wd { color: rgba(255, 255, 255, 0.75); }
+      .day-chip.has-events:not(.active) {
+        border-color: #c9a29a;
+      }
+      .filters-bar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .filter-btn {
+        border: 1px solid var(--line);
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 10px 12px;
+        text-align: left;
+        cursor: pointer;
+        font: inherit;
+        color: var(--ink);
+      }
+      .filter-btn strong {
+        display: block;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .filter-btn span {
+        display: block;
+        margin-top: 3px;
+        font-size: 0.88rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .filter-btn.active-filter {
+        border-color: var(--brand);
+        box-shadow: inset 0 0 0 1px var(--brand);
+      }
+      .search-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .search-row input {
+        flex: 1;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 11px 12px;
+        font: inherit;
+        background: var(--surface);
+      }
+      .search-row button,
+      .sheet-actions button,
+      .apply-btn {
+        border: none;
+        border-radius: 12px;
+        padding: 11px 14px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .apply-btn,
+      .search-row button[type="submit"] {
+        background: var(--brand);
+        color: #fff;
+      }
+      .ghost {
+        background: var(--chip);
+        color: var(--ink);
+      }
+      .results-count {
+        margin: 0 0 10px;
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .day-block {
+        margin-bottom: 18px;
+        scroll-margin-top: 12px;
+      }
+      .day-block h2 {
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        text-transform: capitalize;
+      }
+      .event {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 12px 13px;
+        margin-bottom: 8px;
+      }
+      .event h3 {
+        margin: 0 0 6px;
+        font-size: 0.98rem;
+        line-height: 1.3;
+      }
+      .event .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin: 0;
+      }
+      .pill {
+        display: inline-block;
+        background: #f3e6e4;
+        color: var(--brand-dark);
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+      .event a.more {
+        display: inline-block;
+        margin-top: 8px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--brand);
+        text-decoration: none;
+      }
+      .empty {
+        text-align: center;
+        padding: 28px 12px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .sheet-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(26, 20, 18, 0.45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 40;
+      }
+      .sheet-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .sheet {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: min(78vh, 640px);
+        background: var(--surface);
+        border-radius: 18px 18px 0 0;
+        transform: translateY(105%);
+        transition: transform 0.25s ease;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: var(--safe-b);
+        max-width: 480px;
+        margin: 0 auto;
+      }
+      .sheet.open { transform: translateY(0); }
+      .sheet-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px 8px;
+        border-bottom: 1px solid var(--line);
+      }
+      .sheet-head h2 {
+        margin: 0;
+        font-size: 1rem;
+      }
+      .sheet-head button {
+        border: none;
+        background: transparent;
+        font-size: 0.9rem;
+        color: var(--brand);
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .sheet-body {
+        overflow: auto;
+        padding: 8px 12px 12px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .check {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 8px;
+        border-radius: 10px;
+        font-size: 0.92rem;
+      }
+      .check:active { background: var(--chip); }
+      .check input { margin-top: 3px; accent-color: var(--brand); }
+      .sheet-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px 12px 12px;
+        border-top: 1px solid var(--line);
+      }
+      .dock {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 10px 14px calc(10px + var(--safe-b));
+        background: linear-gradient(to top, var(--bg) 60%, transparent);
+        z-index: 30;
+        max-width: 480px;
+        margin: 0 auto;
+      }
+      .dock .apply-btn {
+        width: 100%;
+        box-shadow: 0 8px 24px rgba(139, 30, 47, 0.25);
+      }
+      .centros-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 4px 4px;
+        font-size: 0.88rem;
+      }
+      .centros-row input { accent-color: var(--brand); }
+      @media (min-width: 720px) {
+        body {
+          background:
+            linear-gradient(180deg, #efe4df, #f7f2ee 40%);
+        }
+        .app {
+          margin-top: 24px;
+          margin-bottom: 24px;
+          border: 1px solid var(--line);
+          border-radius: 20px;
+          background: rgba(255, 253, 251, 0.85);
+          box-shadow: 0 16px 40px rgba(26, 20, 18, 0.08);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <div class="brand">
+          <img src="{{ url_for('favicon_png') }}" alt="" width="40" height="40" />
+          <div>
+            <h1>Cultura Zaragoza</h1>
+            <p>Agenda por fechas, lugares y tipos</p>
+          </div>
+        </div>
+        <a class="desktop-link" href="/">Web completa</a>
+      </header>
+
+      <form method="get" action="/m" id="filters-form">
+        <div class="date-row">
+          <div class="date-field">
+            <label for="date_from">Desde</label>
+            <input
+              id="date_from"
+              name="date_from"
+              type="date"
+              value="{{ date_from.isoformat() }}"
+              required
+            />
+          </div>
+          <div class="date-field">
+            <label for="date_to">Hasta</label>
+            <input
+              id="date_to"
+              name="date_to"
+              type="date"
+              value="{{ date_to.isoformat() }}"
+              required
+            />
+          </div>
+          <button type="button" class="btn-week" id="btn-this-week" title="Hoy y los próximos 6 días">
+            7 días
+          </button>
+        </div>
+
+      {% if week_days %}
+      <nav class="week-strip" id="week-strip" aria-label="Días del periodo">
+        {% for d in week_days %}
+          <button
+            type="button"
+            class="day-chip{% if d in days_with_events %} has-events{% endif %}{% if loop.first %} active{% endif %}"
+            data-day="{{ d.isoformat() }}"
+            aria-pressed="{{ 'true' if loop.first else 'false' }}"
+          >
+            <span class="wd">{{ ['lun','mar','mié','jue','vie','sáb','dom'][d.weekday()] }}</span>
+            <span class="num">{{ d.day }}</span>
+          </button>
+        {% endfor %}
+      </nav>
+      {% endif %}
+
+        <div class="filters-bar">
+          <button type="button" class="filter-btn{% if 'all' not in selected_venues %} active-filter{% endif %}" id="btn-venues">
+            <strong>Lugares</strong>
+            <span id="venues-label">
+              {% if 'all' in selected_venues %}Todos{% else %}{{ selected_venues|length }} seleccionados{% endif %}
+            </span>
+          </button>
+          <button type="button" class="filter-btn{% if 'all' not in selected_categories %} active-filter{% endif %}" id="btn-types">
+            <strong>Tipos</strong>
+            <span id="types-label">
+              {% if 'all' in selected_categories %}Todos{% else %}{{ selected_categories|length }} seleccionados{% endif %}
+            </span>
+          </button>
+        </div>
+
+        <div class="search-row">
+          <input
+            type="search"
+            name="q"
+            id="q"
+            placeholder="Buscar por título"
+            value="{{ q }}"
+            autocomplete="off"
+          />
+          <button type="submit">Ver</button>
+        </div>
+
+        <label class="centros-row">
+          <input
+            type="checkbox"
+            name="centros"
+            value="1"
+            {% if include_centros_civicos %}checked{% endif %}
+          />
+          Incluir centros cívicos
+        </label>
+
+        <div id="venue-inputs">
+          {% if 'all' in selected_venues %}
+            <input type="hidden" name="venue" value="all" />
+          {% else %}
+            {% for s in selected_venues %}
+              <input type="hidden" name="venue" value="{{ s }}" />
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div id="category-inputs">
+          {% if 'all' in selected_categories %}
+            <input type="hidden" name="category" value="all" />
+          {% else %}
+            {% for s in selected_categories %}
+              <input type="hidden" name="category" value="{{ s }}" />
+            {% endfor %}
+          {% endif %}
+        </div>
+      </form>
+
+      <p class="results-count">
+        <strong>{{ events|length }}</strong> eventos
+        ({{ date_from|fmt_long_es }} — {{ date_to|fmt_long_es }})
+      </p>
+
+      {% if events %}
+        {% for day, day_events in events_by_day %}
+          <section class="day-block" id="day-{{ day.isoformat() }}" data-day="{{ day.isoformat() }}">
+            <h2>{{ day|fmt_long_es }}</h2>
+            {% for e in day_events %}
+              <article class="event">
+                <h3>{{ e.title }}</h3>
+                <p class="meta">
+                  {% if e.category %}<span class="pill">{{ e.category }}</span>{% endif %}
+                  {% if e.venue %}<span>{{ e.venue }}</span>{% endif %}
+                  {% if e.time_text %}<span>{{ e.time_text }}</span>{% endif %}
+                  {% if e.price_text %}<span>{{ e.price_text }}</span>{% endif %}
+                </p>
+                {% if e.detail_url %}
+                  <a class="more" href="{{ e.detail_url }}" target="_blank" rel="noopener noreferrer">Más info</a>
+                {% endif %}
+              </article>
+            {% endfor %}
+          </section>
+        {% endfor %}
+      {% else %}
+        <div class="empty">
+          No hay eventos con estos filtros en el periodo elegido.
+          Prueba otras fechas, lugares o tipos.
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="dock">
+      <button type="submit" form="filters-form" class="apply-btn">Actualizar agenda</button>
+    </div>
+
+    <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+
+    <div class="sheet" id="sheet-venues" role="dialog" aria-labelledby="sheet-venues-title" hidden>
+      <div class="sheet-head">
+        <h2 id="sheet-venues-title">Lugares</h2>
+        <button type="button" data-close>Cerrar</button>
+      </div>
+      <div class="sheet-body" id="venues-list">
+        <label class="check">
+          <input type="checkbox" data-all value="all" {% if 'all' in selected_venues %}checked{% endif %} />
+          <span>Todos los lugares</span>
+        </label>
+        {% for v in venues_for_select %}
+          <label class="check">
+            <input
+              type="checkbox"
+              value="{{ v.slug }}"
+              {% if v.slug in selected_venues %}checked{% endif %}
+            />
+            <span>{{ v.name }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="ghost" data-clear-venues>Limpiar</button>
+        <button type="button" class="apply-btn" data-apply-venues>Aplicar</button>
+      </div>
+    </div>
+
+    <div class="sheet" id="sheet-types" role="dialog" aria-labelledby="sheet-types-title" hidden>
+      <div class="sheet-head">
+        <h2 id="sheet-types-title">Tipos de evento</h2>
+        <button type="button" data-close>Cerrar</button>
+      </div>
+      <div class="sheet-body" id="types-list">
+        <label class="check">
+          <input type="checkbox" data-all value="all" {% if 'all' in selected_categories %}checked{% endif %} />
+          <span>Todos los tipos</span>
+        </label>
+        {% for c in categories %}
+          <label class="check">
+            <input
+              type="checkbox"
+              value="{{ c.slug }}"
+              {% if c.slug in selected_categories %}checked{% endif %}
+            />
+            <span>{{ c.name }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="ghost" data-clear-types>Limpiar</button>
+        <button type="button" class="apply-btn" data-apply-types>Aplicar</button>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const form = document.getElementById("filters-form");
+        const backdrop = document.getElementById("sheet-backdrop");
+        const sheetVenues = document.getElementById("sheet-venues");
+        const sheetTypes = document.getElementById("sheet-types");
+        const venueInputs = document.getElementById("venue-inputs");
+        const categoryInputs = document.getElementById("category-inputs");
+        const venuesLabel = document.getElementById("venues-label");
+        const typesLabel = document.getElementById("types-label");
+        const dateFrom = document.getElementById("date_from");
+        const dateTo = document.getElementById("date_to");
+
+        function isoLocal(d) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          return y + "-" + m + "-" + day;
+        }
+
+        document.getElementById("btn-this-week").addEventListener("click", function () {
+          const today = new Date();
+          const end = new Date(today);
+          end.setDate(end.getDate() + 6);
+          dateFrom.value = isoLocal(today);
+          dateTo.value = isoLocal(end);
+          form.submit();
+        });
+
+        dateFrom.addEventListener("change", function () {
+          if (dateTo.value && dateTo.value < dateFrom.value) {
+            dateTo.value = dateFrom.value;
+          }
+          dateTo.min = dateFrom.value;
+        });
+        dateTo.min = dateFrom.value;
+
+        function openSheet(sheet) {
+          backdrop.hidden = false;
+          sheet.hidden = false;
+          requestAnimationFrame(function () {
+            backdrop.classList.add("open");
+            sheet.classList.add("open");
+          });
+        }
+
+        function closeSheets() {
+          [sheetVenues, sheetTypes].forEach(function (s) {
+            s.classList.remove("open");
+          });
+          backdrop.classList.remove("open");
+          setTimeout(function () {
+            sheetVenues.hidden = true;
+            sheetTypes.hidden = true;
+            backdrop.hidden = true;
+          }, 220);
+        }
+
+        document.getElementById("btn-venues").addEventListener("click", function () {
+          openSheet(sheetVenues);
+        });
+        document.getElementById("btn-types").addEventListener("click", function () {
+          openSheet(sheetTypes);
+        });
+        backdrop.addEventListener("click", closeSheets);
+        document.querySelectorAll("[data-close]").forEach(function (btn) {
+          btn.addEventListener("click", closeSheets);
+        });
+
+        function wireAllToggle(listEl) {
+          const allCb = listEl.querySelector('input[data-all]');
+          const others = Array.from(listEl.querySelectorAll('input[type="checkbox"]:not([data-all])'));
+          allCb.addEventListener("change", function () {
+            if (allCb.checked) {
+              others.forEach(function (cb) { cb.checked = false; });
+            }
+          });
+          others.forEach(function (cb) {
+            cb.addEventListener("change", function () {
+              if (cb.checked) allCb.checked = false;
+              if (!others.some(function (o) { return o.checked; })) allCb.checked = true;
+            });
+          });
+        }
+        wireAllToggle(document.getElementById("venues-list"));
+        wireAllToggle(document.getElementById("types-list"));
+
+        function selectedFromList(listEl) {
+          const allCb = listEl.querySelector('input[data-all]');
+          const picked = Array.from(listEl.querySelectorAll('input[type="checkbox"]:not([data-all])'))
+            .filter(function (cb) { return cb.checked; })
+            .map(function (cb) { return cb.value; });
+          if (allCb.checked || picked.length === 0) return ["all"];
+          return picked;
+        }
+
+        function setHiddenInputs(container, name, values) {
+          container.innerHTML = "";
+          values.forEach(function (v) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = name;
+            input.value = v;
+            container.appendChild(input);
+          });
+        }
+
+        function labelFor(values, allText) {
+          if (values.length === 1 && values[0] === "all") return allText;
+          return values.length + " seleccionados";
+        }
+
+        document.querySelector("[data-clear-venues]").addEventListener("click", function () {
+          const list = document.getElementById("venues-list");
+          list.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+            cb.checked = !!cb.dataset.all;
+          });
+        });
+        document.querySelector("[data-clear-types]").addEventListener("click", function () {
+          const list = document.getElementById("types-list");
+          list.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+            cb.checked = !!cb.dataset.all;
+          });
+        });
+
+        document.querySelector("[data-apply-venues]").addEventListener("click", function () {
+          const vals = selectedFromList(document.getElementById("venues-list"));
+          setHiddenInputs(venueInputs, "venue", vals);
+          venuesLabel.textContent = labelFor(vals, "Todos");
+          document.getElementById("btn-venues").classList.toggle("active-filter", vals[0] !== "all");
+          closeSheets();
+          form.submit();
+        });
+        document.querySelector("[data-apply-types]").addEventListener("click", function () {
+          const vals = selectedFromList(document.getElementById("types-list"));
+          setHiddenInputs(categoryInputs, "category", vals);
+          typesLabel.textContent = labelFor(vals, "Todos");
+          document.getElementById("btn-types").classList.toggle("active-filter", vals[0] !== "all");
+          closeSheets();
+          form.submit();
+        });
+
+        /* Week day navigation */
+        const chips = Array.from(document.querySelectorAll(".day-chip"));
+        chips.forEach(function (chip) {
+          chip.addEventListener("click", function () {
+            chips.forEach(function (c) {
+              c.classList.remove("active");
+              c.setAttribute("aria-pressed", "false");
+            });
+            chip.classList.add("active");
+            chip.setAttribute("aria-pressed", "true");
+            const target = document.getElementById("day-" + chip.dataset.day);
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        });
+
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("/sw.js").catch(function () {});
+        }
+      })();
+    </script>
+  </body>
+</html>

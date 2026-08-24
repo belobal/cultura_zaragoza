@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agenda cultural - Zaragoza</title>
+    <link rel="icon" type="image/png" href="{{ url_for('favicon_png') }}" sizes="any" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
+    <style>
+      :root {
+        /* Rojo del favicon (tablero granate / ladrillo) */
+        --favicon-red: #8b1e2f;
+      }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; margin: 24px; color: #111; }
+      .container { max-width: 980px; margin: 0 auto; }
+      .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px; }
+      label { display: block; font-size: 12px; color: #444; margin-bottom: 6px; }
+      input, select { padding: 8px 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
+      select.venue-select { min-width: 14rem; max-width: 100%; }
+      button { padding: 9px 14px; border-radius: 8px; border: 1px solid #ddd; background: #f3f4f6; cursor: pointer; }
+      .muted { color: #666; font-size: 13px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-top: 18px; }
+      .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+      .card h3 { margin: 0 0 6px 0; font-size: 16px; }
+      .meta { font-size: 13px; color: #444; display: flex; gap: 10px; flex-wrap: wrap; margin: 0; }
+      .pill { background: #eef2ff; color: #3730a3; padding: 4px 8px; border-radius: 999px; font-size: 12px; }
+      a { color: inherit; }
+      .actions { display: flex; gap: 10px; align-items: center; }
+      .link.info-link {
+        background: #fff;
+        color: var(--favicon-red);
+        border: 1px solid var(--favicon-red);
+        text-decoration: none;
+        padding: 4px 10px;
+        border-radius: 6px;
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .link.info-link:hover {
+        background: #fff8f8;
+        color: #6f1524;
+        border-color: #6f1524;
+      }
+      #map { width: 100%; height: 520px; border-radius: 12px; border: 1px solid #e5e7eb; }
+      .map-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #e5e7eb; }
+      .map-section .map-hint { margin: 8px 0 0 0; max-width: 42rem; }
+      .btn-toggle-map { margin-top: 2px; }
+      .map-wrap { margin-top: 14px; }
+      .map-wrap[hidden] { display: none !important; }
+      button.btn-today { background: #eef2ff; border-color: #c7d2fe; color: #312e81; }
+      .results-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 16px;
+        margin-top: 8px;
+      }
+      .results-bar .results-count { margin: 0; }
+      button.btn-share {
+        background: #fff;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        font-size: 13px;
+      }
+      button.btn-share:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+      }
+      .site-footer {
+        margin-top: 48px;
+        padding-top: 24px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 13px;
+        color: #555;
+      }
+      .site-footer h2 {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .site-footer ul {
+        margin: 0;
+        padding-left: 1.2em;
+        line-height: 1.7;
+      }
+      .site-footer a { color: #3730a3; text-decoration: underline; }
+      .site-footer a:hover { color: #1e1b4b; }
+      .site-footer .note { margin-top: 12px; font-size: 12px; color: #777; }
+      .export-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin: 16px 0 0 0;
+        padding: 12px 14px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+      }
+      .export-toolbar .muted { margin: 0; }
+      .card-pick {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: #444;
+      }
+      .card-pick input { margin-top: 3px; flex-shrink: 0; }
+      #notes-root:not(.notes-open) .card-pick { display: none; }
+      #notes-root.notes-open .card-pick { display: flex; }
+      .day-group { margin-top: 18px; }
+      .day-title { margin: 0; font-size: 14px; font-weight: 700; color: #111; }
+      .events-list { list-style: none; padding: 0; margin: 10px 0 0 0; display: grid; gap: 10px; }
+      .event-row { border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; }
+      .event-line-1 { font-size: 15px; font-weight: 700; margin: 0 0 6px 0; }
+      .event-line-2 { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+      .event-line-2 .pill { font-weight: 600; }
+      .event-line-2 .muted { font-size: 12px; }
+      .export-entry {
+        margin: 16px 0 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 14px;
+      }
+      .export-entry .export-entry-hint {
+        margin: 0;
+        font-size: 12px;
+        max-width: 36rem;
+        line-height: 1.45;
+      }
+      #export-notes-panel[hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Mi agenda cultural de Zaragoza</h1>
+      <p class="muted">
+        Consulta eventos por fecha, sala o categoría. Se admiten sugerencias; mándame un mensajito.<br />
+        <a href="/m">Abrir versión móvil</a> (agenda a una semana, filtros de lugar y tipo).
+          </p>
+
+      <form method="get" action="/" id="filters-form">
+        <div class="row">
+          <div>
+            <label for="date_from">Desde</label>
+            <input id="date_from" name="date_from" type="date" value="{{ date_from }}" />
+          </div>
+          <div>
+            <label for="date_to">Hasta</label>
+            <input id="date_to" name="date_to" type="date" value="{{ date_to }}" />
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button type="button" class="btn-today" id="btn-today" title="Filtrar solo actividades que caen en el día de hoy (fecha local)">
+              Solo hoy
+            </button>
+          </div>
+          <div>
+            <label for="category">Categoría</label>
+            <select id="category" name="category">
+              <option value="all" {% if selected_category == 'all' %}selected{% endif %}>Todas</option>
+              {% for c in categories %}
+                <option value="{{ c.slug }}" {% if selected_category == c.slug %}selected{% endif %}>
+                  {{ c.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="venue">Sala/Recinto</label>
+            <select id="venue" name="venue" class="venue-select" multiple size="6">
+              <option value="all" {% if 'all' in selected_venues %}selected{% endif %}>Todas las salas</option>
+              {% for v in venues_for_select %}
+                <option value="{{ v.slug }}" {% if v.slug in selected_venues %}selected{% endif %}>
+                  {{ v.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="q">Buscar</label>
+            <input id="q" name="q" type="search" placeholder="Título" value="{{ q }}" autocomplete="off" />
+          </div>
+          <div>
+            <label for="centros">Centros Cívicos</label>
+            <select id="centros" name="centros">
+              <option value="1" {% if include_centros_civicos %}selected{% endif %}>Incluir</option>
+              <option value="0" {% if not include_centros_civicos %}selected{% endif %}>Excluir</option>
+            </select>
+          </div>
+        </div>
+      </form>
+
+      <div class="results-bar">
+        <p class="muted results-count">
+          Resultados: <strong>{{ events|length }}</strong>
+        </p>
+        <button
+          type="button"
+          class="btn-share"
+          id="btn-share-results"
+          title="Abre el menú para compartir (móvil) o copia el enlace con los mismos filtros de esta página"
+        >
+          Compartir
+        </button>
+        <span class="muted" style="font-size: 12px;">Misma búsqueda por enlace (fechas, sala, categoría…)</span>
+      </div>
+
+      <script type="application/json" id="map-markers-json">{{ map_points | tojson }}</script>
+
+      <section class="map-section" aria-label="Mapa de eventos">
+        <button type="button" class="btn-toggle-map" id="btn-toggle-map" aria-expanded="false" aria-controls="map-wrap">
+          Ver en el mapa
+        </button>
+        <p class="muted map-hint" id="map-intro-hint">
+          Muestra u oculta el mapa con los eventos de esta búsqueda que tienen ubicación en salas geolocalizadas.
+        </p>
+        <div id="map-wrap" class="map-wrap" hidden>
+          <div id="map" role="img" aria-label="Mapa con marcadores de eventos en Zaragoza"></div>
+        </div>
+      </section>
+
+      {% if events %}
+      <script type="application/json" id="events-export-json">{{ events_export | tojson }}</script>
+      <script type="application/json" id="export-meta-json">{{ export_meta | tojson }}</script>
+
+      <div id="notes-root">
+        <div class="export-entry">
+          <button
+            type="button"
+            id="btn-toggle-notes"
+            aria-expanded="false"
+            aria-controls="export-notes-panel"
+          >
+            Guardar información
+          </button>
+          <p class="muted export-entry-hint">
+            Solo si quieres llevarte la lista: pulsa y podrás marcar eventos y guardar un HTML para compartir.
+          </p>
+        </div>
+
+        <div id="export-notes-panel" class="export-notes-panel" hidden>
+          <div class="export-toolbar" role="region" aria-labelledby="export-heading">
+            <div style="width: 100%; margin-bottom: 4px;">
+              <strong id="export-heading">Llevarse la agenda</strong>
+              <p class="muted" style="margin: 6px 0 0 0; font-size: 12px; line-height: 1.45;">
+                Marca los eventos que te interesen. Lo seleccionado se incluirá en un <strong>HTML</strong> que puedes
+                <strong>guardar y compartir</strong> (correo, WhatsApp, etc.): tu lista para consultar cuando quieras, sin cuenta ni registro.
+              </p>
+            </div>
+            <button type="button" id="btn-select-all-events">Seleccionar todos</button>
+            <button type="button" id="btn-select-none-events">Quitar selección</button>
+            <button type="button" id="btn-save-html">Guardar</button>
+            <span class="muted" id="export-selected-hint"></span>
+          </div>
+        </div>
+
+        {% set pick_idx = namespace(n=0) %}
+        {% for day, day_events in events_by_day %}
+        <section class="day-group">
+          <h2 class="day-title">
+            {{ day|fmt_long_es }}
+          </h2>
+          <ul class="events-list">
+            {% for e in day_events %}
+            <li class="event-row">
+            <p class="event-line-1">
+              {% if e.venue %}{{ e.venue }}: {% endif %}
+              <a href="{{ e.detail_url }}" target="_blank" rel="noreferrer">{{ e.title }}</a>
+            </p>
+            <div class="event-line-2">
+              <label class="card-pick" style="margin: 0;">
+                <input type="checkbox" class="event-pick" data-idx="{{ pick_idx.n }}" checked />
+                <span>Me interesa</span>
+              </label>
+              <span class="pill">{{ e.category }}</span>
+              {% if e.time_text %}
+                <span class="muted"><strong>{{ e.time_text }}</strong></span>
+              {% endif %}
+              {% if e.price_text %}
+                <span class="muted"><strong>{{ e.price_text }}</strong></span>
+              {% endif %}
+            </div>
+            </li>
+            {% set pick_idx.n = pick_idx.n + 1 %}
+            {% endfor %}
+          </ul>
+        </section>
+        {% endfor %}
+      </div>
+      {% else %}
+        <p class="muted">No hay eventos con esos filtros.</p>
+      {% endif %}
+
+      <footer class="site-footer" role="contentinfo">
+        <h2>Fuentes de datos (referencia)</h2>
+        <p class="muted" style="margin: 0 0 10px 0;">
+          La agenda se obtiene a partir de datos de las distintas
+          fuentes que se indican al pie; enlaces solo a título informativo.
+          Si conoces otro lugar con datos interesantes me lo dices.
+        </p>
+        <ul>
+          <li><a href="https://www.taquilla.com/zaragoza" target="_blank" rel="noopener noreferrer">Taquilla.com — Zaragoza</a></li>
+          <li><a href="https://www.sweetcaroline.app/programacion8.php" target="_blank" rel="noopener noreferrer">Rock &amp; Blues Café (programación SweetCaroline)</a></li>
+          <li><a href="https://lalatadebombillas.es/" target="_blank" rel="noopener noreferrer">La Lata de Bombillas</a> ·
+              <a href="https://entradas.lalatadebombillas.es/web/?menu=36&amp;pagina=&amp;siteID=latadebombillas" target="_blank" rel="noopener noreferrer">venta de entradas La Lata</a></li>
+          <li><a href="https://creedencesound.com/sala-creedence-conciertos-y-sesiones" target="_blank" rel="noopener noreferrer">Sala Creedence (Creedence Sound)</a></li>
+          <li><a href="https://belushicomedia.com/" target="_blank" rel="noopener noreferrer">Belushi Club de Comedia</a></li>
+          <li><a href="https://zaragozala.com/" target="_blank" rel="noopener noreferrer">Zaragozala — Qué hacer en Zaragoza</a></li>
+          <li><a href="https://compraentradas.ibercaja.es/teatroprincipal/public/janto/main.php" target="_blank" rel="noopener noreferrer">Teatro Principal — Entradas Ibercaja</a>
+              (<a href="https://entradas.ibercaja.es/eventos/teatro-principal-de-zaragoza/" target="_blank" rel="noopener noreferrer">listado público</a>)</li>
+          <li><a href="https://www.zaragoza.es/sede/servicio/cultura/" target="_blank" rel="noopener noreferrer">Zaragoza Cultura — Ayuntamiento de Zaragoza</a></li>
+          <li><a href="https://www.zaragoza.es/sede/portal/centroscivicos/servicio/cultura/evento/list?idPortal=7" target="_blank" rel="noopener noreferrer">Centros Cívicos — Actividades (Ayuntamiento)</a></li>
+          <li><a href="https://conciertos.club/zaragoza" target="_blank" rel="noopener noreferrer">Conciertos.Club — Zaragoza</a></li>
+          <li>Mapa: teselas <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap</a></li>
+        </ul>
+        <p class="note">Los titulares de cada web son responsables de sus contenidos y condiciones de uso.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Enviar el formulario al cambiar filtros (selects, fechas, búsqueda con pausa).
+      (function () {
+        const form = document.getElementById("filters-form") || document.querySelector("form");
+        if (!form) return;
+        document.querySelectorAll("select").forEach((sel) => {
+          sel.addEventListener("change", () => form.submit());
+        });
+
+        document.getElementById("date_from")?.addEventListener("change", () => form.submit());
+        document.getElementById("date_to")?.addEventListener("change", () => form.submit());
+
+        const qInput = document.getElementById("q");
+        let qDebounce = null;
+        if (qInput) {
+          qInput.addEventListener("input", () => {
+            clearTimeout(qDebounce);
+            qDebounce = setTimeout(() => form.submit(), 450);
+          });
+          qInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              clearTimeout(qDebounce);
+              form.submit();
+            }
+          });
+        }
+
+        function pad2(n) {
+          return String(n).padStart(2, "0");
+        }
+        document.getElementById("btn-today")?.addEventListener("click", () => {
+          const d = new Date();
+          const iso = d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+          const from = document.getElementById("date_from");
+          const to = document.getElementById("date_to");
+          if (from) from.value = iso;
+          if (to) to.value = iso;
+          form.submit();
+        });
+
+        async function copyUrlToClipboard(url) {
+          try {
+            await navigator.clipboard.writeText(url);
+            return true;
+          } catch (e) {
+            try {
+              const ta = document.createElement("textarea");
+              ta.value = url;
+              ta.setAttribute("readonly", "");
+              ta.style.position = "fixed";
+              ta.style.left = "-9999px";
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand("copy");
+              document.body.removeChild(ta);
+              return true;
+            } catch (e2) {
+              return false;
+            }
+          }
+        }
+
+        document.getElementById("btn-share-results")?.addEventListener("click", async function () {
+          const url = window.location.href;
+          const title = document.title || "Agenda cultural — Zaragoza";
+          const text =
+            "Te paso esta búsqueda de la agenda cultural de Zaragoza. Espero que te guste.";
+
+          if (navigator.share) {
+            try {
+              await navigator.share({ title, text, url });
+              return;
+            } catch (err) {
+              if (err && err.name === "AbortError") return;
+            }
+          }
+
+          const ok = await copyUrlToClipboard(url);
+          if (ok) {
+            alert("Enlace copiado al portapapeles. Ábrelo en WhatsApp, Telegram, correo… y pégalo.");
+          } else {
+            window.prompt("Copia manualmente este enlace:", url);
+          }
+        });
+      })();
+    </script>
+
+    {% if events %}
+    <script>
+      (function () {
+        const root = document.getElementById("notes-root");
+        const panel = document.getElementById("export-notes-panel");
+        const btn = document.getElementById("btn-toggle-notes");
+        if (root && panel && btn) {
+          btn.addEventListener("click", function () {
+            const open = !root.classList.contains("notes-open");
+            root.classList.toggle("notes-open", open);
+            panel.hidden = !open;
+            btn.setAttribute("aria-expanded", open ? "true" : "false");
+            btn.textContent = open ? "Ocultar opciones de guardado" : "Guardar información";
+            if (open) {
+              const hint = document.getElementById("export-selected-hint");
+              const n = document.querySelectorAll("input.event-pick:checked").length;
+              const total = document.querySelectorAll("input.event-pick").length;
+              if (hint) {
+                hint.textContent =
+                  n === 0 ? "Ningún evento seleccionado." : n + " de " + total + " incluidos en el documento.";
+              }
+            }
+          });
+        }
+      })();
+
+      (function () {
+        const dataEl = document.getElementById("events-export-json");
+        const metaEl = document.getElementById("export-meta-json");
+        if (!dataEl || !metaEl) return;
+
+        let allEvents;
+        let meta;
+        try {
+          allEvents = JSON.parse(dataEl.textContent);
+          meta = JSON.parse(metaEl.textContent);
+        } catch (e) {
+          return;
+        }
+
+        const picks = () => Array.from(document.querySelectorAll("input.event-pick:checked")).map((el) => Number(el.dataset.idx));
+        const hint = document.getElementById("export-selected-hint");
+
+        function updateHint() {
+          if (!hint) return;
+          const n = picks().length;
+          const total = allEvents.length;
+          hint.textContent = n === 0 ? "Ningún evento seleccionado." : n + " de " + total + " incluidos en el documento.";
+        }
+
+        function selectedEventsForExport() {
+          const idxs = new Set(picks());
+          const selected = allEvents.filter((_, i) => idxs.has(i));
+          selected.sort((a, b) => {
+            const da = a.date_from.localeCompare(b.date_from);
+            if (da !== 0) return da;
+            const va = (a.venue || "").toLowerCase().localeCompare((b.venue || "").toLowerCase(), "es");
+            if (va !== 0) return va;
+            return (a.title || "").localeCompare(b.title || "", "es");
+          });
+          return selected;
+        }
+
+        document.getElementById("btn-select-all-events")?.addEventListener("click", () => {
+          document.querySelectorAll("input.event-pick").forEach((c) => {
+            c.checked = true;
+          });
+          updateHint();
+        });
+        document.getElementById("btn-select-none-events")?.addEventListener("click", () => {
+          document.querySelectorAll("input.event-pick").forEach((c) => {
+            c.checked = false;
+          });
+          updateHint();
+        });
+        document.querySelectorAll("input.event-pick").forEach((c) => c.addEventListener("change", updateHint));
+
+        async function saveOrShareHtml(blob, filename) {
+          const file = new File([blob], filename, { type: "text/html;charset=utf-8" });
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: "Mi agenda cultural de Zaragoza",
+                text: "Te paso mi selección de eventos culturales en Zaragoza.",
+              });
+              return;
+            } catch (err) {
+              if (err && err.name === "AbortError") return;
+            }
+          }
+          const a = document.createElement("a");
+          const url = URL.createObjectURL(blob);
+          a.href = url;
+          a.download = filename;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+
+        document.getElementById("btn-save-html")?.addEventListener("click", async () => {
+          if (picks().length === 0) {
+            alert("Marca al menos un evento para incluirlo en el documento.");
+            return;
+          }
+          const events = selectedEventsForExport();
+          try {
+            const r = await fetch("/export/html", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "text/html" },
+              body: JSON.stringify({ meta, events }),
+            });
+            if (!r.ok) {
+              let msg = "No se pudo generar el HTML.";
+              try {
+                const j = await r.json();
+                if (j.hint) msg += "\n\n" + j.hint;
+              } catch (e) {
+                /* cuerpo no JSON */
+              }
+              alert(msg);
+              return;
+            }
+            const blob = await r.blob();
+            const filename = "agenda-zaragoza-" + nowStamp() + ".html";
+            await saveOrShareHtml(blob, filename);
+          } catch (err) {
+            alert("No se pudo generar el HTML (red o servidor).");
+          }
+        });
+
+        function nowStamp() {
+          const d = new Date();
+          const p = (n) => String(n).padStart(2, "0");
+          return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+        }
+
+        updateHint();
+      })();
+    </script>
+    {% endif %}
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script>
+      (function () {
+        const mapCenter = [41.6488, -0.8891];
+        const btn = document.getElementById("btn-toggle-map");
+        const wrap = document.getElementById("map-wrap");
+        const hint = document.getElementById("map-intro-hint");
+        const dataEl = document.getElementById("map-markers-json");
+        if (!btn || !wrap) return;
+
+        let map = null;
+        let cluster = null;
+
+        function escHtml(s) {
+          return String(s || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        function popupHtml(p) {
+          const venueLine = p.venue ? "<div style='margin-top:4px;'>Sala: " + escHtml(p.venue) + "</div>" : "";
+          const link =
+            p.detail_url ?
+              "<div style='margin-top:8px;'><a href='" + escHtml(p.detail_url) + "' target='_blank' rel='noreferrer'>Ver detalle</a></div>"
+            : "";
+          return (
+            "<div style='max-width:260px;'>" +
+            "<div style='font-weight:700;'>" +
+            escHtml(p.title) +
+            "</div>" +
+            venueLine +
+            "<div style='margin-top:4px;'>" +
+            escHtml(p.date_text) +
+            "</div>" +
+            link +
+            "</div>"
+          );
+        }
+
+        function ensureMap() {
+          if (map) return;
+          let points = [];
+          try {
+            points = JSON.parse(dataEl ? dataEl.textContent : "[]");
+          } catch (e) {
+            points = [];
+          }
+          map = L.map("map").setView(mapCenter, 12);
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          }).addTo(map);
+
+          cluster = L.markerClusterGroup();
+          const bounds = [];
+          points.forEach(function (p) {
+            const lat = p.lat;
+            const lon = p.lon;
+            if (lat == null || lon == null) return;
+            const marker = L.marker([lat, lon]);
+            marker.bindPopup(popupHtml(p));
+            cluster.addLayer(marker);
+            bounds.push([lat, lon]);
+          });
+          cluster.addTo(map);
+          if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [20, 20] });
+          }
+        }
+
+        btn.addEventListener("click", function () {
+          const willShow = wrap.hidden;
+          wrap.hidden = !willShow;
+          btn.setAttribute("aria-expanded", willShow ? "true" : "false");
+          btn.textContent = willShow ? "Ocultar mapa" : "Ver en el mapa";
+          if (hint) hint.hidden = willShow;
+          if (willShow) {
+            ensureMap();
+            requestAnimationFrame(function () {
+              map.invalidateSize();
+              let points = [];
+              try {
+                points = JSON.parse(dataEl ? dataEl.textContent : "[]");
+              } catch (e) {
+                points = [];
+              }
+              const bounds = [];
+              points.forEach(function (p) {
+                if (p.lat != null && p.lon != null) bounds.push([p.lat, p.lon]);
+              });
+              if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [20, 20] });
+              }
+            });
+          } else if (hint) {
+            hint.hidden = false;
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
+

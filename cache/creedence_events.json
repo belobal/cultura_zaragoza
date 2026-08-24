@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "fetched_at": "2026-08-24T16:10:18.993631",
+  "events": [
+    {
+      "title": "EL DESVAN + VERSADOS",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/el-desvan-versados",
+      "source": "creedence",
+      "date_from": "2026-09-19",
+      "date_to": "2026-09-19"
+    },
+    {
+      "title": "FEW THOUGHTS + INCORDIAN",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/few-thoughts-incordian",
+      "source": "creedence",
+      "date_from": "2026-09-27",
+      "date_to": "2026-09-27"
+    },
+    {
+      "title": "THE RIVEN (SUECIA) + MALASANGRE",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/the-riven-suecia-malasangre",
+      "source": "creedence",
+      "date_from": "2026-10-03",
+      "date_to": "2026-10-03"
+    },
+    {
+      "title": "ALTA ROSA (FR)",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/alta-rosa-fr",
+      "source": "creedence",
+      "date_from": "2026-10-08",
+      "date_to": "2026-10-08"
+    },
+    {
+      "title": "THE DARTS (USA)",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/the-darts-usa-2",
+      "source": "creedence",
+      "date_from": "2026-10-14",
+      "date_to": "2026-10-14"
+    },
+    {
+      "title": "MY SON THE DOCTOR (EEUU) en SALA CREEDENCE – Zaragoza",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/my-son-the-doctor-eeuu-en-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-10-20",
+      "date_to": "2026-10-20"
+    },
+    {
+      "title": "MR SANCHEZ en SALA CREEDENCE – #RedDeSalas – INAEM",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/mr-sanchez-en-sala-creedence-reddesalas-inaem-2",
+      "source": "creedence",
+      "date_from": "2026-10-31",
+      "date_to": "2026-10-31"
+    },
+    {
+      "title": "THE MONSTERS (SUIZA) – 15 AÑOS DE SALA CREEDENCE – ZARAGOZA",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/the-monsters-suiza-15-anos-de-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2027-02-22",
+      "date_to": "2027-02-22"
+    }
+  ]
+}

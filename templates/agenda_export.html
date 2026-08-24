@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mi agenda cultural de Zaragoza · {{ date_span }}</title>
+    <meta name="description" content="Selección personal de eventos culturales en Zaragoza." />
+    <style>
+      :root {
+        --brand: #8b1e2f;
+        --brand-dark: #6f1524;
+        --link: #1d4ed8;
+        --muted: #666;
+        --border: #e5e7eb;
+        --bg-soft: #f9fafb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+        color: #111;
+        background: #fff;
+        line-height: 1.45;
+      }
+      .wrap { max-width: 720px; margin: 0 auto; padding: 24px 20px 40px; }
+      .top-bar { height: 4px; background: var(--brand); border-radius: 999px; margin-bottom: 18px; }
+      .meta-line { color: var(--muted); font-size: 12px; text-align: right; margin: 0 0 8px 0; }
+      h1 { margin: 0 0 10px 0; font-size: 1.45rem; line-height: 1.25; }
+      .summary { margin: 0 0 6px 0; color: var(--muted); font-size: 14px; }
+      .divider { border: 0; border-top: 2px solid var(--brand); margin: 18px 0 22px 0; }
+      .day-group { margin-bottom: 22px; }
+      .day-title {
+        margin: 0 0 10px 0;
+        padding: 8px 12px;
+        background: var(--bg-soft);
+        border-left: 4px solid var(--brand);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--brand-dark);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+      .events { list-style: none; margin: 0; padding: 0; }
+      .event { padding: 10px 0 12px; border-bottom: 1px solid var(--border); }
+      .event:last-child { border-bottom: 0; }
+      .event-title { margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; }
+      .event-title a { color: var(--link); text-decoration: none; }
+      .event-title a:hover { text-decoration: underline; }
+      .event-meta { margin: 0; color: var(--muted); font-size: 13px; }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px 0 0 0;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+      }
+      button {
+        font: inherit;
+        padding: 9px 14px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background: #f3f4f6;
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--brand);
+        border-color: var(--brand);
+        color: #fff;
+      }
+      button.primary:hover { background: var(--brand-dark); }
+      .footer-note { margin-top: 14px; font-size: 12px; color: #888; }
+      @media print {
+        .toolbar { display: none; }
+        .wrap { max-width: none; padding: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top-bar" aria-hidden="true"></div>
+      <p class="meta-line">Generado: {{ generated_at.strftime('%d-%m-%Y %H:%M') }}</p>
+      <h1>Mi agenda cultural de Zaragoza · {{ date_span }}</h1>
+      <p class="summary">
+        {{ events_count }} evento{% if events_count != 1 %}s{% endif %}.
+        Categoría: {{ meta.category }}.
+        Salas: {{ meta.venues }}.
+      </p>
+      {% if meta.q %}
+      <p class="summary">Búsqueda: «{{ meta.q }}»</p>
+      {% endif %}
+      <hr class="divider" />
+
+      {% for group in events_by_day %}
+      <section class="day-group">
+        <h2 class="day-title">{{ group.day|fmt_long_es }}</h2>
+        <ul class="events">
+          {% for ev in group.events %}
+          <li class="event">
+            <p class="event-title">
+              {% if ev.detail_url %}
+              <a href="{{ ev.detail_url }}" target="_blank" rel="noopener noreferrer">{{ ev.title }}</a>
+              {% else %}
+              {{ ev.title }}
+              {% endif %}
+            </p>
+            {% if ev.details_line %}
+            <p class="event-meta">{{ ev.details_line }}</p>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endfor %}
+
+      <div class="toolbar">
+        <button type="button" class="primary" id="btn-share">Compartir</button>
+        <button type="button" id="btn-print">Imprimir</button>
+      </div>
+      <p class="footer-note">Archivo HTML autocontenido. Puedes enviarlo por correo, WhatsApp o guardarlo en el móvil.</p>
+    </div>
+    <script>
+      document.getElementById("btn-print")?.addEventListener("click", () => window.print());
+      document.getElementById("btn-share")?.addEventListener("click", async () => {
+        const title = document.title || "Mi agenda cultural de Zaragoza";
+        const text = "Te paso mi selección de eventos culturales en Zaragoza.";
+        if (navigator.share) {
+          try {
+            await navigator.share({ title, text, url: window.location.href });
+            return;
+          } catch (err) {
+            if (err && err.name === "AbortError") return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert("Si abriste este archivo localmente, usa «Guardar» del navegador y comparte el archivo .html. Si tienes un enlace, ya está copiado al portapapeles.");
+        } catch (e) {
+          alert("Guarda esta página como archivo HTML y compártela desde tu dispositivo.");
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "fetched_at": "2026-05-29T16:56:27.493444",
+  "events": [
+    {
+      "title": "Ëda Diaz",
+      "category": "Bombo y Platillo",
+      "category_slug": "bombo-y-platillo",
+      "venue": "Centro Cívico Salvador Allende",
+      "venue_slug": null,
+      "time_text": "19:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.bomboyplatillo.org/eda-diaz/",
+      "source": "bomboyplatillo",
+      "date_from": "2026-05-31",
+      "date_to": "2026-05-31"
+    }
+  ]
+}
