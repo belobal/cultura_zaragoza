@@ -80,5 +80,5 @@ La primera petición tras arrancar el servidor puede tardar si alguna caché en 
 
 ### La Lata: no salen conciertos
 
-En **lalatadebombillas.es** el listado del calendario a veces solo muestra **eventos antiguos**; los próximos van en **[entradas.lalatadebombillas.es](https://entradas.lalatadebombillas.es/web/?menu=36&pagina=&siteID=latadebombillas)**. Si la caché solo tenía fechas pasadas, el filtro por defecto (desde hoy, 90 días) dejaba **0 resultados** hasta que caducaba la caché o se reiniciaba. El scraper ignora cachés que ya solo contienen fechas pasadas y vuelve a pedir datos.
+En **lalatadebombillas.es** el listado del calendario a veces solo muestra **eventos antiguos**; los próximos van en **[entradas.lalatadebombillas.es](https://entradas.lalatadebombillas.es/web/?menu=36&pagina=&siteID=latadebombillas)**. Si la caché solo tenía fechas pasadas, el filtro por defecto (desde hoy, 7 días) dejaba **0 resultados** hasta que caducaba la caché o se reiniciaba. El scraper ignora cachés que ya solo contienen fechas pasadas y vuelve a pedir datos.
 

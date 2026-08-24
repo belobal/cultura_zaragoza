@@ -802,7 +802,8 @@ def _available_venues_for_select(events: List[dict]) -> List[dict]:
 def _parse_filters(args):
     today = date.today()
     default_from = today
-    default_to = today + timedelta(days=90)
+    # Default range: today through +6 days (one week inclusive), same as /m.
+    default_to = today + timedelta(days=6)
 
     def parse_yyyy_mm_dd(v, default):
         if not v:

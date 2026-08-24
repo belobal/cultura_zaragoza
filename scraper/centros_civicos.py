@@ -17,7 +17,8 @@ CACHE_DIR = Path(__file__).resolve().parent.parent / "cache"
 CACHE_FILE = CACHE_DIR / "centros_civicos_events.json"
 DEFAULT_TTL_SECONDS = 60 * 60
 _CACHE_SCHEMA_VERSION = 2
-# Misma ventana que el filtro por defecto de la web (hoy → +90 días).
+# Horizon for scraping centros (independent of the UI default week filter).
+# Misma ventana amplia de captura; la web filtra por defecto a 7 días.
 _DEFAULT_HORIZON_DAYS = 90
 
 SOURCE = "centros_civicos"
