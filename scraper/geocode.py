@@ -190,21 +190,22 @@ def get_venue_coords(venue_name: str, venue_slug: Optional[str] = None) -> Optio
         _MEM_CACHE = _load_cache()
 
     key = venue_slug or _slugify(venue_name)
-    # Importante: si está en caché (aunque sea None), no reconsultamos.
-    # Esto evita re-geocoding en cada refresh.
     if key in _MEM_CACHE:
         return _MEM_CACHE[key]
 
-    try:
-        coords = _geocode_nominatim(venue_name)
-    except Exception:
-        coords = None
-    _MEM_CACHE[key] = coords
+    # No realizar peticiones HTTP en vivo a Nominatim durante la navegación del usuario
+    if os.environ.get("ENABLE_LIVE_GEOCODING", "0") == "1":
+        try:
+            coords = _geocode_nominatim(venue_name)
+        except Exception:
+            coords = None
+        _MEM_CACHE[key] = coords
+        try:
+            _save_cache(_MEM_CACHE)
+        except Exception:
+            pass
+        return coords
 
-    # Guardamos incrementalmente cada vez que metemos un valor nuevo
-    try:
-        _save_cache(_MEM_CACHE)
-    except Exception:
-        pass
-    return coords
+    _MEM_CACHE[key] = None
+    return None
 

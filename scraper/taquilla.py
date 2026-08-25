@@ -237,30 +237,25 @@ def _extract_events_from_list_html(html: str) -> List[Dict[str, Any]]:
 
 def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
     if not CACHE_FILE.exists():
-        return None
+        return []
     try:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
-        # Si el esquema del cache no coincide (p.ej. añadimos `price_min_eur`),
-        # forzamos refresco.
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
-            return None
-        fetched_at = datetime.fromisoformat(payload["fetched_at"]).date()
-        # TTL en segundos -> comparamos con datetime para precisión
-        # Para simplificar: si es "hoy", lo tratamos como válido.
-        # (El scraper es liviano y cacheado; la precisión no es crítica aquí.)
-        if (date.today() - fetched_at).days * 86400 <= ttl_seconds:
-            events = payload["events"]
-            for e in events:
+            return []
+        events = payload.get("events", [])
+        for e in events:
+            if isinstance(e.get("date_from"), str):
                 e["date_from"] = datetime.strptime(e["date_from"], "%Y-%m-%d").date()
+            if isinstance(e.get("date_to"), str):
                 e["date_to"] = datetime.strptime(e["date_to"], "%Y-%m-%d").date()
-                e.setdefault("price_min_eur", None)
-                e.setdefault("time_text", None)
-                e.setdefault("venue", None)
-                e.setdefault("venue_slug", None)
-            return events
+            e.setdefault("price_min_eur", None)
+            e.setdefault("time_text", None)
+            e.setdefault("venue", None)
+            e.setdefault("venue_slug", None)
+        return events
     except Exception:
-        return None
-    return None
+        return []
+    return []
 
 
 def _save_cache(events: List[Dict[str, Any]]):
