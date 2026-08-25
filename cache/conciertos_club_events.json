@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "fetched_at": "2026-08-24T16:10:19.598318",
+  "fetched_at": "2026-08-25T06:53:54.437906",
   "events": [
     {
       "title": "Copacabana",
@@ -1499,6 +1499,20 @@
       "source": "conciertos_club",
       "date_from": "2026-10-18",
       "date_to": "2026-10-18"
+    },
+    {
+      "title": "MY SON THE DOCTOR",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence",
+      "time_text": "21:00",
+      "price_text": "12€ Comprar entradas",
+      "price_min_eur": 12.0,
+      "detail_url": "https://conciertos.club/zaragoza/conciertos/123839-my-son-the-doctor",
+      "source": "conciertos_club",
+      "date_from": "2026-10-20",
+      "date_to": "2026-10-20"
     }
   ]
 }

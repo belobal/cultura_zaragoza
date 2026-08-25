@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "saved_at": "2026-08-24T16:19:39.673729",
+  "saved_at": "2026-08-25T06:55:16.468024",
   "coords": {
     "rock-y-blues-cafe": {
       "lat": 41.6529019,
@@ -382,6 +382,10 @@
     "plaza-aragon-monzalbarba": {
       "lat": 41.7027758,
       "lon": -0.9701093
+    },
+    "terraza-experimental": {
+      "lat": 41.6481731,
+      "lon": -0.9093839
     }
   }
 }

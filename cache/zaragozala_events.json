@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-08-24T16:11:11.060296",
+  "fetched_at": "2026-08-25T06:54:39.949194",
   "events": [
     {
       "title": "CaixaForum Zaragoza: La ciencia de Pixar",
@@ -99,6 +99,34 @@
       "source": "zaragozala",
       "date_from": "2026-08-27",
       "date_to": "2026-08-27"
+    },
+    {
+      "title": "Terraza Experimental: Julio ‘Flaco’ Pareja",
+      "category": "Zaragozala",
+      "category_slug": "zaragozala",
+      "venue": "Terraza Experimental",
+      "venue_slug": "terraza-experimental",
+      "time_text": "00:00",
+      "price_text": "Desde 0€",
+      "price_min_eur": null,
+      "detail_url": "https://zaragozala.com/events/terraza-experimental-julio-flaco-pareja/",
+      "source": "zaragozala",
+      "date_from": "2026-08-29",
+      "date_to": "2026-08-29"
+    },
+    {
+      "title": "Terraza Experimental: Recital Poesía",
+      "category": "Zaragozala",
+      "category_slug": "zaragozala",
+      "venue": "Terraza Experimental",
+      "venue_slug": "terraza-experimental",
+      "time_text": "00:00",
+      "price_text": "Desde 0€",
+      "price_min_eur": null,
+      "detail_url": "https://zaragozala.com/events/terraza-experimental-recital-poesia/",
+      "source": "zaragozala",
+      "date_from": "2026-08-30",
+      "date_to": "2026-08-30"
     },
     {
       "title": "Exposición ‘Alfonso. Cuidado con la memoria’",

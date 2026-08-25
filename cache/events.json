@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-08-24T16:10:48.626912",
+  "fetched_at": "2026-08-25T06:55:28.069553",
   "schema_version": 4,
   "events": [
     {
@@ -250,19 +250,6 @@
       "date_to": "2026-09-05"
     },
     {
-      "title": "An Idiot’s Guide to Wine: Comedia entre copas",
-      "category": "Espectáculos en Zaragoza",
-      "category_slug": "espectaculos-en-zaragoza",
-      "time_text": null,
-      "price_text": "Desde 30,00€",
-      "price_min_eur": 30.0,
-      "detail_url": "https://www.taquilla.com/entradas/an-idiots-guide-to-wine-comedia-entre-copas?t10cityorder=Zaragoza",
-      "venue": "Hotel Vincci Zaragoza Zentro",
-      "venue_slug": "hotel-vincci-zaragoza-zentro",
-      "date_from": "2026-09-11",
-      "date_to": "2027-01-23"
-    },
-    {
       "title": "Luis Álvaro",
       "category": "Espectáculos en Zaragoza",
       "category_slug": "espectaculos-en-zaragoza",
@@ -354,17 +341,17 @@
       "date_to": "2027-02-07"
     },
     {
-      "title": "Muerdo",
+      "title": "Iberia Sumergida Tributo a Heroes del Silencio",
       "category": "Conciertos en Zaragoza",
       "category_slug": "conciertos-en-zaragoza",
-      "time_text": "20:00",
-      "price_text": "desde 18,00€",
-      "price_min_eur": 18.0,
-      "detail_url": "https://www.taquilla.com/entradas/muerdo?t10cityorder=Zaragoza",
-      "venue": "Sala Lopez",
-      "venue_slug": "sala-lopez",
-      "date_from": "2026-10-24",
-      "date_to": "2026-10-24"
+      "time_text": "21:30",
+      "price_text": "desde 17,00€",
+      "price_min_eur": 17.0,
+      "detail_url": "https://www.taquilla.com/entradas/iberia-sumergida-tributo-a-heroes-del-silencio?t10cityorder=Zaragoza",
+      "venue": "La Casa del Loco",
+      "venue_slug": "la-casa-del-loco",
+      "date_from": "2026-10-17",
+      "date_to": "2026-10-17"
     },
     {
       "title": "Parquesvr",

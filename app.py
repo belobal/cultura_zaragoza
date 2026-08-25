@@ -1066,8 +1066,9 @@ def _filter_events(events, args_like):
     include_centros_civicos = bool(parsed.get("include_centros_civicos"))
 
     def overlaps(e):
-        # Intervalos que se solapan: [e.date_from, e.date_to] vs [date_from, date_to]
-        return e["date_to"] >= date_from and e["date_from"] <= date_to
+        df = e["date_from"] if isinstance(e["date_from"], date) else datetime.strptime(str(e["date_from"])[:10], "%Y-%m-%d").date()
+        dt = e["date_to"] if isinstance(e["date_to"], date) else datetime.strptime(str(e["date_to"])[:10], "%Y-%m-%d").date()
+        return dt >= date_from and df <= date_to
 
     filtered = [e for e in events if overlaps(e)]
     if not include_centros_civicos:
