@@ -12,5 +12,4 @@ venv/
 android-apk/
 *.apk
 *.aab
-cache/*.json
-!cache/.gitkeep
+

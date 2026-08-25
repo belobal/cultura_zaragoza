@@ -173,13 +173,13 @@ def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
             return None
-        fetched_at = datetime.fromisoformat(payload["fetched_at"])
-        if (datetime.utcnow() - fetched_at).total_seconds() <= ttl_seconds:
-            events = payload.get("events") or []
-            for e in events:
+        events = payload.get("events") or []
+        for e in events:
+            if isinstance(e.get("date_from"), str):
                 e["date_from"] = datetime.strptime(e["date_from"], "%Y-%m-%d").date()
+            if isinstance(e.get("date_to"), str):
                 e["date_to"] = datetime.strptime(e["date_to"], "%Y-%m-%d").date()
-            return events
+        return events
     except Exception:
         return None
     return None
