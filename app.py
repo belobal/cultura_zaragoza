@@ -9,7 +9,6 @@ from typing import Callable, DefaultDict, List, Optional, Tuple
 
 from flask import Flask, Response, jsonify, render_template, request, send_from_directory
 
-from scraper.centros_civicos import get_events as get_centros_civicos_events
 from scraper.conciertos_club import get_events as get_conciertos_club_events
 from scraper.creedence import get_events as get_creedence_events
 from scraper.geocode import get_venue_coords
@@ -737,7 +736,6 @@ def _load_all_sources_parallel() -> List[dict]:
         get_creedence_events,
         get_ibercaja_teatro_principal_events,
         get_belushi_events,
-        get_centros_civicos_events,
         get_conciertos_club_events,
         # Extra sources at the end so dedupe keeps earlier sources.
         get_aragonenvivo_events,
@@ -766,7 +764,6 @@ def get_events_cached():
                     get_creedence_events(),
                     get_ibercaja_teatro_principal_events(),
                     get_belushi_events(),
-                    get_centros_civicos_events(),
                     get_conciertos_club_events(),
                     # Extra sources at the end so dedupe keeps earlier sources.
                     get_aragonenvivo_events(),

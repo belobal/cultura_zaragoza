@@ -5,7 +5,6 @@ Webapp en Flask para consultar la agenda cultural de Zaragoza combinando:
 - Agenda en iframe de Rock & Blues Café (SweetCaroline)
 - [Sala Creedence](https://creedencesound.com/sala-creedence-conciertos-y-sesiones)
 - [Zaragoza Cultura (Ayuntamiento)](https://www.zaragoza.es/sede/servicio/cultura/)
-- [Centros Cívicos (Ayuntamiento)](https://www.zaragoza.es/sede/portal/centroscivicos/servicio/cultura/evento/list?idPortal=7) (solo temática música y teatro)
 - [Conciertos.Club Zaragoza](https://conciertos.club/zaragoza) (agenda transversal de conciertos y salas)
 - [La Lata de Bombillas](https://lalatadebombillas.es/) (The Events Calendar) y su [web de venta de entradas](https://entradas.lalatadebombillas.es/web/?menu=36&pagina=&siteID=latadebombillas) (enlaces a taquilla propia, Dice, Enterticket, etc.)
 - [El Refugio del Crápula](https://www.elcrapula.es/) (programación de comedia, monólogos y música)
@@ -27,7 +26,7 @@ Ver **[DEPLOY.md](DEPLOY.md)**: hosting gratuito en Render (HTTPS) + empaquetado
 
 ## Endpoint JSON
 
-- `GET /api/events` — mismos filtros que la web (`date_from`, `date_to`, `category`, `venue`, `q`, `centros`). `category` y `venue` admiten varios valores (repetidos o separados por comas).
+- `GET /api/events` — mismos filtros que la web (`date_from`, `date_to`, `category`, `venue`, `q`). `category` y `venue` admiten varios valores (repetidos o separados por comas).
 - `GET /api/meta` — listado de categorías, salas y rango de la semana actual
 - `GET /m` — app móvil / PWA
 - `GET /.well-known/assetlinks.json` — Digital Asset Links (APK / TWA)
@@ -40,8 +39,8 @@ Ficheros de eventos:
 - `cache/lalata_events.json`
 - `cache/zaragoza_cultura_events.json`
 - `cache/creedence_events.json`
-- `cache/centros_civicos_events.json`
 - `cache/conciertos_club_events.json`
+- `cache/elcrapula_events.json`
 - `cache/venue_coords.json` (geocoding de salas)
 
 
