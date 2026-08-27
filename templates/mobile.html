@@ -496,16 +496,6 @@
           <button type="submit">Ver</button>
         </div>
 
-        <label class="centros-row">
-          <input
-            type="checkbox"
-            name="centros"
-            value="1"
-            {% if include_centros_civicos %}checked{% endif %}
-          />
-          Incluir centros cívicos
-        </label>
-
         <div id="venue-inputs">
           {% if 'all' in selected_venues %}
             <input type="hidden" name="venue" value="all" />

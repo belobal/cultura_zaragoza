@@ -782,9 +782,6 @@ def get_events_cached():
 def _available_categories(events):
     cats = {}
     for e in events:
-        # Centros cívicos se filtran con control separado para no contaminar el dropdown.
-        if e.get("source") == "centros_civicos":
-            continue
         slug = e.get("category_slug")
         if slug and slug not in ("aragon-en-vivo", "zaragoza-cultura", "bombo-y-platillo", "elcrapula", "zaragozala"):
             cats[slug] = e["category"]
@@ -815,15 +812,13 @@ def _available_categories(events):
 def _available_venues_for_select(events: List[dict]) -> List[dict]:
     """
     Lista plana de salas para el desplegable (sin grupos).
-    Una entrada «Auditorio de Zaragoza»; sin centros cívicos (van por categoría).
+    Una entrada «Auditorio de Zaragoza»; incluye salas de centros cívicos.
     """
     venues: dict[str, str] = {}
     has_auditorio = False
     for e in events:
         vs = e.get("venue_slug")
         if not vs:
-            continue
-        if e.get("source") == "centros_civicos":
             continue
         if _slug_is_auditorio_zaragoza(vs):
             has_auditorio = True
@@ -1101,8 +1096,6 @@ def _filter_events(events, args_like):
         return dt >= date_from and df <= date_to
 
     filtered = [e for e in events if overlaps(e)]
-    if not include_centros_civicos:
-        filtered = [e for e in filtered if e.get("source") != "centros_civicos"]
     if category_slugs and category_slugs != ["all"]:
         wanted_cats = set(category_slugs)
         filtered = [e for e in filtered if e.get("category_slug") in wanted_cats]
