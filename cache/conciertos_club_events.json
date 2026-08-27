@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "fetched_at": "2026-08-25T06:53:54.437906",
+  "fetched_at": "2026-08-27T07:06:33.717503",
   "events": [
     {
       "title": "Copacabana",
@@ -1513,6 +1513,48 @@
       "source": "conciertos_club",
       "date_from": "2026-10-20",
       "date_to": "2026-10-20"
+    },
+    {
+      "title": "EL IMITADOR",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Teatro de las Esquinas",
+      "venue_slug": "teatro-de-las-esquinas",
+      "time_text": "20:00",
+      "price_text": "15€",
+      "price_min_eur": 15.0,
+      "detail_url": "https://conciertos.club/zaragoza/conciertos/123991-el-imitador",
+      "source": "conciertos_club",
+      "date_from": "2026-10-22",
+      "date_to": "2026-10-22"
+    },
+    {
+      "title": "HOSS&SWET",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Rock & Blues Café",
+      "venue_slug": "rock-y-blues-cafe",
+      "time_text": "21:00",
+      "price_text": "10€",
+      "price_min_eur": 10.0,
+      "detail_url": "https://conciertos.club/zaragoza/conciertos/119279-hossswet",
+      "source": "conciertos_club",
+      "date_from": "2026-10-22",
+      "date_to": "2026-10-22"
+    },
+    {
+      "title": "Steve 'n' Seagulls",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala López",
+      "venue_slug": "sala-lopez",
+      "time_text": "21:00",
+      "price_text": "27,50€",
+      "price_min_eur": 27.5,
+      "detail_url": "https://conciertos.club/zaragoza/conciertos/119558-steve-n-seagulls",
+      "source": "conciertos_club",
+      "date_from": "2026-10-22",
+      "date_to": "2026-10-22"
     }
   ]
 }

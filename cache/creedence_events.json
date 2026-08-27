@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-08-25T06:53:53.634481",
+  "fetched_at": "2026-08-27T07:06:32.254219",
   "events": [
     {
       "title": "EL DESVAN + VERSADOS",
@@ -14,6 +14,19 @@
       "source": "creedence",
       "date_from": "2026-09-19",
       "date_to": "2026-09-19"
+    },
+    {
+      "title": "THE BOOJUMS (CANADA) – 15 AÑOS DE SALA CREEDENCE – ZARAGOZA",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/the-boojums-canada-15-anos-de-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-09-24",
+      "date_to": "2026-09-24"
     },
     {
       "title": "FEW THOUGHTS + INCORDIAN",

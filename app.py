@@ -17,7 +17,7 @@ from scraper.ibercaja_teatro_principal import get_events as get_ibercaja_teatro_
 from scraper.lalata import get_events as get_lata_events
 from scraper.belushi import get_events as get_belushi_events
 from scraper.rockandbluescafe import get_events as get_rock_events
-from scraper.zaragozala import get_events as get_zaragozala_events
+from scraper.elcrapula import get_events as get_elcrapula_events
 from scraper.zaragoza_cultura import get_events as get_zaragoza_events
 from scraper.aragonenvivo import get_events as get_aragonenvivo_events
 from scraper.bomboyplatillo import get_events as get_bomboyplatillo_events
@@ -721,10 +721,10 @@ def _safe_fetch(fn: Callable[[], List[dict]]) -> List[dict]:
 
 def _load_all_sources_parallel() -> List[dict]:
     fetchers: List[Callable[[], List[dict]]] = [
-        # Taquilla.com omitted: city filter is unreliable (see _filter_out_taquilla_com).
+        # Taquilla.com y Zaragozala omitidos.
         get_rock_events,
         get_lata_events,
-        get_zaragozala_events,
+        get_elcrapula_events,
         get_zaragoza_events,
         get_creedence_events,
         get_ibercaja_teatro_principal_events,
@@ -753,7 +753,7 @@ def get_events_cached():
                 [
                     get_rock_events(),
                     get_lata_events(),
-                    get_zaragozala_events(),
+                    get_elcrapula_events(),
                     get_zaragoza_events(),
                     get_creedence_events(),
                     get_ibercaja_teatro_principal_events(),
@@ -778,8 +778,35 @@ def _available_categories(events):
         if e.get("source") == "centros_civicos":
             continue
         cats[e["category_slug"]] = e["category"]
-    # Orden estable
-    return [{"slug": k, "name": cats[k]} for k in sorted(cats.keys())]
+
+    # Orden explícito: Primero conceptos artísticos (con "Aragón en vivo" justo debajo de "Teatro"),
+    # y posteriormente las fuentes de información.
+    ordered_slugs_priority = [
+        "conciertos-en-zaragoza",
+        "teatro",
+        "aragon-en-vivo",       # Bajo Teatro
+        "comedia",
+        "espectaculos-en-zaragoza",
+        "musical",
+        "opera",
+        "danza",
+        "cine",
+        "exposiciones",
+        "infantil",
+        # Fuentes de información:
+        "zaragoza-cultura",
+        "elcrapula",
+        "bombo-y-platillo",
+        "belushi",
+    ]
+
+    def _sort_key(slug):
+        if slug in ordered_slugs_priority:
+            return (0, ordered_slugs_priority.index(slug))
+        return (1, cats.get(slug, "").lower())
+
+    sorted_slugs = sorted(cats.keys(), key=_sort_key)
+    return [{"slug": k, "name": cats[k]} for k in sorted_slugs]
 
 
 def _available_venues_for_select(events: List[dict]) -> List[dict]:

@@ -274,23 +274,27 @@
         font-size: 0.78rem;
         color: var(--muted);
         margin: 0;
-      }
-      .pill {
-        display: inline-block;
-        background: #f3e6e4;
-        color: var(--brand-dark);
-        border-radius: 999px;
-        padding: 2px 8px;
-        font-size: 0.7rem;
-        font-weight: 600;
+      .category-tag {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 500;
       }
       .event a.more {
         display: inline-block;
         margin-top: 8px;
+        background: #f3e6e4;
+        color: var(--brand-dark);
+        border-radius: 999px;
+        padding: 3px 10px;
         font-size: 0.78rem;
         font-weight: 600;
-        color: var(--brand);
         text-decoration: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: background 0.15s ease;
+      }
+      .event a.more:hover,
+      .event a.more:active {
+        background: #e8d0cb;
       }
       .empty {
         text-align: center;
@@ -535,7 +539,7 @@
               <article class="event">
                 <h3>{{ e.title }}</h3>
                 <p class="meta">
-                  {% if e.category %}<span class="pill">{{ e.category }}</span>{% endif %}
+                  {% if e.category %}<span class="category-tag">{{ e.category }}</span>{% endif %}
                   {% if e.venue %}<span>{{ e.venue }}</span>{% endif %}
                   {% if e.time_text %}<span>{{ e.time_text }}</span>{% endif %}
                   {% if e.price_text %}<span>{{ e.price_text }}</span>{% endif %}

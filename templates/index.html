@@ -131,7 +131,19 @@
       .event-row { border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; }
       .event-line-1 { font-size: 15px; font-weight: 700; margin: 0 0 6px 0; }
       .event-line-2 { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-      .event-line-2 .pill { font-weight: 600; }
+      .event-line-2 .category-tag { font-size: 13px; color: #555; font-weight: 500; }
+      .event-line-2 .btn-more-info {
+        display: inline-block;
+        background: #f3e6e4;
+        color: #6f1524;
+        border-radius: 999px;
+        padding: 2px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.15s ease;
+      }
+      .event-line-2 .btn-more-info:hover { background: #e8d0cb; color: #4a0d18; }
       .event-line-2 .muted { font-size: 12px; }
       .export-entry {
         margin: 16px 0 0 0;
@@ -292,12 +304,15 @@
                 <input type="checkbox" class="event-pick" data-idx="{{ pick_idx.n }}" checked />
                 <span>Me interesa</span>
               </label>
-              <span class="pill">{{ e.category }}</span>
+              <span class="category-tag">{{ e.category }}</span>
               {% if e.time_text %}
                 <span class="muted"><strong>{{ e.time_text }}</strong></span>
               {% endif %}
               {% if e.price_text %}
                 <span class="muted"><strong>{{ e.price_text }}</strong></span>
+              {% endif %}
+              {% if e.detail_url %}
+                <a class="btn-more-info" href="{{ e.detail_url }}" target="_blank" rel="noreferrer">Más info</a>
               {% endif %}
             </div>
             </li>
