@@ -372,10 +372,18 @@ _CONCIERTOS_SLUG = "conciertos-en-zaragoza"
 
 
 def _canonicalize_category(event: dict) -> None:
-    """Merge equivalent category labels (e.g. Concierto / Conciertos)."""
+    """Merge equivalent category labels and ensure source names map to artistic concept categories."""
     slug = (event.get("category_slug") or "").strip().lower()
     if slug in _CATEGORY_ALIASES:
         event["category"], event["category_slug"] = _CATEGORY_ALIASES[slug]
+        return
+    if slug in ("aragon-en-vivo", "bombo-y-platillo", "zaragozala"):
+        event["category"] = "Conciertos"
+        event["category_slug"] = _CONCIERTOS_SLUG
+        return
+    if slug in ("elcrapula", "zaragoza-cultura"):
+        event["category"] = "Espectáculos"
+        event["category_slug"] = "espectaculos-en-zaragoza"
         return
     cat = (event.get("category") or "").strip().lower()
     if cat in ("concierto", "conciertos"):
@@ -777,14 +785,14 @@ def _available_categories(events):
         # Centros cívicos se filtran con control separado para no contaminar el dropdown.
         if e.get("source") == "centros_civicos":
             continue
-        cats[e["category_slug"]] = e["category"]
+        slug = e.get("category_slug")
+        if slug and slug not in ("aragon-en-vivo", "zaragoza-cultura", "bombo-y-platillo", "elcrapula", "zaragozala"):
+            cats[slug] = e["category"]
 
-    # Orden explícito: Primero conceptos artísticos (con "Aragón en vivo" justo debajo de "Teatro"),
-    # y posteriormente las fuentes de información.
+    # Orden explícito de conceptos artísticos
     ordered_slugs_priority = [
         "conciertos-en-zaragoza",
         "teatro",
-        "aragon-en-vivo",       # Bajo Teatro
         "comedia",
         "espectaculos-en-zaragoza",
         "musical",
@@ -793,11 +801,6 @@ def _available_categories(events):
         "cine",
         "exposiciones",
         "infantil",
-        # Fuentes de información:
-        "zaragoza-cultura",
-        "elcrapula",
-        "bombo-y-platillo",
-        "belushi",
     ]
 
     def _sort_key(slug):

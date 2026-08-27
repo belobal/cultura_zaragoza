@@ -8,6 +8,7 @@ Webapp en Flask para consultar la agenda cultural de Zaragoza combinando:
 - [Centros Cívicos (Ayuntamiento)](https://www.zaragoza.es/sede/portal/centroscivicos/servicio/cultura/evento/list?idPortal=7) (solo temática música y teatro)
 - [Conciertos.Club Zaragoza](https://conciertos.club/zaragoza) (agenda transversal de conciertos y salas)
 - [La Lata de Bombillas](https://lalatadebombillas.es/) (The Events Calendar) y su [web de venta de entradas](https://entradas.lalatadebombillas.es/web/?menu=36&pagina=&siteID=latadebombillas) (enlaces a taquilla propia, Dice, Enterticket, etc.)
+- [El Refugio del Crápula](https://www.elcrapula.es/) (programación de comedia, monólogos y música)
 
 > **Nota:** [Taquilla.com](https://www.taquilla.com/) no se usa: sus listados no filtran bien por ciudad (mezclan fechas de otras localidades). Cualquier evento cuyo enlace sea `taquilla.com` se descarta.
 
