@@ -2,7 +2,8 @@
 
 Webapp en Flask para consultar la agenda cultural de Zaragoza combinando:
 
-- Agenda en iframe de Rock & Blues Café (SweetCaroline)
+- [Rock & Blues Café](https://www.rockandbluescafe.com/conciertos/) (agenda vía iframe [SweetCaroline](https://www.sweetcaroline.app/programacion8.php); se prioriza frente a otras fuentes del mismo concierto)
+- [Aragón en Vivo](https://aragonenvivo.com/eventos/) (eventos en Zaragoza; se deduplican si ya vienen de la sala)
 - [Sala Creedence](https://creedencesound.com/sala-creedence-conciertos-y-sesiones)
 - [Zaragoza Cultura (Ayuntamiento)](https://www.zaragoza.es/sede/servicio/cultura/)
 - [Conciertos.Club Zaragoza](https://conciertos.club/zaragoza) (agenda transversal de conciertos y salas)

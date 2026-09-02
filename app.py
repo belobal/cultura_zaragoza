@@ -356,6 +356,23 @@ _VENUE_ALIASES = {
         "Sala Creedence",
         "sala-creedence-zaragoza",
     ),
+    # Rock & Blues Café (SweetCaroline / Aragón en Vivo / conciertos.club)
+    "rock-y-blues-cafe": (
+        "Rock & Blues Café",
+        "rock-y-blues-cafe",
+    ),
+    "rock-y-blues": (
+        "Rock & Blues Café",
+        "rock-y-blues-cafe",
+    ),
+    "rock-and-blues-cafe": (
+        "Rock & Blues Café",
+        "rock-y-blues-cafe",
+    ),
+    "rock-blues-cafe": (
+        "Rock & Blues Café",
+        "rock-y-blues-cafe",
+    ),
 }
 
 
@@ -455,7 +472,13 @@ def _parse_multi_slugs(args, key: str) -> List[str]:
 
 
 def _canonicalize_venue(event: dict):
-    vs = event.get("venue_slug")
+    """Fill missing venue_slug and map known aliases to a canonical sala."""
+    vs = (event.get("venue_slug") or "").strip()
+    if not vs:
+        venue = (event.get("venue") or "").strip()
+        if venue:
+            vs = _slugify_venue_label(venue)
+            event["venue_slug"] = vs
     if not vs:
         return
     target = _VENUE_ALIASES.get(vs)
@@ -539,11 +562,34 @@ def _norm_title_for_dedupe(title: str) -> str:
         ("ó", "o"),
         ("ú", "u"),
         ("ñ", "n"),
+        ("’", "'"),
+        ("‘", "'"),
+        ("´", "'"),
     ):
         t = t.replace(a, b)
     t = re.sub(r"[^a-z0-9\s]", " ", t)
     t = re.sub(r"\s+", " ", t).strip()
+    # Drop common leading articles so "THE FLAMIN GROOVIES" ≈ "FLAMIN GROOVIES"
+    t = re.sub(r"^(the|los|las|el|la|un|una)\s+", "", t)
     return t
+
+
+_SOURCE_PRIORITY = {
+    # Prefer the venue's own agenda when the same show appears elsewhere.
+    "rockandbluescafe": 0,
+    "creedence": 1,
+    "lalata": 2,
+    "lalata_entradas": 2,
+    "belushi": 3,
+    "ibercaja_teatro_principal": 3,
+    "conciertos_club": 8,
+    "aragonenvivo": 9,
+    "bomboyplatillo": 10,
+}
+
+
+def _source_priority(e: dict) -> int:
+    return _SOURCE_PRIORITY.get((e.get("source") or "").strip(), 5)
 
 
 def _sala_day_dedupe_key(e: dict) -> tuple:
@@ -555,14 +601,49 @@ def _sala_day_dedupe_key(e: dict) -> tuple:
     return (vs, ds, tt, _norm_title_for_dedupe(e.get("title", "")))
 
 
+def _title_date_venue_dedupe_key(e: dict) -> Tuple[str, str, str]:
+    """Same day + normalized title + venue → one listing."""
+    d = e["date_from"]
+    ds = d.isoformat() if hasattr(d, "isoformat") else str(d)
+    vs = (e.get("venue_slug") or "").strip().lower()
+    if not vs:
+        vs = _slugify_venue_label(e.get("venue") or "")
+    return (ds, _norm_title_for_dedupe(e.get("title", "")), vs)
+
+
+def _dedupe_prefer_source_by_title_date_venue(events: List[dict]) -> List[dict]:
+    """
+    Collapse same title + date + venue, preferring Rock & Blues Café (and other
+    high-priority venue sources) over transversal aggregators like Aragón en Vivo.
+    """
+    best: dict[Tuple[str, str, str], dict] = {}
+    order: List[Tuple[str, str, str]] = []
+    for e in events:
+        key = _title_date_venue_dedupe_key(e)
+        # Events without a usable title still pass through once.
+        if not key[1]:
+            order.append(("__raw__", str(id(e)), ""))
+            best[order[-1]] = e
+            continue
+        prev = best.get(key)
+        if prev is None:
+            best[key] = e
+            order.append(key)
+            continue
+        if _source_priority(e) < _source_priority(prev):
+            best[key] = e
+    return [best[k] for k in order if k in best]
+
+
 def _title_date_dedupe_key(e: dict) -> Tuple[str, str]:
-    """Same calendar day + same normalized title: collapse to first occurrence in merge order."""
+    """Same calendar day + same normalized title (fallback when venue missing)."""
     d = e["date_from"]
     ds = d.isoformat() if hasattr(d, "isoformat") else str(d)
     return (ds, _norm_title_for_dedupe(e.get("title", "")))
 
 
 def _dedupe_first_by_title_and_date(events: List[dict]) -> List[dict]:
+    """Keep first occurrence per title+date (merge order already prefers Rock & Blues)."""
     seen: set[Tuple[str, str]] = set()
     out: List[dict] = []
     for e in events:
@@ -620,18 +701,17 @@ def _titles_near_duplicate(a: str, b: str) -> bool:
 def _dedupe_near_titles_same_venue_day_keep_simplest(events: List[dict]) -> List[dict]:
     """
     If two events share venue + day and their titles are near-duplicates,
-    keep only one: the one with the simplest title (shorter simplified form,
-    then shorter raw title).
+    keep only one: prefer Rock & Blues / venue-owned sources, else simplest title.
+    Time of day is ignored so SweetCaroline vs Aragón en Vivo still collapse.
     """
-    groups: DefaultDict[Tuple[str, str, str], List[int]] = defaultdict(list)
+    groups: DefaultDict[Tuple[str, str], List[int]] = defaultdict(list)
     for i, e in enumerate(events):
         vs = (e.get("venue_slug") or "").strip()
         d = e.get("date_from")
         ds = d.isoformat() if hasattr(d, "isoformat") else str(d or "")
-        tt = (e.get("time_text") or "").strip()
         if not vs or not ds:
             continue
-        groups[(vs, ds, tt)].append(i)
+        groups[(vs, ds)].append(i)
 
     drop: set[int] = set()
     for idxs in groups.values():
@@ -647,17 +727,25 @@ def _dedupe_near_titles_same_venue_day_keep_simplest(events: List[dict]) -> List
                 tj = events[j].get("title") or ""
                 if not _titles_near_duplicate(ti, tj):
                     continue
-                # Choose simplest title among the pair
-                si = _title_simplified_for_similarity(ti)
-                sj = _title_simplified_for_similarity(tj)
-                key_i = (len(si), len(ti.strip()))
-                key_j = (len(sj), len(tj.strip()))
-                if key_i < key_j:
+                # Prefer Rock & Blues (and other venue-owned sources) over aggregators.
+                if _source_priority(events[i]) < _source_priority(events[j]):
                     drop.add(j)
                     kept.remove(j)
                     kept.append(i)
-                else:
+                elif _source_priority(events[j]) < _source_priority(events[i]):
                     drop.add(i)
+                else:
+                    # Choose simplest title among the pair
+                    si = _title_simplified_for_similarity(ti)
+                    sj = _title_simplified_for_similarity(tj)
+                    key_i = (len(si), len(ti.strip()))
+                    key_j = (len(sj), len(tj.strip()))
+                    if key_i < key_j:
+                        drop.add(j)
+                        kept.remove(j)
+                        kept.append(i)
+                    else:
+                        drop.add(i)
                 matched = True
                 break
             if not matched and i not in drop:
@@ -711,7 +799,9 @@ def _merge_source_results(chunks: List[List[dict]]) -> List[dict]:
     for e in events:
         _shorten_category_display(e)
         _shorten_venue_display(e)
-    events = _dedupe_first_by_title_and_date(events)
+        _canonicalize_venue(e)
+    # Same title+date+venue → one row; Rock & Blues own site wins over Aragón en Vivo.
+    events = _dedupe_prefer_source_by_title_date_venue(events)
     events = _dedupe_near_titles_same_venue_day_keep_simplest(events)
     for e in events:
         _canonicalize_venue(e)

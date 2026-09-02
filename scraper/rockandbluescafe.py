@@ -10,13 +10,15 @@ from bs4 import BeautifulSoup
 
 
 SOURCE_NAME = "Rock & Blues Café"
+# rockandbluescafe.com/conciertos embeds this SweetCaroline iframe as the live agenda.
 IFRAME_URL = "https://www.sweetcaroline.app/programacion8.php"
+CAFE_CONCIERTOS_URL = "https://www.rockandbluescafe.com/conciertos/"
 
 CACHE_DIR = Path(__file__).resolve().parent.parent / "cache"
 CACHE_FILE = CACHE_DIR / "rockandbluescafe_events.json"
 
 DEFAULT_TTL_SECONDS = 60 * 60  # 1h
-_CACHE_SCHEMA_VERSION = 4
+_CACHE_SCHEMA_VERSION = 5
 
 
 _UA = (
@@ -61,6 +63,19 @@ def _slugify_category(name: str) -> str:
     return name
 
 
+def _parse_iso_date(value) -> Optional[date]:
+    if isinstance(value, date) and not isinstance(value, datetime):
+        return value
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, str) and value.strip():
+        try:
+            return datetime.strptime(value.strip()[:10], "%Y-%m-%d").date()
+        except ValueError:
+            return None
+    return None
+
+
 def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
     if not CACHE_FILE.exists():
         return None
@@ -68,17 +83,30 @@ def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
             return None
+        fetched_at = payload.get("fetched_at")
+        if fetched_at and ttl_seconds > 0:
+            try:
+                age = (datetime.utcnow() - datetime.fromisoformat(fetched_at)).total_seconds()
+                if age > ttl_seconds:
+                    return None
+            except Exception:
+                pass
         events = payload.get("events", [])
+        cleaned: List[Dict[str, Any]] = []
         for e in events:
-            if isinstance(e.get("date_from"), str):
-                e["date_from"] = datetime.strptime(e["date_from"], "%Y-%m-%d").date()
-            if isinstance(e.get("date_to"), str):
-                e["date_to"] = datetime.strptime(e["date_to"], "%Y-%m-%d").date()
-        return events
+            e2 = dict(e)
+            d_from = _parse_iso_date(e2.get("date_from"))
+            d_to = _parse_iso_date(e2.get("date_to"))
+            if not d_from or not d_to:
+                continue
+            e2["date_from"] = d_from
+            e2["date_to"] = d_to
+            e2.setdefault("venue", "Rock & Blues Café")
+            e2.setdefault("venue_slug", "rock-y-blues-cafe")
+            cleaned.append(e2)
+        return cleaned
     except Exception:
         return None
-    return None
-
 
 
 def _save_cache(events: List[Dict[str, Any]]):
@@ -215,22 +243,26 @@ def _extract_events_from_iframe(html: str) -> List[Dict[str, Any]]:
 
 
 def get_events() -> List[Dict[str, Any]]:
+    """
+    Agenda de Rock & Blues Café.
+
+    La web del local (rockandbluescafe.com/conciertos) embebe el iframe de
+    SweetCaroline (programacion8.php); scrapamos ese iframe como fuente canónica.
+    """
     ttl_seconds = int(os.environ.get("EVENT_CACHE_TTL_SECONDS", str(DEFAULT_TTL_SECONDS)))
     cached = _load_cache(ttl_seconds)
     if cached is not None:
-        # Reparar date_from/date_to a datetime.date
-        cleaned: List[Dict[str, Any]] = []
-        for e in cached:
-            e2 = dict(e)
-            e2["date_from"] = datetime.strptime(e2["date_from"], "%Y-%m-%d").date()
-            e2["date_to"] = datetime.strptime(e2["date_to"], "%Y-%m-%d").date()
-            e2.setdefault("venue", None)
-            e2.setdefault("venue_slug", None)
-            cleaned.append(e2)
-        return cleaned
+        return cached
 
-    html = _fetch_iframe_html()
-    events = _extract_events_from_iframe(html)
-    _save_cache(events)
-    return events
+    # Stale cache as fallback if the live scrape fails (DNS / network).
+    stale = _load_cache(ttl_seconds=10**9)
+    try:
+        html = _fetch_iframe_html()
+        events = _extract_events_from_iframe(html)
+    except Exception:
+        return stale or []
+    if events:
+        _save_cache(events)
+        return events
+    return stale or []
 

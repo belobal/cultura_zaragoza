@@ -8,16 +8,19 @@ from typing import Any, Dict, List, Optional, Tuple
 import requests
 from bs4 import BeautifulSoup
 
-BASE_URL = "https://aragonenvivo.com/eventos/lista/"
-
 CACHE_DIR = Path(__file__).resolve().parent.parent / "cache"
 CACHE_FILE = CACHE_DIR / "aragonenvivo_events.json"
 DEFAULT_TTL_SECONDS = 60 * 60
-_CACHE_SCHEMA_VERSION = 1
+_CACHE_SCHEMA_VERSION = 2
 
 SOURCE = "aragonenvivo"
 CATEGORY = "Aragón en Vivo"
 CATEGORY_SLUG = "aragon-en-vivo"
+
+# User-facing listing URL; list view under /eventos/lista/ has the same cards.
+BASE_URL = "https://aragonenvivo.com/eventos/lista/"
+LISTING_URL = "https://aragonenvivo.com/eventos/"
+
 
 _UA = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -74,10 +77,31 @@ def _parse_time_text(s: str) -> Optional[str]:
     return m.group(1) if m else None
 
 
+def _slugify_venue(name: str) -> Optional[str]:
+    x = (name or "").lower().strip()
+    if not x:
+        return None
+    repl = {
+        "á": "a",
+        "é": "e",
+        "í": "i",
+        "ó": "o",
+        "ú": "u",
+        "ñ": "n",
+        " ": "-",
+        "&": "y",
+    }
+    for k, v in repl.items():
+        x = x.replace(k, v)
+    x = re.sub(r"[^a-z0-9\-]", "", x)
+    x = re.sub(r"-+", "-", x).strip("-")
+    return x or None
+
+
 def _only_zaragoza_event(venue_line: str, meta_line: str) -> bool:
     blob = f"{venue_line} {meta_line}".lower()
     # Typical lines contain "... Zaragoza, Zaragoza, España"
-    return " zaragoza" in blob
+    return "zaragoza" in blob
 
 
 def _extract_events_from_list_page(html: str) -> List[Dict[str, Any]]:
@@ -137,7 +161,7 @@ def _extract_events_from_list_page(html: str) -> List[Dict[str, Any]]:
                 "category": CATEGORY,
                 "category_slug": CATEGORY_SLUG,
                 "venue": venue or None,
-                "venue_slug": None,
+                "venue_slug": _slugify_venue(venue) if venue else None,
                 "date_from": d_from,
                 "date_to": d_from,
                 "time_text": time_text,
@@ -161,7 +185,7 @@ def _next_page_url(html: str) -> Optional[str]:
 
 def scrape_events_list() -> List[Dict[str, Any]]:
     # Walk list pagination a few pages, then horizon-filter.
-    max_pages = int(os.environ.get("ARAGONENVIVO_MAX_PAGES", "5"))
+    max_pages = int(os.environ.get("ARAGONENVIVO_MAX_PAGES", "8"))
     html = _fetch(BASE_URL)
     all_events: List[Dict[str, Any]] = []
     seen_urls: set[str] = set()
@@ -199,16 +223,28 @@ def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
             return None
+        fetched_at = payload.get("fetched_at")
+        if fetched_at and ttl_seconds > 0:
+            try:
+                age = (datetime.utcnow() - datetime.fromisoformat(fetched_at)).total_seconds()
+                if age > ttl_seconds:
+                    return None
+            except Exception:
+                pass
         events = payload.get("events") or []
+        cleaned: List[Dict[str, Any]] = []
         for e in events:
-            if isinstance(e.get("date_from"), str):
-                e["date_from"] = datetime.strptime(e["date_from"], "%Y-%m-%d").date()
-            if isinstance(e.get("date_to"), str):
-                e["date_to"] = datetime.strptime(e["date_to"], "%Y-%m-%d").date()
-        return events
+            e2 = dict(e)
+            if isinstance(e2.get("date_from"), str):
+                e2["date_from"] = datetime.strptime(e2["date_from"], "%Y-%m-%d").date()
+            if isinstance(e2.get("date_to"), str):
+                e2["date_to"] = datetime.strptime(e2["date_to"], "%Y-%m-%d").date()
+            if e2.get("venue") and not e2.get("venue_slug"):
+                e2["venue_slug"] = _slugify_venue(e2["venue"])
+            cleaned.append(e2)
+        return cleaned
     except Exception:
         return None
-    return None
 
 
 def _save_cache(events: List[Dict[str, Any]]) -> None:
