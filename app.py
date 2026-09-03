@@ -303,13 +303,33 @@ _VENUE_ALIASES = {
         "Pabellón Príncipe Felipe",
         "pabellon-principe-felipe",
     ),
-    # Auditorio renombrado; tratamos ambos como el mismo lugar
+    # Auditorio (Princesa Leonor, Multiusos, Mozart, etc. = same complex)
     "auditorio-de-zaragoza": (
-        "Auditorio de Zaragoza Princesa Leonor",
+        "Auditorio de Zaragoza",
         "auditorio-de-zaragoza-princesa-leonor",
     ),
     "auditorio-de-zaragoza-princesa-leonor": (
-        "Auditorio de Zaragoza Princesa Leonor",
+        "Auditorio de Zaragoza",
+        "auditorio-de-zaragoza-princesa-leonor",
+    ),
+    "auditorio-de-zaragoza-sala-multiusos": (
+        "Auditorio de Zaragoza",
+        "auditorio-de-zaragoza-princesa-leonor",
+    ),
+    "auditorio-de-zaragoza-sala-mozart": (
+        "Auditorio de Zaragoza",
+        "auditorio-de-zaragoza-princesa-leonor",
+    ),
+    "sala-multiusos-del-auditorio": (
+        "Auditorio de Zaragoza",
+        "auditorio-de-zaragoza-princesa-leonor",
+    ),
+    "sala-mozart-del-auditorio": (
+        "Auditorio de Zaragoza",
+        "auditorio-de-zaragoza-princesa-leonor",
+    ),
+    "sala-mozart-auditorio": (
+        "Auditorio de Zaragoza",
         "auditorio-de-zaragoza-princesa-leonor",
     ),
     # Sala López (alias con/sin tilde y slug histórico)
@@ -422,8 +442,17 @@ def _normalize_category_filter_slugs(slugs: List[str]) -> List[str]:
 
 def _slug_is_auditorio_zaragoza(venue_slug: Optional[str]) -> bool:
     """True si la sala pertenece al Auditorio de Zaragoza (cualquier sala del recinto)."""
-    vs = (venue_slug or "").strip()
-    return vs.startswith("auditorio-de-zaragoza")
+    vs = (venue_slug or "").strip().lower()
+    if not vs:
+        return False
+    if vs.startswith("auditorio-de-zaragoza"):
+        return True
+    # Variantes de fuentes (p. ej. Conciertos.Club) sin el prefijo oficial
+    return vs in {
+        "sala-multiusos-del-auditorio",
+        "sala-mozart-del-auditorio",
+        "sala-mozart-auditorio",
+    }
 
 
 def _selected_venue_for_ui(venue_slugs: List[str]) -> List[str]:
