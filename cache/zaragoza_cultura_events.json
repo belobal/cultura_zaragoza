@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "fetched_at": "2026-08-27T07:06:37.017214",
+  "fetched_at": "2026-09-03T15:28:45.506309",
   "events": [
     {
       "title": "Friends the musical parody",
@@ -85,6 +85,34 @@
       "source": "zaragoza_cultura",
       "date_from": "2026-10-09",
       "date_to": "2026-10-10"
+    },
+    {
+      "title": "Alfombra Ofrenda",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Ayuntamiento de Zaragoza. Plaza del Pilar",
+      "venue_slug": "ayuntamiento-de-zaragoza-plaza-del-pilar",
+      "time_text": "07:30",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314096",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-12",
+      "date_to": "2026-10-12"
+    },
+    {
+      "title": "OMAR COURTZ - ZITY",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Espacio Zity (Valdespartera)",
+      "venue_slug": "espacio-zity-valdespartera",
+      "time_text": "22:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314099",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-17",
+      "date_to": "2026-10-17"
     }
   ]
 }

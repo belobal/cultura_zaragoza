@@ -1,7 +1,59 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-08-27T07:06:32.254219",
+  "fetched_at": "2026-09-03T15:28:36.839723",
   "events": [
+    {
+      "title": "ADGAR (CANTABRIA)",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/adgar-cantabria",
+      "source": "creedence",
+      "date_from": "2026-09-04",
+      "date_to": "2026-09-04"
+    },
+    {
+      "title": "INESH BUENO (PORTUGAL) + PINGO POTENS (NAVARRA) EN SALA CREEDENCE – ZARAGOZA",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/inesh-bueno-portugal-pingo-potens-navarra-en-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-09-05",
+      "date_to": "2026-09-05"
+    },
+    {
+      "title": "MARIO BAILÓN EN SALA CREEDENCE – ZARAGOZA",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/mario-bailon-en-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-09-11",
+      "date_to": "2026-09-11"
+    },
+    {
+      "title": "AIMAR",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/aimar",
+      "source": "creedence",
+      "date_from": "2026-09-12",
+      "date_to": "2026-09-12"
+    },
     {
       "title": "EL DESVAN + VERSADOS",
       "category": "Conciertos en Zaragoza",
@@ -29,6 +81,19 @@
       "date_to": "2026-09-24"
     },
     {
+      "title": "ROBER PERDUT EN SALA CREEDENCE – ZARAGOZA",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/rober-perdut-en-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-09-26",
+      "date_to": "2026-09-26"
+    },
+    {
       "title": "FEW THOUGHTS + INCORDIAN",
       "category": "Conciertos en Zaragoza",
       "category_slug": "conciertos-en-zaragoza",
@@ -40,6 +105,19 @@
       "source": "creedence",
       "date_from": "2026-09-27",
       "date_to": "2026-09-27"
+    },
+    {
+      "title": "THE VOLCANICS (AUSTRALIA)",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/the-volcanics-australia",
+      "source": "creedence",
+      "date_from": "2026-10-01",
+      "date_to": "2026-10-01"
     },
     {
       "title": "THE RIVEN (SUECIA) + MALASANGRE",
@@ -68,6 +146,45 @@
       "date_to": "2026-10-08"
     },
     {
+      "title": "THE SLEEVEENS (USA) – 15 AÑOS DE  SALA CREEDENCE – ZARAGOZA",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/the-sleeveens-usa-en-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-10-09",
+      "date_to": "2026-10-09"
+    },
+    {
+      "title": "LEYENDÄRIAN (BCN) + SPINO (ZGZ) EN SALA CREEDENCE – ZARAGOZA",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/leyendarian-bcn-spino-zgz-en-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-10-10",
+      "date_to": "2026-10-10"
+    },
+    {
+      "title": "THE VEE BEES (AUSTRALIA)",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/the-vee-bees-australia",
+      "source": "creedence",
+      "date_from": "2026-10-12",
+      "date_to": "2026-10-12"
+    },
+    {
       "title": "THE DARTS (USA)",
       "category": "Conciertos en Zaragoza",
       "category_slug": "conciertos-en-zaragoza",
@@ -81,6 +198,19 @@
       "date_to": "2026-10-14"
     },
     {
+      "title": "MIRA POLAR (ZGZ)",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/mira-polar-zgz",
+      "source": "creedence",
+      "date_from": "2026-10-16",
+      "date_to": "2026-10-16"
+    },
+    {
       "title": "MY SON THE DOCTOR (EEUU) en SALA CREEDENCE – Zaragoza",
       "category": "Conciertos en Zaragoza",
       "category_slug": "conciertos-en-zaragoza",
@@ -92,6 +222,19 @@
       "source": "creedence",
       "date_from": "2026-10-20",
       "date_to": "2026-10-20"
+    },
+    {
+      "title": "CROCODILES (USA) – 15 AÑOS DE SALA CREEDENCE",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/crocodiles-usa-15-anos-de-sala-creedence",
+      "source": "creedence",
+      "date_from": "2026-10-22",
+      "date_to": "2026-10-22"
     },
     {
       "title": "MR SANCHEZ en SALA CREEDENCE – #RedDeSalas – INAEM",

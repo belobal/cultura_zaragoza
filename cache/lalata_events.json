@@ -1,27 +1,14 @@
 {
   "schema_version": 3,
-  "fetched_at": "2026-08-27T07:06:36.029179",
+  "fetched_at": "2026-09-03T15:28:42.415525",
   "events": [
-    {
-      "title": "Golomb (USA)",
-      "category": "La Lata de Bombillas (Conciertos)",
-      "category_slug": "la-lata-de-bombillas-conciertos",
-      "venue": "La Lata de Bombillas",
-      "venue_slug": "la-lata-de-bombillas",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=61075&siteID=latadebombillas",
-      "source": "lalata_entradas",
-      "date_from": "2026-09-01",
-      "date_to": "2026-09-01"
-    },
     {
       "title": "EZEZEZ",
       "category": "La Lata de Bombillas (Conciertos)",
       "category_slug": "la-lata-de-bombillas-conciertos",
       "venue": "La Lata de Bombillas",
       "venue_slug": "la-lata-de-bombillas",
-      "price_text": null,
+      "price_text": "Agotadas",
       "price_min_eur": null,
       "detail_url": "http://www.eventim-light.com/es/a/65ccb62bb77bff1d4226f1fe/e/6a7b0498294a3e63d19a2486",
       "source": "lalata_entradas",
@@ -94,7 +81,7 @@
       "date_to": "2026-09-18"
     },
     {
-      "title": "Holy Wave (USA)",
+      "title": "Holy Wave (USA) + Javi Javier + Edu Lobo DJ",
       "category": "La Lata de Bombillas (Conciertos)",
       "category_slug": "la-lata-de-bombillas-conciertos",
       "venue": "La Lata de Bombillas",
@@ -105,6 +92,32 @@
       "source": "lalata_entradas",
       "date_from": "2026-09-19",
       "date_to": "2026-09-19"
+    },
+    {
+      "title": "Presentación del III Zaragoza Fear Fest con Adolescentes de Marte.",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62782&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-09-24",
+      "date_to": "2026-09-24"
+    },
+    {
+      "title": "Bryan Estepa & Band (Australia)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62767&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-02",
+      "date_to": "2026-10-02"
     },
     {
       "title": "Mercury Rev celebrando 25 años de All is Dream. Ciclo Lata Gourmet.",
@@ -170,6 +183,32 @@
       "source": "lalata_entradas",
       "date_from": "2026-11-18",
       "date_to": "2026-11-18"
+    },
+    {
+      "title": "Rüdiger  (Fra)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62725&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-11-22",
+      "date_to": "2026-11-22"
+    },
+    {
+      "title": "Desinteresse (Ned)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62727&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-11-29",
+      "date_to": "2026-11-29"
     },
     {
       "title": "Little Barrie (USA)",

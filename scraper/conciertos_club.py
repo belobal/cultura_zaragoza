@@ -112,6 +112,12 @@ def _price_from_precio_wrap(block: Any) -> Tuple[Optional[float], Optional[str]]
     return None, txt[:120] if txt else None
 
 
+_PERFORMER_PLACEHOLDERS = re.compile(
+    r"^(y\s+más\.?\.?\.?|and\s+more\.?\.?\.?|tba|por\s+confirmar)$",
+    re.IGNORECASE,
+)
+
+
 def _parse_page(html: str) -> List[Dict[str, Any]]:
     soup = BeautifulSoup(html, "html.parser")
     today = date.today()
@@ -142,11 +148,31 @@ def _parse_page(html: str) -> List[Dict[str, Any]]:
         if detail in seen:
             continue
 
-        name_m = block.select_one('meta[itemprop="name"]')
+        # Prefer the event-level name over performer/location names.
+        # For festivals, the short name lives in <strong class="color2" title="Vive Latino">.
+        # For regular events, it's in the first meta[itemprop="name"] that is NOT
+        # nested inside a performer/location block (those come after performers in microdatos).
         title_a = block.select_one("a.nombre")
-        title = (name_m.get("content") if name_m and name_m.get("content") else None) or (
-            title_a.get_text(" ", strip=True) if title_a else None
-        )
+        event_name: Optional[str] = None
+
+        # 1) Festival badge: <strong class="color2" title="Festival Name">
+        festival_badge = block.select_one("strong.color2[title]")
+        if festival_badge:
+            badge_title = (festival_badge.get("title") or "").strip()
+            if badge_title:
+                event_name = badge_title
+
+        # 2) Fallback: first meta[itemprop="name"] not inside a performer/location
+        if not event_name:
+            for m in block.select('meta[itemprop="name"]'):
+                if m.find_parent(itemprop="performer") or m.find_parent(itemprop="location"):
+                    continue
+                val = (m.get("content") or "").strip().rstrip(". ")
+                if val:
+                    event_name = val
+                    break
+
+        title = event_name or (title_a.get_text(" ", strip=True) if title_a else None)
         if not title:
             continue
 
@@ -161,23 +187,44 @@ def _parse_page(html: str) -> List[Dict[str, Any]]:
 
         price_eur, price_text = _price_from_precio_wrap(block)
 
+        base_event = {
+            "category": CATEGORY,
+            "category_slug": CATEGORY_SLUG,
+            "venue": venue_name,
+            "venue_slug": venue_slug,
+            "date_from": d_from,
+            "date_to": d_to,
+            "time_text": time_text,
+            "price_text": price_text,
+            "price_min_eur": price_eur,
+            "detail_url": detail,
+            "source": SOURCE,
+        }
+
+        # Collect all performers in this event block.
+        performer_divs = block.select('div[itemprop="performer"]')
+        performers: List[str] = []
+        for p in performer_divs:
+            pm = p.select_one('meta[itemprop="name"]')
+            if pm and pm.get("content"):
+                name = pm["content"].strip()
+                if name and not _PERFORMER_PLACEHOLDERS.match(name):
+                    performers.append(name)
+
         seen.add(detail)
-        out.append(
-            {
-                "title": title,
-                "category": CATEGORY,
-                "category_slug": CATEGORY_SLUG,
-                "venue": venue_name,
-                "venue_slug": venue_slug,
-                "date_from": d_from,
-                "date_to": d_to,
-                "time_text": time_text,
-                "price_text": price_text,
-                "price_min_eur": price_eur,
-                "detail_url": detail,
-                "source": SOURCE,
-            }
-        )
+
+        # Always emit the festival/main event itself.
+        out.append({"title": title, **base_event})
+
+        # For multi-performer events, also emit one event per artist.
+        if len(performers) > 1:
+            title_lower = title.strip().lower()
+            for performer in performers:
+                # Skip if this performer is already represented by the main event title
+                # (can happen when the title equals the first performer's name).
+                if performer.strip().lower() == title_lower:
+                    continue
+                out.append({"title": performer, **base_event})
 
     out.sort(key=lambda e: (e["date_from"], e["title"]))
     return out

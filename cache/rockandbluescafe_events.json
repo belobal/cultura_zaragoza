@@ -1,49 +1,7 @@
 {
-  "fetched_at": "2026-08-25T10:49:38.168323",
-  "schema_version": 4,
+  "fetched_at": "2026-09-03T15:28:46.751195",
+  "schema_version": 5,
   "events": [
-    {
-      "title": "COPACABANA",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": null,
-      "price_text": "Con Entrada",
-      "price_min_eur": null,
-      "detail_url": "https://sweetcaroline.app/venta-de-entradas/concierto-copacabana-zaragoza",
-      "source": "rockandbluescafe",
-      "date_from": "2026-08-27",
-      "date_to": "2026-08-27"
-    },
-    {
-      "title": "THE FLAMIN GROOVIES",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": null,
-      "price_text": "Con Entrada",
-      "price_min_eur": null,
-      "detail_url": "https://localentradas.entradas.plus/entradas/es/evento?idEvento=21001",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-01",
-      "date_to": "2026-09-01"
-    },
-    {
-      "title": "NOCHE HAWAIANO",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "21:00",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2132",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-02",
-      "date_to": "2026-09-02"
-    },
     {
       "title": "SWAMP STRINGBAND",
       "category": "Rock & Blues Café (Conciertos)",
@@ -115,6 +73,20 @@
       "date_to": "2026-09-09"
     },
     {
+      "title": "NOCHE FLAMENCO",
+      "category": "Rock & Blues Café (Conciertos)",
+      "category_slug": "rock-y-blues-cafe-conciertos",
+      "venue": "Rock & Blues Café",
+      "venue_slug": "rock-y-blues-cafe",
+      "time_text": "21:00",
+      "price_text": "Acceso Libre",
+      "price_min_eur": 0.0,
+      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2133",
+      "source": "rockandbluescafe",
+      "date_from": "2026-09-10",
+      "date_to": "2026-09-10"
+    },
+    {
       "title": "DALI TRIBUTO A MECANO",
       "category": "Rock & Blues Café (Conciertos)",
       "category_slug": "rock-y-blues-cafe-conciertos",
@@ -138,20 +110,6 @@
       "price_text": "Acceso Libre",
       "price_min_eur": 0.0,
       "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2019",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-12",
-      "date_to": "2026-09-12"
-    },
-    {
-      "title": "TIPOS DE INTERES",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "12:30",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2114",
       "source": "rockandbluescafe",
       "date_from": "2026-09-12",
       "date_to": "2026-09-12"
@@ -395,6 +353,20 @@
       "date_to": "2026-10-06"
     },
     {
+      "title": "PABLO CARABAJAL Y CONSTANZA LOPEZ QUERALT MAS INVITADOS",
+      "category": "Rock & Blues Café (Conciertos)",
+      "category_slug": "rock-y-blues-cafe-conciertos",
+      "venue": "Rock & Blues Café",
+      "venue_slug": "rock-y-blues-cafe",
+      "time_text": "21:00",
+      "price_text": "Acceso Libre",
+      "price_min_eur": 0.0,
+      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2276",
+      "source": "rockandbluescafe",
+      "date_from": "2026-10-07",
+      "date_to": "2026-10-07"
+    },
+    {
       "title": "TRACK DOGS",
       "category": "Rock & Blues Café (Conciertos)",
       "category_slug": "rock-y-blues-cafe-conciertos",
@@ -460,6 +432,20 @@
       "price_text": "Acceso Libre",
       "price_min_eur": 0.0,
       "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2084",
+      "source": "rockandbluescafe",
+      "date_from": "2026-10-18",
+      "date_to": "2026-10-18"
+    },
+    {
+      "title": "SEVEN ( TRIBUTO A SABINA )",
+      "category": "Rock & Blues Café (Conciertos)",
+      "category_slug": "rock-y-blues-cafe-conciertos",
+      "venue": "Rock & Blues Café",
+      "venue_slug": "rock-y-blues-cafe",
+      "time_text": "12:30",
+      "price_text": "Acceso Libre",
+      "price_min_eur": 0.0,
+      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2266",
       "source": "rockandbluescafe",
       "date_from": "2026-10-18",
       "date_to": "2026-10-18"
@@ -557,7 +543,7 @@
       "time_text": null,
       "price_text": "Con Entrada",
       "price_min_eur": null,
-      "detail_url": "https://sweetcaroline.app/venta-de-entradas/concierto-de-jorge-macfly-en-zaragoza",
+      "detail_url": "https://sweetcaroline.app/venta-de-entradas/concierto-de-jorge-mcfly-en-zaragoza",
       "source": "rockandbluescafe",
       "date_from": "2026-10-31",
       "date_to": "2026-10-31"
@@ -955,7 +941,7 @@
       "date_to": "2026-12-23"
     },
     {
-      "title": "NELSON",
+      "title": "EL PRACTICANTE",
       "category": "Rock & Blues Café (Conciertos)",
       "category_slug": "rock-y-blues-cafe-conciertos",
       "venue": "Rock & Blues Café",
