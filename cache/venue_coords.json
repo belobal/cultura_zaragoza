@@ -373,7 +373,14 @@
       "lon": -0.888782
     },
     "espacio-zity-recinto-ferial-de-valdespartera": null,
-    "roze": null,
+    "roze": {
+      "lat": 41.6406272,
+      "lon": -0.8851408
+    },
+    "sala-roze": {
+      "lat": 41.6406272,
+      "lon": -0.8851408
+    },
     "jardin-de-invierno-parque-jose-antonio-labordeta": null,
     "museo-del-puerto-fluvial-de-caesaraugusta": {
       "lat": 41.6552346,

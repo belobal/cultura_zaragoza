@@ -134,6 +134,11 @@ def _geocode_nominatim(venue_name: str, query_city: str = "Zaragoza") -> Optiona
         queries.insert(0, "Calle Manifestación 22, 50003 Zaragoza, España")
         queries.insert(0, "Sala López Zaragoza")
 
+    # Sala Roze — https://www.aragonmusical.com/lugares/sala-roze/
+    if "roze" in venue_norm.lower():
+        queries.insert(0, "Calle Cristóbal Colón 16, 50007 Zaragoza, España")
+        queries.insert(0, "Cristóbal Colón 16 Zaragoza")
+
     # Bbox amplio para Zaragoza (para validar resultados)
     z_lat_min, z_lat_max = 41.25, 42.05
     z_lon_min, z_lon_max = -1.30, -0.35
