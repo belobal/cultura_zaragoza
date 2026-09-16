@@ -139,6 +139,10 @@ def _geocode_nominatim(venue_name: str, query_city: str = "Zaragoza") -> Optiona
         queries.insert(0, "Calle Cristóbal Colón 16, 50007 Zaragoza, España")
         queries.insert(0, "Cristóbal Colón 16 Zaragoza")
 
+    # Las Food Trucks / Fiestas del Pilar
+    if "san pablo" in venue_norm.lower() and "parque" in venue_norm.lower():
+        queries.insert(0, "Parque San Pablo, Zaragoza, España")
+
     # Bbox amplio para Zaragoza (para validar resultados)
     z_lat_min, z_lat_max = 41.25, 42.05
     z_lon_min, z_lon_max = -1.30, -0.35

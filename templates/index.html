@@ -290,7 +290,11 @@
             <li class="event-row">
             <p class="event-line-1">
               {% if e.venue %}{{ e.venue }}: {% endif %}
-              <a href="{{ e.detail_url }}" target="_blank" rel="noreferrer">{{ e.title }}</a>
+              {% if e.detail_url %}
+                <a href="{{ e.detail_url }}" target="_blank" rel="noreferrer">{{ e.title }}</a>
+              {% else %}
+                {{ e.title }}
+              {% endif %}
             </p>
             <div class="event-line-2">
               <label class="card-pick" style="margin: 0;">
@@ -340,6 +344,7 @@
           <li><a href="https://www.zaragoza.es/sede/servicio/cultura/" target="_blank" rel="noopener noreferrer">Zaragoza Cultura — Ayuntamiento de Zaragoza</a></li>
           <li><a href="https://www.zaragoza.es/sede/portal/centroscivicos/servicio/cultura/evento/list?idPortal=7" target="_blank" rel="noopener noreferrer">Centros Cívicos — Actividades (Ayuntamiento)</a></li>
           <li><a href="https://conciertos.club/zaragoza" target="_blank" rel="noopener noreferrer">Conciertos.Club — Zaragoza</a></li>
+          <li>Las Food Trucks — Fiestas del Pilar (Parque San Pablo; horario por confirmar)</li>
           <li>Mapa: teselas <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap</a></li>
         </ul>
         <p class="note">Los titulares de cada web son responsables de sus contenidos y condiciones de uso.</p>

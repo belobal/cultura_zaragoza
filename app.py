@@ -20,6 +20,7 @@ from scraper.elcrapula import get_events as get_elcrapula_events
 from scraper.zaragoza_cultura import get_events as get_zaragoza_events
 from scraper.aragonenvivo import get_events as get_aragonenvivo_events
 from scraper.bomboyplatillo import get_events as get_bomboyplatillo_events
+from scraper.foodtrucks import get_events as get_foodtrucks_events
 
 
 def create_app() -> Flask:
@@ -614,6 +615,7 @@ _SOURCE_PRIORITY = {
     "conciertos_club": 8,
     "aragonenvivo": 9,
     "bomboyplatillo": 10,
+    "foodtrucks": 1,
 }
 
 
@@ -859,6 +861,7 @@ def _load_all_sources_parallel() -> List[dict]:
         # Extra sources at the end so dedupe keeps earlier sources.
         get_aragonenvivo_events,
         get_bomboyplatillo_events,
+        get_foodtrucks_events,
     ]
     workers = min(max(1, _AGGREGATOR_MAX_WORKERS), len(fetchers))
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -887,6 +890,7 @@ def get_events_cached():
                     # Extra sources at the end so dedupe keeps earlier sources.
                     get_aragonenvivo_events(),
                     get_bomboyplatillo_events(),
+                    get_foodtrucks_events(),
                 ]
             )
         else:
