@@ -227,7 +227,7 @@ def _fetch_program_events() -> List[Dict[str, Any]]:
             PROGRAM_JSON_URL,
             params={"start": start, "rows": rows},
             headers=_headers(),
-            timeout=30,
+            timeout=12,
         )
         r.raise_for_status()
         payload = r.json()

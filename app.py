@@ -1,7 +1,8 @@
 import os
 import re
+import threading
 from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 from datetime import date, datetime, timedelta
 from itertools import groupby
 from pathlib import Path
@@ -244,13 +245,39 @@ def create_app() -> Flask:
             },
         )
 
+    # Warm scrapers in background so the first user request does not hit
+    # Render's ~60s edge timeout (502 Bad Gateway on cold start).
+    def _warm_events_cache() -> None:
+        global _EVENTS_CACHE
+        try:
+            # Longer budget than HTTP requests; upgrade cache when possible.
+            events = _load_all_sources_parallel(timeout_seconds=120)
+            with _EVENTS_CACHE_LOCK:
+                if events and (
+                    _EVENTS_CACHE is None or len(events) >= len(_EVENTS_CACHE)
+                ):
+                    _EVENTS_CACHE = events
+        except Exception:
+            pass
+
+    threading.Thread(
+        target=_warm_events_cache,
+        daemon=True,
+        name="warm-events-cache",
+    ).start()
+
     return app
 
 
 _EVENTS_CACHE = None
+_EVENTS_CACHE_LOCK = threading.Lock()
 
 # Hilos para combinar fuentes en paralelo (mucho más rápido en arranque frío).
 _AGGREGATOR_MAX_WORKERS = int(os.environ.get("AGGREGATOR_MAX_WORKERS", "8"))
+# Hard cap so a slow source cannot push the HTTP response past Render's gateway limit.
+_AGGREGATOR_FETCH_TIMEOUT_SECONDS = float(
+    os.environ.get("AGGREGATOR_FETCH_TIMEOUT_SECONDS", "45")
+)
 
 _MONTHS_ES = (
     "enero",
@@ -916,7 +943,9 @@ def _safe_fetch(fn: Callable[[], List[dict]]) -> List[dict]:
         return []
 
 
-def _load_all_sources_parallel() -> List[dict]:
+def _load_all_sources_parallel(
+    timeout_seconds: Optional[float] = None,
+) -> List[dict]:
     fetchers: List[Callable[[], List[dict]]] = [
         # Taquilla.com y Zaragozala omitidos.
         get_rock_events,
@@ -935,8 +964,25 @@ def _load_all_sources_parallel() -> List[dict]:
         get_fiestas_pilar_events,
     ]
     workers = min(max(1, _AGGREGATOR_MAX_WORKERS), len(fetchers))
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        chunks = list(ex.map(_safe_fetch, fetchers))
+    limit = (
+        _AGGREGATOR_FETCH_TIMEOUT_SECONDS
+        if timeout_seconds is None
+        else float(timeout_seconds)
+    )
+    chunks: List[List[dict]] = [[] for _ in fetchers]
+    ex = ThreadPoolExecutor(max_workers=workers)
+    try:
+        future_map = {ex.submit(_safe_fetch, fn): idx for idx, fn in enumerate(fetchers)}
+        done, _pending = wait(future_map.keys(), timeout=max(5.0, limit))
+        for fut in done:
+            idx = future_map[fut]
+            try:
+                chunks[idx] = fut.result()
+            except Exception:
+                chunks[idx] = []
+    finally:
+        # Do not block the request on stragglers (would cause 502 on Render).
+        ex.shutdown(wait=False, cancel_futures=True)
     return _merge_source_results(chunks)
 
 
@@ -946,7 +992,11 @@ def get_events_cached():
     El scraping real usa cache en disco.
     """
     global _EVENTS_CACHE
-    if _EVENTS_CACHE is None:
+    if _EVENTS_CACHE is not None:
+        return _EVENTS_CACHE
+    with _EVENTS_CACHE_LOCK:
+        if _EVENTS_CACHE is not None:
+            return _EVENTS_CACHE
         if os.environ.get("AGGREGATOR_SEQUENTIAL", "0") == "1":
             events = _merge_source_results(
                 [
