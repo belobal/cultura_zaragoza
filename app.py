@@ -21,6 +21,8 @@ from scraper.zaragoza_cultura import get_events as get_zaragoza_events
 from scraper.aragonenvivo import get_events as get_aragonenvivo_events
 from scraper.bomboyplatillo import get_events as get_bomboyplatillo_events
 from scraper.foodtrucks import get_events as get_foodtrucks_events
+from scraper.jardin_de_las_artes import get_events as get_jardin_de_las_artes_events
+from scraper.fiestas_pilar import get_events as get_fiestas_pilar_events
 
 
 def create_app() -> Flask:
@@ -394,6 +396,68 @@ _VENUE_ALIASES = {
         "Rock & Blues Café",
         "rock-y-blues-cafe",
     ),
+    # Jardín de Invierno (Pilar / Conciertos.Club)
+    "jardin-de-invierno": (
+        "Jardín de Invierno",
+        "jardin-de-invierno",
+    ),
+    "jardin-de-invierno-parque-jose-antonio-labordeta": (
+        "Jardín de Invierno",
+        "jardin-de-invierno",
+    ),
+    # Belushi
+    "belushi": (
+        "Belushi Club de Comedia",
+        "belushi-club-de-comedia",
+    ),
+    "belushi-club-de-comedia": (
+        "Belushi Club de Comedia",
+        "belushi-club-de-comedia",
+    ),
+    # Espacio Zity (Valdespartera)
+    "espacio-zity": (
+        "Espacio Zity",
+        "espacio-zity",
+    ),
+    "espacio-zity-valdespartera": (
+        "Espacio Zity",
+        "espacio-zity",
+    ),
+    "espacio-zity-recinto-ferial-de-valdespartera": (
+        "Espacio Zity",
+        "espacio-zity",
+    ),
+    # Escenario Ámbar Fuente de Goya (Plaza del Pilar)
+    "escenario-ambar-fuente-de-goya": (
+        "Escenario Ámbar Fuente de Goya",
+        "escenario-ambar-fuente-de-goya",
+    ),
+    "escenario-ambar---fuente-de-goya": (
+        "Escenario Ámbar Fuente de Goya",
+        "escenario-ambar-fuente-de-goya",
+    ),
+    "escenario-ambar-fuente-de-goya-plaza-del-pilar": (
+        "Escenario Ámbar Fuente de Goya",
+        "escenario-ambar-fuente-de-goya",
+    ),
+    # Plaza Salamero / Escenario de Raíz
+    "plaza-salamero": (
+        "Plaza Salamero",
+        "plaza-salamero",
+    ),
+    "escenario-de-raiz-plaza-salamero": (
+        "Plaza Salamero",
+        "plaza-salamero",
+    ),
+    # Estación del Norte
+    "estacion-del-norte": (
+        "Estación del Norte",
+        "estacion-del-norte",
+    ),
+    "centro-civico-estacion-del-norte": (
+        "Estación del Norte",
+        "estacion-del-norte",
+    ),
 }
 
 
@@ -511,6 +575,9 @@ def _canonicalize_venue(event: dict):
             event["venue_slug"] = vs
     if not vs:
         return
+    # Sources sometimes produce "escenario-ambar---fuente-de-goya"
+    vs = re.sub(r"-{2,}", "-", vs).strip("-")
+    event["venue_slug"] = vs
     target = _VENUE_ALIASES.get(vs)
     if not target:
         return
@@ -616,6 +683,8 @@ _SOURCE_PRIORITY = {
     "aragonenvivo": 9,
     "bomboyplatillo": 10,
     "foodtrucks": 1,
+    "jardin_de_las_artes": 1,
+    "fiestas_pilar": 1,
 }
 
 
@@ -862,6 +931,8 @@ def _load_all_sources_parallel() -> List[dict]:
         get_aragonenvivo_events,
         get_bomboyplatillo_events,
         get_foodtrucks_events,
+        get_jardin_de_las_artes_events,
+        get_fiestas_pilar_events,
     ]
     workers = min(max(1, _AGGREGATOR_MAX_WORKERS), len(fetchers))
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -891,6 +962,8 @@ def get_events_cached():
                     get_aragonenvivo_events(),
                     get_bomboyplatillo_events(),
                     get_foodtrucks_events(),
+                    get_jardin_de_las_artes_events(),
+                    get_fiestas_pilar_events(),
                 ]
             )
         else:

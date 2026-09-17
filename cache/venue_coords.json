@@ -372,7 +372,18 @@
       "lat": 41.6617279,
       "lon": -0.888782
     },
-    "espacio-zity-recinto-ferial-de-valdespartera": null,
+    "espacio-zity-recinto-ferial-de-valdespartera": {
+      "lat": 41.6197925,
+      "lon": -0.9374110
+    },
+    "espacio-zity": {
+      "lat": 41.6197925,
+      "lon": -0.9374110
+    },
+    "espacio-zity-valdespartera": {
+      "lat": 41.6197925,
+      "lon": -0.9374110
+    },
     "roze": {
       "lat": 41.6406272,
       "lon": -0.8851408
@@ -384,6 +395,22 @@
     "parque-san-pablo": {
       "lat": 41.6593955,
       "lon": -0.8899354
+    },
+    "el-jardin-de-las-artes": {
+      "lat": 41.6707570,
+      "lon": -0.9223315
+    },
+    "escenario-ambar-fuente-de-goya": {
+      "lat": 41.6562964,
+      "lon": -0.878942
+    },
+    "estacion-del-norte": {
+      "lat": 41.6601083,
+      "lon": -0.8717459
+    },
+    "plaza-salamero": {
+      "lat": 41.6523444,
+      "lon": -0.8840256
     },
     "jardin-de-invierno-parque-jose-antonio-labordeta": null,
     "museo-del-puerto-fluvial-de-caesaraugusta": {

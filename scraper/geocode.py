@@ -143,6 +143,23 @@ def _geocode_nominatim(venue_name: str, query_city: str = "Zaragoza") -> Optiona
     if "san pablo" in venue_norm.lower() and "parque" in venue_norm.lower():
         queries.insert(0, "Parque San Pablo, Zaragoza, España")
 
+    # El Jardín de las Artes (Almozandia) — Camino de Monzalbarba 318
+    if "jardin" in venue_norm.lower() and "artes" in venue_norm.lower():
+        queries.insert(0, "Camino de Monzalbarba 318, 50011 Zaragoza, España")
+        queries.insert(0, "Parque Deportivo Ebro, Camino de Monzalbarba, Zaragoza")
+
+    if "estacion del norte" in venue_norm.lower() or "estación del norte" in venue_norm.lower():
+        queries.insert(0, "Centro Cívico Estación del Norte, Zaragoza")
+
+    if "salamero" in venue_norm.lower():
+        queries.insert(0, "Plaza Salamero, Zaragoza")
+
+    if "ambar" in venue_norm.lower() or "fuente de goya" in venue_norm.lower():
+        queries.insert(0, "Plaza del Pilar, Zaragoza, España")
+
+    if "espacio zity" in venue_norm.lower() or "zity" in venue_norm.lower():
+        queries.insert(0, "Recinto Ferial de Valdespartera, Zaragoza")
+
     # Bbox amplio para Zaragoza (para validar resultados)
     z_lat_min, z_lat_max = 41.25, 42.05
     z_lon_min, z_lon_max = -1.30, -0.35
