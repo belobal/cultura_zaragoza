@@ -252,9 +252,11 @@ def create_app() -> Flask:
         try:
             # Longer budget than HTTP requests; upgrade cache when possible.
             events = _load_all_sources_parallel(timeout_seconds=120)
+            for e in events:
+                _coerce_event_dates(e)
             with _EVENTS_CACHE_LOCK:
                 if events and (
-                    _EVENTS_CACHE is None or len(events) >= len(_EVENTS_CACHE)
+                    not _EVENTS_CACHE or len(events) >= len(_EVENTS_CACHE)
                 ):
                     _EVENTS_CACHE = events
         except Exception:
@@ -905,11 +907,27 @@ def _drop_conciertos_club_if_duplicate_sala(events: List[dict]) -> List[dict]:
     return [e for i, e in enumerate(events) if i not in remove]
 
 
+def _coerce_event_dates(event: dict) -> None:
+    """Ensure date_from/date_to are datetime.date (disk/API caches may use strings)."""
+    for key in ("date_from", "date_to"):
+        v = event.get(key)
+        if isinstance(v, datetime):
+            event[key] = v.date()
+        elif isinstance(v, date):
+            continue
+        elif v:
+            try:
+                event[key] = datetime.strptime(str(v)[:10], "%Y-%m-%d").date()
+            except ValueError:
+                pass
+
+
 def _merge_source_results(chunks: List[List[dict]]) -> List[dict]:
     events: List[dict] = []
     for part in chunks:
         events.extend(part)
     for e in events:
+        _coerce_event_dates(e)
         _canonicalize_venue(e)
         _canonicalize_category(e)
         if e.get("source") in (
@@ -982,7 +1000,8 @@ def _load_all_sources_parallel(
                 chunks[idx] = []
     finally:
         # Do not block the request on stragglers (would cause 502 on Render).
-        ex.shutdown(wait=False, cancel_futures=True)
+        # Keep running tasks alive so they can still fill disk caches.
+        ex.shutdown(wait=False, cancel_futures=False)
     return _merge_source_results(chunks)
 
 
@@ -992,10 +1011,11 @@ def get_events_cached():
     El scraping real usa cache en disco.
     """
     global _EVENTS_CACHE
-    if _EVENTS_CACHE is not None:
+    # Treat [] as uncached so a timed-out cold start can retry.
+    if _EVENTS_CACHE:
         return _EVENTS_CACHE
     with _EVENTS_CACHE_LOCK:
-        if _EVENTS_CACHE is not None:
+        if _EVENTS_CACHE:
             return _EVENTS_CACHE
         if os.environ.get("AGGREGATOR_SEQUENTIAL", "0") == "1":
             events = _merge_source_results(
@@ -1018,8 +1038,11 @@ def get_events_cached():
             )
         else:
             events = _load_all_sources_parallel()
-        _EVENTS_CACHE = events
-    return _EVENTS_CACHE
+        for e in events:
+            _coerce_event_dates(e)
+        # Never pin an empty list forever (Render cold-start timeouts).
+        _EVENTS_CACHE = events or None
+        return events or []
 
 
 def _available_categories(events):
@@ -1311,6 +1334,8 @@ def _group_events_by_day(events: List[dict]) -> List[Tuple[date, List[dict]]]:
     """Split an already-sorted list into (date_from, [events that day]) groups."""
     if not events:
         return []
+    for e in events:
+        _coerce_event_dates(e)
     return [(d, list(g)) for d, g in groupby(events, key=lambda e: e["date_from"])]
 
 
