@@ -24,6 +24,7 @@ from scraper.bomboyplatillo import get_events as get_bomboyplatillo_events
 from scraper.foodtrucks import get_events as get_foodtrucks_events
 from scraper.jardin_de_las_artes import get_events as get_jardin_de_las_artes_events
 from scraper.fiestas_pilar import get_events as get_fiestas_pilar_events
+from scraper.teatro_esquinas import get_events as get_teatro_esquinas_events
 
 
 def create_app() -> Flask:
@@ -504,18 +505,51 @@ _CONCIERTOS_SLUG = "conciertos-en-zaragoza"
 def _canonicalize_category(event: dict) -> None:
     """Merge equivalent category labels and ensure source names map to artistic concept categories."""
     slug = (event.get("category_slug") or "").strip().lower()
+    cat = (event.get("category") or "").strip().lower()
+    vs = (event.get("venue_slug") or "").strip().lower()
+
+    # Venue overrides (aggregators often mis-label Belushi / theaters).
+    if "belushi" in vs:
+        event["category"] = "Comedia"
+        event["category_slug"] = "comedia"
+        return
+
     if slug in _CATEGORY_ALIASES:
         event["category"], event["category_slug"] = _CATEGORY_ALIASES[slug]
         return
+    if slug in ("teatro",) or cat in ("teatro",):
+        event["category"] = "Teatro"
+        event["category_slug"] = "teatro"
+        return
+    if slug in ("comedia", "humor") or cat in ("comedia", "humor"):
+        event["category"] = "Comedia"
+        event["category_slug"] = "comedia"
+        return
+    if slug in ("musical",) or cat in ("musical",):
+        event["category"] = "Musical"
+        event["category_slug"] = "musical"
+        return
+    if slug in ("opera", "ópera") or cat in ("opera", "ópera"):
+        event["category"] = "Ópera"
+        event["category_slug"] = "opera"
+        return
+    if slug in ("danza", "ballet") or cat in ("danza", "ballet"):
+        event["category"] = "Danza"
+        event["category_slug"] = "danza"
+        return
     if slug in ("aragon-en-vivo", "bombo-y-platillo", "zaragozala"):
-        event["category"] = "Conciertos"
-        event["category_slug"] = _CONCIERTOS_SLUG
+        # Theater venues from aggregators → Espectáculos; rest → Conciertos.
+        if "teatro" in vs or "esquinas" in vs or "principal" in vs:
+            event["category"] = "Espectáculos"
+            event["category_slug"] = "espectaculos-en-zaragoza"
+        else:
+            event["category"] = "Conciertos"
+            event["category_slug"] = _CONCIERTOS_SLUG
         return
     if slug in ("elcrapula", "zaragoza-cultura"):
         event["category"] = "Espectáculos"
         event["category_slug"] = "espectaculos-en-zaragoza"
         return
-    cat = (event.get("category") or "").strip().lower()
     if cat in ("concierto", "conciertos"):
         event["category"] = "Conciertos"
         event["category_slug"] = _CONCIERTOS_SLUG
@@ -706,8 +740,9 @@ _SOURCE_PRIORITY = {
     "creedence": 1,
     "lalata": 2,
     "lalata_entradas": 2,
-    "belushi": 3,
     "ibercaja_teatro_principal": 3,
+    "teatro_esquinas": 1,
+    "belushi": 3,
     "conciertos_club": 8,
     "aragonenvivo": 9,
     "bomboyplatillo": 10,
@@ -973,6 +1008,7 @@ def _load_all_sources_parallel(
         get_creedence_events,
         get_ibercaja_teatro_principal_events,
         get_belushi_events,
+        get_teatro_esquinas_events,
         get_conciertos_club_events,
         # Extra sources at the end so dedupe keeps earlier sources.
         get_aragonenvivo_events,
@@ -1027,6 +1063,7 @@ def get_events_cached():
                     get_creedence_events(),
                     get_ibercaja_teatro_principal_events(),
                     get_belushi_events(),
+                    get_teatro_esquinas_events(),
                     get_conciertos_club_events(),
                     # Extra sources at the end so dedupe keeps earlier sources.
                     get_aragonenvivo_events(),

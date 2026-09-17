@@ -85,14 +85,26 @@ def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
             return None
+        fetched_at = payload.get("fetched_at")
+        if fetched_at:
+            age = (datetime.utcnow() - datetime.fromisoformat(fetched_at)).total_seconds()
+            if age > ttl_seconds:
+                return None
         events = payload.get("events", [])
+        today = date.today()
+        out: List[Dict[str, Any]] = []
         for e in events:
             if isinstance(e.get("date_from"), str):
                 e["date_from"] = datetime.strptime(e["date_from"], "%Y-%m-%d").date()
             if isinstance(e.get("date_to"), str):
                 e["date_to"] = datetime.strptime(e["date_to"], "%Y-%m-%d").date()
             e.setdefault("time_text", None)
-        return events
+            if e.get("date_to") and e["date_to"] >= today:
+                out.append(e)
+        # Stale file with only past shows → force refresh.
+        if not out:
+            return None
+        return out
     except Exception:
         return None
 

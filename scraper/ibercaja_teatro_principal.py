@@ -201,17 +201,23 @@ def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
             return None
-        fetched_at = datetime.fromisoformat(payload["fetched_at"]).date()
-        if (date.today() - fetched_at).days * 86400 > ttl_seconds:
+        fetched_at = datetime.fromisoformat(payload["fetched_at"])
+        if (datetime.utcnow() - fetched_at).total_seconds() > ttl_seconds:
             return None
         events = payload.get("events", [])
+        today = date.today()
+        out: List[Dict[str, Any]] = []
         for e in events:
             e["date_from"] = datetime.strptime(e["date_from"], "%Y-%m-%d").date()
             e["date_to"] = datetime.strptime(e["date_to"], "%Y-%m-%d").date()
             e.setdefault("source", SOURCE)
             e.setdefault("venue", VENUE_NAME)
             e.setdefault("venue_slug", VENUE_SLUG)
-        return events
+            if e.get("date_to") and e["date_to"] >= today:
+                out.append(e)
+        if not out:
+            return None
+        return out
     except Exception:
         return None
 
