@@ -132,7 +132,7 @@ def _fetch_iframe_html() -> str:
         "Accept-Language": "es-ES,es;q=0.9",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     }
-    r = requests.get(IFRAME_URL, headers=headers, timeout=30)
+    r = requests.get(IFRAME_URL, headers=headers, timeout=8)
     r.raise_for_status()
     return r.text
 
@@ -169,7 +169,7 @@ def _extract_events_from_iframe(html: str) -> List[Dict[str, Any]]:
                         "Accept-Language": "es-ES,es;q=0.9",
                         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                     }
-                    r0 = requests.get(detail0, headers=headers, timeout=30)
+                    r0 = requests.get(detail0, headers=headers, timeout=2.5)
                     if r0.ok and r0.text:
                         # The separator can be a literal middle dot or its HTML entity.
                         m0 = re.search(

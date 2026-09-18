@@ -49,7 +49,7 @@ def _headers() -> Dict[str, str]:
 
 
 def _fetch(url: str, params: Optional[Dict[str, str]] = None) -> str:
-    r = requests.get(url, params=params, headers=_headers(), timeout=30)
+    r = requests.get(url, params=params, headers=_headers(), timeout=8)
     r.raise_for_status()
     return r.text
 
@@ -185,7 +185,7 @@ def _next_page_url(html: str) -> Optional[str]:
 
 def scrape_events_list() -> List[Dict[str, Any]]:
     # Walk list pagination a few pages, then horizon-filter.
-    max_pages = int(os.environ.get("ARAGONENVIVO_MAX_PAGES", "8"))
+    max_pages = int(os.environ.get("ARAGONENVIVO_MAX_PAGES", "3"))
     html = _fetch(BASE_URL)
     all_events: List[Dict[str, Any]] = []
     seen_urls: set[str] = set()

@@ -251,7 +251,15 @@ def create_app() -> Flask:
     def _warm_events_cache() -> None:
         global _EVENTS_CACHE
         try:
-            # Longer budget than HTTP requests; upgrade cache when possible.
+            # Fast pass: populate memory cache instantly from existing disk caches.
+            fast_events = _load_all_sources_parallel(timeout_seconds=0.5)
+            if fast_events:
+                for e in fast_events:
+                    _coerce_event_dates(e)
+                with _EVENTS_CACHE_LOCK:
+                    if not _EVENTS_CACHE:
+                        _EVENTS_CACHE = fast_events
+            # Full pass: upgrade live cache in background.
             events = _load_all_sources_parallel(timeout_seconds=120)
             for e in events:
                 _coerce_event_dates(e)
@@ -279,7 +287,7 @@ _EVENTS_CACHE_LOCK = threading.Lock()
 _AGGREGATOR_MAX_WORKERS = int(os.environ.get("AGGREGATOR_MAX_WORKERS", "8"))
 # Hard cap so a slow source cannot push the HTTP response past Render's gateway limit.
 _AGGREGATOR_FETCH_TIMEOUT_SECONDS = float(
-    os.environ.get("AGGREGATOR_FETCH_TIMEOUT_SECONDS", "45")
+    os.environ.get("AGGREGATOR_FETCH_TIMEOUT_SECONDS", "4.0")
 )
 
 _MONTHS_ES = (
