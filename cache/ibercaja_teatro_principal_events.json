@@ -1,20 +1,7 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-09-03T15:28:36.561137",
+  "fetched_at": "2026-09-18T10:32:40.241063",
   "events": [
-    {
-      "title": "FRIENDS, THE MUSICAL PARODY",
-      "category": "Musical",
-      "category_slug": "musical",
-      "venue": "Teatro Principal de Zaragoza",
-      "venue_slug": "teatro-principal-de-zaragoza",
-      "price_text": "Desde 5,00€",
-      "price_min_eur": 5.0,
-      "detail_url": "https://entradas.ibercaja.es/compra/friends-the-musical-parody/03093900/",
-      "source": "ibercaja_teatro_principal",
-      "date_from": "2026-09-03",
-      "date_to": "2026-09-03"
-    },
     {
       "title": "GIGANTE",
       "category": "Teatro",
@@ -25,8 +12,8 @@
       "price_min_eur": 5.0,
       "detail_url": "https://entradas.ibercaja.es/compra/gigante/17093900/",
       "source": "ibercaja_teatro_principal",
-      "date_from": "2026-09-17",
-      "date_to": "2026-09-17"
+      "date_from": "2026-09-18",
+      "date_to": "2026-09-18"
     },
     {
       "title": "HOUDINI",
@@ -105,6 +92,19 @@
       "source": "ibercaja_teatro_principal",
       "date_from": "2026-11-05",
       "date_to": "2026-11-05"
+    },
+    {
+      "title": "LA DELICADEZA",
+      "category": "Ballet",
+      "category_slug": "ballet",
+      "venue": "Teatro Principal de Zaragoza",
+      "venue_slug": "teatro-principal-de-zaragoza",
+      "price_text": "Desde 5,00€",
+      "price_min_eur": 5.0,
+      "detail_url": "https://entradas.ibercaja.es/compra/la-delicadeza/12113900/",
+      "source": "ibercaja_teatro_principal",
+      "date_from": "2026-11-12",
+      "date_to": "2026-11-12"
     },
     {
       "title": "LOS MAGNÍFICOS",

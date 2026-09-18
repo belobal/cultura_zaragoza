@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "fetched_at": "2026-09-18T10:33:06.277230",
+  "events": [
+    {
+      "title": "El Carrusel de Las Artes",
+      "category": "Infantil",
+      "category_slug": "infantil",
+      "venue": "El Jardín de las Artes",
+      "venue_slug": "el-jardin-de-las-artes",
+      "time_text": null,
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradium.com/es/events/el-carrusel-de-las-artes-producciones-kinser-y-almozandia-teatro-el-jardin-de-las-artes",
+      "source": "jardin_de_las_artes",
+      "date_from": "2026-10-04",
+      "date_to": "2026-10-04"
+    }
+  ]
+}

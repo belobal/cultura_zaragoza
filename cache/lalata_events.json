@@ -1,72 +1,7 @@
 {
   "schema_version": 3,
-  "fetched_at": "2026-09-03T15:28:42.415525",
+  "fetched_at": "2026-09-18T10:32:31.326951",
   "events": [
-    {
-      "title": "EZEZEZ",
-      "category": "La Lata de Bombillas (Conciertos)",
-      "category_slug": "la-lata-de-bombillas-conciertos",
-      "venue": "La Lata de Bombillas",
-      "venue_slug": "la-lata-de-bombillas",
-      "price_text": "Agotadas",
-      "price_min_eur": null,
-      "detail_url": "http://www.eventim-light.com/es/a/65ccb62bb77bff1d4226f1fe/e/6a7b0498294a3e63d19a2486",
-      "source": "lalata_entradas",
-      "date_from": "2026-09-03",
-      "date_to": "2026-09-03"
-    },
-    {
-      "title": "Bodega (USA) + BAF",
-      "category": "La Lata de Bombillas (Conciertos)",
-      "category_slug": "la-lata-de-bombillas-conciertos",
-      "venue": "La Lata de Bombillas",
-      "venue_slug": "la-lata-de-bombillas",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=61478&siteID=latadebombillas",
-      "source": "lalata_entradas",
-      "date_from": "2026-09-10",
-      "date_to": "2026-09-10"
-    },
-    {
-      "title": "Los Chivatos + Galgo Diamante. Fiesta Latafelizfeliz.",
-      "category": "La Lata de Bombillas (Conciertos)",
-      "category_slug": "la-lata-de-bombillas-conciertos",
-      "venue": "La Lata de Bombillas",
-      "venue_slug": "la-lata-de-bombillas",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=61064&siteID=latadebombillas",
-      "source": "lalata_entradas",
-      "date_from": "2026-09-11",
-      "date_to": "2026-09-11"
-    },
-    {
-      "title": "The Fractal Sound",
-      "category": "La Lata de Bombillas (Conciertos)",
-      "category_slug": "la-lata-de-bombillas-conciertos",
-      "venue": "La Lata de Bombillas",
-      "venue_slug": "la-lata-de-bombillas",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62668&siteID=latadebombillas",
-      "source": "lalata_entradas",
-      "date_from": "2026-09-12",
-      "date_to": "2026-09-12"
-    },
-    {
-      "title": "Irnini Mons (Francia)",
-      "category": "La Lata de Bombillas (Conciertos)",
-      "category_slug": "la-lata-de-bombillas-conciertos",
-      "venue": "La Lata de Bombillas",
-      "venue_slug": "la-lata-de-bombillas",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62276&siteID=latadebombillas",
-      "source": "lalata_entradas",
-      "date_from": "2026-09-17",
-      "date_to": "2026-09-17"
-    },
     {
       "title": "Brower (USA) + Metalleg (USA)",
       "category": "La Lata de Bombillas (Conciertos)",
@@ -94,6 +29,32 @@
       "date_to": "2026-09-19"
     },
     {
+      "title": "Chicos de Nazca (Chile) + Camera (Alemania)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62983&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-09-22",
+      "date_to": "2026-09-22"
+    },
+    {
+      "title": "Los Moustros del Espacio Exterior (México)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62809&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-09-23",
+      "date_to": "2026-09-23"
+    },
+    {
       "title": "Presentación del III Zaragoza Fear Fest con Adolescentes de Marte.",
       "category": "La Lata de Bombillas (Conciertos)",
       "category_slug": "la-lata-de-bombillas-conciertos",
@@ -105,6 +66,19 @@
       "source": "lalata_entradas",
       "date_from": "2026-09-24",
       "date_to": "2026-09-24"
+    },
+    {
+      "title": "Leroy Se Meurt (Francia)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://entradium.com/events/leroy-se-meurt-ebm-punk-electronico-desde-paris",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-01",
+      "date_to": "2026-10-01"
     },
     {
       "title": "Bryan Estepa & Band (Australia)",
@@ -120,7 +94,7 @@
       "date_to": "2026-10-02"
     },
     {
-      "title": "Mercury Rev celebrando 25 años de All is Dream. Ciclo Lata Gourmet.",
+      "title": "Mercury Rev celebrando 25 años de All is Dream + Sandy Bell. Ciclo Lata Gourmet.",
       "category": "La Lata de Bombillas (Conciertos)",
       "category_slug": "la-lata-de-bombillas-conciertos",
       "venue": "La Lata de Bombillas",
@@ -131,6 +105,58 @@
       "source": "lalata_entradas",
       "date_from": "2026-10-04",
       "date_to": "2026-10-04"
+    },
+    {
+      "title": "The New Raemon",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://mutick.com/e/entradas-the-new-raemon-zaragoza",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-08",
+      "date_to": "2026-10-08"
+    },
+    {
+      "title": "The Prize (Australia)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://localentradas.entradas.plus/entradas/es/the-prize-111026",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-11",
+      "date_to": "2026-10-11"
+    },
+    {
+      "title": "Tortugas Lindas",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62932&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-15",
+      "date_to": "2026-10-15"
+    },
+    {
+      "title": "Los Thunder. 50 años de la marcha de los teddy boys sobre Londres.",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62967&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-17",
+      "date_to": "2026-10-17"
     },
     {
       "title": "Dharmacide",
@@ -146,6 +172,19 @@
       "date_to": "2026-10-25"
     },
     {
+      "title": "20/20 (USA)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://localentradas.entradas.plus/entradas/es/20-20-261026",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-26",
+      "date_to": "2026-10-26"
+    },
+    {
       "title": "Kelley Stoltz (USA)",
       "category": "La Lata de Bombillas (Conciertos)",
       "category_slug": "la-lata-de-bombillas-conciertos",
@@ -157,6 +196,19 @@
       "source": "lalata_entradas",
       "date_from": "2026-10-30",
       "date_to": "2026-10-30"
+    },
+    {
+      "title": "El Verbo Odiado",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://www.elveintiuno.com/concierto/concierto_de_el_verbo_odiado_en_zaragoza_2026/",
+      "source": "lalata_entradas",
+      "date_from": "2026-10-31",
+      "date_to": "2026-10-31"
     },
     {
       "title": "Vapors of Morphine",
@@ -172,6 +224,19 @@
       "date_to": "2026-11-07"
     },
     {
+      "title": "Laura Diepstraten. Proyecto Itinerario Nacional de Producción Inclusiva",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://www.enterticket.es/eventos/laura-diepstraten-zaragoza-289919",
+      "source": "lalata_entradas",
+      "date_from": "2026-11-15",
+      "date_to": "2026-11-15"
+    },
+    {
       "title": "Temples. Ciclo Lata Gourmet",
       "category": "Sala López (Conciertos)",
       "category_slug": "sala-lopez-conciertos",
@@ -185,6 +250,19 @@
       "date_to": "2026-11-18"
     },
     {
+      "title": "Heavenphetamine (Japón/Ucrania)",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62984&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2026-11-19",
+      "date_to": "2026-11-19"
+    },
+    {
       "title": "Rüdiger  (Fra)",
       "category": "La Lata de Bombillas (Conciertos)",
       "category_slug": "la-lata-de-bombillas-conciertos",
@@ -196,6 +274,19 @@
       "source": "lalata_entradas",
       "date_from": "2026-11-22",
       "date_to": "2026-11-22"
+    },
+    {
+      "title": "Go Cactus",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://dice.fm/partner/tickets/event/536wb8-go-cactus-27th-nov-la-lata-de-bombillas-zaragoza-tickets?dice_id=9305153&dice_channel=web&dice_tags=organic&dice_campaign=SILVER+SPOON+BROTHERS+S.L.&dice_feature=mio_marketing&_branch_match_id=1544989260",
+      "source": "lalata_entradas",
+      "date_from": "2026-11-27",
+      "date_to": "2026-11-27"
     },
     {
       "title": "Desinteresse (Ned)",
@@ -250,17 +341,56 @@
       "date_to": "2026-12-12"
     },
     {
-      "title": "zaragozafelizfeliz presenta Perfecto Miserable",
+      "title": "Zaragozafelizfeliz presenta Perfecto Miserable. Primer pase.",
       "category": "La Lata de Bombillas (Conciertos)",
       "category_slug": "la-lata-de-bombillas-conciertos",
       "venue": "La Lata de Bombillas",
       "venue_slug": "la-lata-de-bombillas",
       "price_text": null,
       "price_min_eur": null,
+      "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62919&siteID=latadebombillas",
+      "source": "lalata_entradas",
+      "date_from": "2027-01-29",
+      "date_to": "2027-01-29"
+    },
+    {
+      "title": "Zaragozafelizfeliz presenta Perfecto Miserable. Segundo pase.",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": "Agotadas",
+      "price_min_eur": null,
       "detail_url": "https://entradas.lalatadebombillas.es/web/?menu=1162&pagina=entradas&item=62125&siteID=latadebombillas",
       "source": "lalata_entradas",
       "date_from": "2027-01-29",
       "date_to": "2027-01-29"
+    },
+    {
+      "title": "Levitants",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://www.entradas.com/event/levitants-20262027-tour-la-lata-de-bombillas-21872261/?affiliate=ABG&utm_source=bing&utm_medium=cpc&utm_campaign=ar_rock_pop&utm_agid=1165484290918474&utm_term=levitants%20zaragoza%20entradas&creative=&device=c&placem",
+      "source": "lalata_entradas",
+      "date_from": "2027-01-30",
+      "date_to": "2027-01-30"
+    },
+    {
+      "title": "Error 97 + Capros",
+      "category": "La Lata de Bombillas (Conciertos)",
+      "category_slug": "la-lata-de-bombillas-conciertos",
+      "venue": "La Lata de Bombillas",
+      "venue_slug": "la-lata-de-bombillas",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "http://entradium.com/events/error-97-capros",
+      "source": "lalata_entradas",
+      "date_from": "2027-02-26",
+      "date_to": "2027-02-26"
     },
     {
       "title": "Amor Líquido + Porfa",

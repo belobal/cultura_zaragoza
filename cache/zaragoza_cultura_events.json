@@ -1,48 +1,34 @@
 {
   "schema_version": 2,
-  "fetched_at": "2026-09-03T15:28:45.506309",
+  "fetched_at": "2026-09-18T10:32:38.563926",
   "events": [
     {
-      "title": "Friends the musical parody",
+      "title": "Gigante",
       "category": "Zaragoza Cultura",
       "category_slug": "zaragoza-cultura",
       "venue": "Teatro Principal",
       "venue_slug": "teatro-principal",
-      "time_text": null,
+      "time_text": "19:00",
       "price_text": null,
       "price_min_eur": null,
-      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/310169",
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/312369",
       "source": "zaragoza_cultura",
-      "date_from": "2026-09-03",
-      "date_to": "2026-09-13"
+      "date_from": "2026-09-17",
+      "date_to": "2026-09-20"
     },
     {
-      "title": "¿Quieres Pecar Conmigo?",
+      "title": "Replaceta",
       "category": "Zaragoza Cultura",
       "category_slug": "zaragoza-cultura",
-      "venue": "Teatro de las Esquinas",
-      "venue_slug": "teatro-de-las-esquinas",
-      "time_text": "18:00",
+      "venue": "Teatro del Mercado",
+      "venue_slug": "teatro-del-mercado",
+      "time_text": "19:00",
       "price_text": null,
       "price_min_eur": null,
-      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/311707",
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/312379",
       "source": "zaragoza_cultura",
-      "date_from": "2026-09-03",
-      "date_to": "2026-09-06"
-    },
-    {
-      "title": "Zaragoza, un paso + por la salud mental",
-      "category": "Zaragoza Cultura",
-      "category_slug": "zaragoza-cultura",
-      "venue": "Parque Grande, José Antonio Labordeta",
-      "venue_slug": "parque-grande-jose-antonio-labordeta",
-      "time_text": "09:00",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/313737",
-      "source": "zaragoza_cultura",
-      "date_from": "2026-09-06",
-      "date_to": "2026-09-06"
+      "date_from": "2026-09-17",
+      "date_to": "2026-09-20"
     },
     {
       "title": "Shinova",
@@ -59,18 +45,32 @@
       "date_to": "2026-09-18"
     },
     {
-      "title": "Para la primavera nada",
+      "title": "The Other Side",
       "category": "Zaragoza Cultura",
       "category_slug": "zaragoza-cultura",
-      "venue": "Teatro del Mercado",
-      "venue_slug": "teatro-del-mercado",
-      "time_text": "19:00",
+      "venue": "Teatro de las Esquinas",
+      "venue_slug": "teatro-de-las-esquinas",
+      "time_text": "21:00",
       "price_text": null,
       "price_min_eur": null,
-      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/310293",
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/313958",
       "source": "zaragoza_cultura",
-      "date_from": "2026-09-24",
-      "date_to": "2026-09-27"
+      "date_from": "2026-09-18",
+      "date_to": "2026-09-18"
+    },
+    {
+      "title": "El fantasma de la ópera",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Palacio de Congresos de Zaragoza",
+      "venue_slug": "palacio-de-congresos-de-zaragoza",
+      "time_text": "17:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314569",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-09",
+      "date_to": "2026-10-11"
     },
     {
       "title": "Tantas cosas que contar. La Oreja de Van Gogh",
@@ -101,6 +101,76 @@
       "date_to": "2026-10-12"
     },
     {
+      "title": "Ofrenda de Flores 2026",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Plaza del Pilar",
+      "venue_slug": "plaza-del-pilar",
+      "time_text": "06:30",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/311361",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-12",
+      "date_to": "2026-10-12"
+    },
+    {
+      "title": "Pilares en El Túnel: LAAZA, BEGUT + Grupo invitado",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "El Túnel. Centro de Artes Para Jóvenes",
+      "venue_slug": "el-tunel-centro-de-artes-para-jovenes",
+      "time_text": "20:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314579",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-13",
+      "date_to": "2026-10-13"
+    },
+    {
+      "title": "Andrés Campo - Alma Bakala",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Escenario Ambar - Fuente de Goya",
+      "venue_slug": "escenario-ambar---fuente-de-goya",
+      "time_text": "21:30",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314462",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-15",
+      "date_to": "2026-10-15"
+    },
+    {
+      "title": "Biella Nuei + Ester Vallejo",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Plaza Salamero",
+      "venue_slug": "plaza-salamero",
+      "time_text": "17:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314553",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-16",
+      "date_to": "2026-10-16"
+    },
+    {
+      "title": "Fulu Miziki + Vivere Memento",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Plaza Salamero",
+      "venue_slug": "plaza-salamero",
+      "time_text": "12:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314556",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-17",
+      "date_to": "2026-10-17"
+    },
+    {
       "title": "OMAR COURTZ - ZITY",
       "category": "Zaragoza Cultura",
       "category_slug": "zaragoza-cultura",
@@ -113,6 +183,20 @@
       "source": "zaragoza_cultura",
       "date_from": "2026-10-17",
       "date_to": "2026-10-17"
+    },
+    {
+      "title": "Lorena Álvarez  + Entreveradas",
+      "category": "Zaragoza Cultura",
+      "category_slug": "zaragoza-cultura",
+      "venue": "Plaza Salamero",
+      "venue_slug": "plaza-salamero",
+      "time_text": "12:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://www.zaragoza.es/sede/servicio/cultura//evento/314559",
+      "source": "zaragoza_cultura",
+      "date_from": "2026-10-18",
+      "date_to": "2026-10-18"
     }
   ]
 }

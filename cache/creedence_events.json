@@ -1,59 +1,7 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-09-03T15:28:36.839723",
+  "fetched_at": "2026-09-18T10:32:39.490040",
   "events": [
-    {
-      "title": "ADGAR (CANTABRIA)",
-      "category": "Conciertos en Zaragoza",
-      "category_slug": "conciertos-en-zaragoza",
-      "venue": "Sala Creedence",
-      "venue_slug": "sala-creedence-zaragoza",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://creedencesound.com/agenda_creedence/adgar-cantabria",
-      "source": "creedence",
-      "date_from": "2026-09-04",
-      "date_to": "2026-09-04"
-    },
-    {
-      "title": "INESH BUENO (PORTUGAL) + PINGO POTENS (NAVARRA) EN SALA CREEDENCE – ZARAGOZA",
-      "category": "Conciertos en Zaragoza",
-      "category_slug": "conciertos-en-zaragoza",
-      "venue": "Sala Creedence",
-      "venue_slug": "sala-creedence-zaragoza",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://creedencesound.com/agenda_creedence/inesh-bueno-portugal-pingo-potens-navarra-en-sala-creedence-zaragoza",
-      "source": "creedence",
-      "date_from": "2026-09-05",
-      "date_to": "2026-09-05"
-    },
-    {
-      "title": "MARIO BAILÓN EN SALA CREEDENCE – ZARAGOZA",
-      "category": "Conciertos en Zaragoza",
-      "category_slug": "conciertos-en-zaragoza",
-      "venue": "Sala Creedence",
-      "venue_slug": "sala-creedence-zaragoza",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://creedencesound.com/agenda_creedence/mario-bailon-en-sala-creedence-zaragoza",
-      "source": "creedence",
-      "date_from": "2026-09-11",
-      "date_to": "2026-09-11"
-    },
-    {
-      "title": "AIMAR",
-      "category": "Conciertos en Zaragoza",
-      "category_slug": "conciertos-en-zaragoza",
-      "venue": "Sala Creedence",
-      "venue_slug": "sala-creedence-zaragoza",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://creedencesound.com/agenda_creedence/aimar",
-      "source": "creedence",
-      "date_from": "2026-09-12",
-      "date_to": "2026-09-12"
-    },
     {
       "title": "EL DESVAN + VERSADOS",
       "category": "Conciertos en Zaragoza",
@@ -105,6 +53,19 @@
       "source": "creedence",
       "date_from": "2026-09-27",
       "date_to": "2026-09-27"
+    },
+    {
+      "title": "STONUS (CHIPRE) + TRE3",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/stonus-chipre-tre3",
+      "source": "creedence",
+      "date_from": "2026-09-30",
+      "date_to": "2026-09-30"
     },
     {
       "title": "THE VOLCANICS (AUSTRALIA)",
@@ -248,6 +209,32 @@
       "source": "creedence",
       "date_from": "2026-10-31",
       "date_to": "2026-10-31"
+    },
+    {
+      "title": "MALAGANA + DJ. ROLL OVER MORENO",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/malagana-dj-roll-over-moreno",
+      "source": "creedence",
+      "date_from": "2026-11-13",
+      "date_to": "2026-11-13"
+    },
+    {
+      "title": "BENGO – ARTISTAS EN RUTA 2016",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/bengo-artistas-en-ruta-2016bengo-artistas-en-ruta-2016-en-sala-creedence-zaragoza",
+      "source": "creedence",
+      "date_from": "2026-11-21",
+      "date_to": "2026-11-21"
     },
     {
       "title": "THE MONSTERS (SUIZA) – 15 AÑOS DE SALA CREEDENCE – ZARAGOZA",
