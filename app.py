@@ -248,19 +248,20 @@ def create_app() -> Flask:
 
     # Warm scrapers in background so the first user request does not hit
     # Render's ~60s edge timeout (502 Bad Gateway on cold start).
+    # Keep this light: free-tier OOM from many parallel scrapes causes restart loops.
     def _warm_events_cache() -> None:
         global _EVENTS_CACHE
         try:
-            # Fast pass: populate memory cache instantly from existing disk caches.
-            fast_events = _load_all_sources_parallel(timeout_seconds=0.5)
+            # Fast pass: prefer disk caches already on the instance.
+            fast_events = _load_all_sources_parallel(timeout_seconds=1.0, max_workers=4)
             if fast_events:
                 for e in fast_events:
                     _coerce_event_dates(e)
                 with _EVENTS_CACHE_LOCK:
                     if not _EVENTS_CACHE:
                         _EVENTS_CACHE = fast_events
-            # Full pass: upgrade live cache in background.
-            events = _load_all_sources_parallel(timeout_seconds=120)
+            # Full pass (capped): upgrade without saturating the single gunicorn worker.
+            events = _load_all_sources_parallel(timeout_seconds=45, max_workers=3)
             for e in events:
                 _coerce_event_dates(e)
             with _EVENTS_CACHE_LOCK:
@@ -284,10 +285,11 @@ _EVENTS_CACHE = None
 _EVENTS_CACHE_LOCK = threading.Lock()
 
 # Hilos para combinar fuentes en paralelo (mucho más rápido en arranque frío).
-_AGGREGATOR_MAX_WORKERS = int(os.environ.get("AGGREGATOR_MAX_WORKERS", "8"))
+# Keep low on Render free (512MB / 1 worker) to avoid OOM restart loops.
+_AGGREGATOR_MAX_WORKERS = int(os.environ.get("AGGREGATOR_MAX_WORKERS", "4"))
 # Hard cap so a slow source cannot push the HTTP response past Render's gateway limit.
 _AGGREGATOR_FETCH_TIMEOUT_SECONDS = float(
-    os.environ.get("AGGREGATOR_FETCH_TIMEOUT_SECONDS", "4.0")
+    os.environ.get("AGGREGATOR_FETCH_TIMEOUT_SECONDS", "8.0")
 )
 
 _MONTHS_ES = (
@@ -1006,6 +1008,7 @@ def _safe_fetch(fn: Callable[[], List[dict]]) -> List[dict]:
 
 def _load_all_sources_parallel(
     timeout_seconds: Optional[float] = None,
+    max_workers: Optional[int] = None,
 ) -> List[dict]:
     fetchers: List[Callable[[], List[dict]]] = [
         # Taquilla.com y Zaragozala omitidos.
@@ -1025,17 +1028,20 @@ def _load_all_sources_parallel(
         get_jardin_de_las_artes_events,
         get_fiestas_pilar_events,
     ]
-    workers = min(max(1, _AGGREGATOR_MAX_WORKERS), len(fetchers))
+    workers_cap = _AGGREGATOR_MAX_WORKERS if max_workers is None else int(max_workers)
+    workers = min(max(1, workers_cap), len(fetchers))
     limit = (
         _AGGREGATOR_FETCH_TIMEOUT_SECONDS
         if timeout_seconds is None
         else float(timeout_seconds)
     )
+    # Respect short timeouts (disk-cache warm). Do not floor at 5s.
+    wait_timeout = max(0.05, limit)
     chunks: List[List[dict]] = [[] for _ in fetchers]
     ex = ThreadPoolExecutor(max_workers=workers)
     try:
         future_map = {ex.submit(_safe_fetch, fn): idx for idx, fn in enumerate(fetchers)}
-        done, _pending = wait(future_map.keys(), timeout=max(5.0, limit))
+        done, _pending = wait(future_map.keys(), timeout=wait_timeout)
         for fut in done:
             idx = future_map[fut]
             try:
@@ -1043,9 +1049,8 @@ def _load_all_sources_parallel(
             except Exception:
                 chunks[idx] = []
     finally:
-        # Do not block the request on stragglers (would cause 502 on Render).
-        # Keep running tasks alive so they can still fill disk caches.
-        ex.shutdown(wait=False, cancel_futures=False)
+        # Cancel stragglers so orphan scrapes cannot pile up and OOM the free dyno.
+        ex.shutdown(wait=False, cancel_futures=True)
     return _merge_source_results(chunks)
 
 

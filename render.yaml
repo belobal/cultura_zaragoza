@@ -4,10 +4,14 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 180 "app:create_app()"
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120 "app:create_app()"
     healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.8"
       - key: EVENT_CACHE_TTL_SECONDS
         value: "604800"
+      - key: AGGREGATOR_MAX_WORKERS
+        value: "3"
+      - key: AGGREGATOR_FETCH_TIMEOUT_SECONDS
+        value: "8"
