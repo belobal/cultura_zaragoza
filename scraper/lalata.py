@@ -441,17 +441,22 @@ def scrape_events_list() -> List[Dict[str, Any]]:
 
 def get_events() -> List[Dict[str, Any]]:
     ttl = int(os.environ.get("EVENT_CACHE_TTL_SECONDS", str(DEFAULT_TTL_SECONDS)))
-    cached = _load_cache(ttl)
+    from scraper.cache_policy import get_disk_events, prefer_stale_cache
+
+    cached = get_disk_events(_load_cache, ttl)
     if cached is not None:
         fut = _future_events_only(cached)
         if fut:
             return fut
         # Caché con eventos ya pasados (p. ej. solo el HTML viejo del calendario).
-        if cached:
+        # Keep serving empty-future cache on the request path; refresh when forced.
+        if cached and not prefer_stale_cache():
             try:
                 CACHE_FILE.unlink()
             except Exception:
                 pass
+        elif cached and prefer_stale_cache():
+            return []
     try:
         events = scrape_events_list()
     except Exception:

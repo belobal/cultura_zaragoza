@@ -405,7 +405,9 @@ def get_events() -> List[Dict[str, Any]]:
     Usa caché en disco para no re-scrapear en cada request.
     """
     ttl_seconds = int(os.environ.get("EVENT_CACHE_TTL_SECONDS", str(DEFAULT_TTL_SECONDS)))
-    cached = _load_cache(ttl_seconds)
+    from scraper.cache_policy import get_disk_events
+
+    cached = get_disk_events(_load_cache, ttl_seconds)
     if cached is not None:
         return _only_zaragoza(cached)
     events = scrape_events_list()

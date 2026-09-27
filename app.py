@@ -29,6 +29,7 @@ from scraper.foodtrucks import get_events as get_foodtrucks_events
 from scraper.jardin_de_las_artes import get_events as get_jardin_de_las_artes_events
 from scraper.fiestas_pilar import get_events as get_fiestas_pilar_events
 from scraper.teatro_esquinas import get_events as get_teatro_esquinas_events
+from scraper.cache_policy import force_cache_refresh
 
 
 def create_app() -> Flask:
@@ -256,23 +257,18 @@ def create_app() -> Flask:
     def _warm_events_cache() -> None:
         global _EVENTS_CACHE
         try:
-            # Fast pass: prefer disk caches already on the instance.
+            # Fast pass: serve expired disk caches (no network) so the UI is never empty.
             fast_events = _load_all_sources_parallel(timeout_seconds=1.0, max_workers=4)
             if fast_events:
                 for e in fast_events:
                     _coerce_event_dates(e)
-                with _EVENTS_CACHE_LOCK:
-                    if not _EVENTS_CACHE:
-                        _EVENTS_CACHE = fast_events
-            # Full pass (capped): upgrade without saturating the single gunicorn worker.
-            events = _load_all_sources_parallel(timeout_seconds=45, max_workers=3)
+                _maybe_set_events_cache(fast_events)
+            # Full pass: force live refresh when TTL expired (capped workers/time).
+            with force_cache_refresh():
+                events = _load_all_sources_parallel(timeout_seconds=45, max_workers=3)
             for e in events:
                 _coerce_event_dates(e)
-            with _EVENTS_CACHE_LOCK:
-                if events and (
-                    not _EVENTS_CACHE or len(events) >= len(_EVENTS_CACHE)
-                ):
-                    _EVENTS_CACHE = events
+            _maybe_set_events_cache(events)
         except Exception:
             pass
 
@@ -1058,6 +1054,37 @@ def _load_all_sources_parallel(
     return _merge_source_results(chunks)
 
 
+def _events_cache_score(events: List[dict]) -> Tuple[int, int, int]:
+    """Prefer caches with more upcoming events and more sources over raw size."""
+    today = date.today()
+    horizon = today + timedelta(days=90)
+    upcoming = 0
+    sources: set[str] = set()
+    for e in events:
+        src = e.get("source")
+        if src:
+            sources.add(str(src))
+        df, dt = e.get("date_from"), e.get("date_to")
+        if not isinstance(df, date):
+            continue
+        if not isinstance(dt, date):
+            dt = df
+        if dt >= today and df <= horizon:
+            upcoming += 1
+    return (upcoming, len(sources), len(events))
+
+
+def _maybe_set_events_cache(events: List[dict]) -> None:
+    """Install events into memory cache when they score at least as well as current."""
+    global _EVENTS_CACHE
+    if not events:
+        return
+    score = _events_cache_score(events)
+    with _EVENTS_CACHE_LOCK:
+        if not _EVENTS_CACHE or score >= _events_cache_score(_EVENTS_CACHE):
+            _EVENTS_CACHE = events
+
+
 def get_events_cached():
     """
     Pequeña capa de cache en memoria para evitar re-leer el archivo en cada request.
@@ -1094,6 +1121,14 @@ def get_events_cached():
             events = _load_all_sources_parallel()
         for e in events:
             _coerce_event_dates(e)
+        # Never pin an empty / no-upcoming list when disk still has agenda items.
+        if _events_cache_score(events)[0] == 0:
+            # One more pass: scrapers prefer stale disk by default.
+            disk_events = _load_all_sources_parallel(timeout_seconds=2.0, max_workers=4)
+            for e in disk_events:
+                _coerce_event_dates(e)
+            if _events_cache_score(disk_events) > _events_cache_score(events):
+                events = disk_events
         # Never pin an empty list forever (Render cold-start timeouts).
         _EVENTS_CACHE = events or None
         return events or []

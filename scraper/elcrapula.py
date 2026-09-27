@@ -52,6 +52,14 @@ def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
             return None
+        fetched_at = payload.get("fetched_at")
+        if fetched_at and ttl_seconds > 0:
+            try:
+                age = (datetime.utcnow() - datetime.fromisoformat(str(fetched_at))).total_seconds()
+                if age > ttl_seconds:
+                    return None
+            except Exception:
+                pass
         events = payload.get("events") or []
         for e in events:
             if isinstance(e.get("date_from"), str):
@@ -167,7 +175,9 @@ def scrape_events() -> List[Dict[str, Any]]:
 
 def get_events() -> List[Dict[str, Any]]:
     ttl_seconds = int(os.environ.get("EVENT_CACHE_TTL_SECONDS", "3600"))
-    cached = _load_cache(ttl_seconds)
+    from scraper.cache_policy import get_disk_events
+
+    cached = get_disk_events(_load_cache, ttl_seconds)
     if cached is not None:
         return cached
 
@@ -176,4 +186,6 @@ def get_events() -> List[Dict[str, Any]]:
         _save_cache(events)
         return events
     except Exception:
-        return _load_cache(99999999) or []
+        from scraper.cache_policy import STALE_TTL_SECONDS
+
+        return _load_cache(STALE_TTL_SECONDS) or []

@@ -250,12 +250,13 @@ def get_events() -> List[Dict[str, Any]]:
     SweetCaroline (programacion8.php); scrapamos ese iframe como fuente canónica.
     """
     ttl_seconds = int(os.environ.get("EVENT_CACHE_TTL_SECONDS", str(DEFAULT_TTL_SECONDS)))
-    cached = _load_cache(ttl_seconds)
+    from scraper.cache_policy import STALE_TTL_SECONDS, get_disk_events
+
+    cached = get_disk_events(_load_cache, ttl_seconds)
     if cached is not None:
         return cached
 
-    # Stale cache as fallback if the live scrape fails (DNS / network).
-    stale = _load_cache(ttl_seconds=10**9)
+    stale = _load_cache(ttl_seconds=STALE_TTL_SECONDS)
     try:
         html = _fetch_iframe_html()
         events = _extract_events_from_iframe(html)

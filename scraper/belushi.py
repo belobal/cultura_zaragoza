@@ -129,7 +129,9 @@ def _save_cache(events: List[Dict[str, Any]]) -> None:
 
 def get_events() -> List[Dict[str, Any]]:
     ttl = int(os.environ.get("EVENT_CACHE_TTL_SECONDS", str(DEFAULT_TTL_SECONDS)))
-    cached = _load_cache(ttl)
+    from scraper.cache_policy import get_disk_events
+
+    cached = get_disk_events(_load_cache, ttl)
     if cached is not None:
         return cached
     try:
