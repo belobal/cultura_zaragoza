@@ -81,7 +81,7 @@ def _save_cache(events: List[Dict[str, Any]]) -> None:
 
 
 def scrape_events() -> List[Dict[str, Any]]:
-    r = requests.get(EVENTS_URL, headers=_headers(), timeout=15)
+    r = requests.get(EVENTS_URL, headers=_headers(), timeout=8)
     r.raise_for_status()
     raw_list = r.json()
 

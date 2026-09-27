@@ -342,7 +342,7 @@ def _enrich_events_with_venue(events: List[Dict[str, Any]]) -> List[Dict[str, An
             enriched.append(e)
             continue
         try:
-            r = requests.get(detail_url, headers=headers, timeout=30)
+            r = requests.get(detail_url, headers=headers, timeout=8)
             r.raise_for_status()
             occs = _extract_zaragoza_occurrences(r.text)
         except Exception:
@@ -380,7 +380,7 @@ def _fetch_list_page() -> str:
         "Accept-Language": "es-ES,es;q=0.9",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     }
-    r = requests.get(LIST_URL, headers=headers, timeout=30)
+    r = requests.get(LIST_URL, headers=headers, timeout=8)
     r.raise_for_status()
     return r.text
 

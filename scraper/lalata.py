@@ -311,7 +311,7 @@ def _extract_price_from_schedule(html: str):
 
 
 def _fetch(url: str) -> str:
-    r = requests.get(url, headers=_headers(), timeout=30)
+    r = requests.get(url, headers=_headers(), timeout=8)
     r.raise_for_status()
     return r.text
 

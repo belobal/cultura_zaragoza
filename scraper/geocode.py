@@ -188,7 +188,7 @@ def _geocode_nominatim(venue_name: str, query_city: str = "Zaragoza") -> Optiona
                 params["bounded"] = 1
                 params["viewbox"] = "-1.05,41.50,-0.60,41.95"
             _respect_rate_limit()
-            r = requests.get(_NOMINATIM_URL, params=params, headers=headers, timeout=30)
+            r = requests.get(_NOMINATIM_URL, params=params, headers=headers, timeout=8)
             r.raise_for_status()
             data = r.json()
             if not data:

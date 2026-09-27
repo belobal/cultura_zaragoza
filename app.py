@@ -135,7 +135,7 @@ def create_app() -> Flask:
         events = _filter_events(all_events, parsed)
         categories = _available_categories(all_events)
         venues_for_select = _available_venues_for_select(all_events)
-        events_by_day = _group_events_by_day(events)
+        events_by_day = _group_events_by_day(events, range_from=parsed["date_from"])
         span_days = (parsed["date_to"] - parsed["date_from"]).days + 1
         # Day chips only for short ranges; long ranges still list events by day below.
         week_days = []
@@ -194,7 +194,7 @@ def create_app() -> Flask:
         all_events = get_events_cached()
         events = _filter_events(all_events, parsed)
         events = _with_venue_coords(events)
-        events_by_day = _group_events_by_day(events)
+        events_by_day = _group_events_by_day(events, range_from=parsed["date_from"])
         categories = _available_categories(all_events)
         venues_for_select = _available_venues_for_select(all_events)
         events_export = _events_export_payload(events)
@@ -1177,6 +1177,12 @@ def _parse_filters(args):
     q = (args.get("q") or "").strip()
     include_centros_civicos = (args.get("centros") or "").strip() in {"1", "true", "on", "yes"}
 
+    # Never look at the past: agenda is forward-looking from today.
+    if date_from < today:
+        date_from = today
+    if date_to < today:
+        date_to = today
+
     # Asegurar rango coherente
     if date_to < date_from:
         date_from, date_to = date_to, date_from
@@ -1380,13 +1386,32 @@ def _sort_key_date_venue_title(e: dict) -> tuple:
     return (d, 1, "", t)
 
 
-def _group_events_by_day(events: List[dict]) -> List[Tuple[date, List[dict]]]:
-    """Split an already-sorted list into (date_from, [events that day]) groups."""
+def _group_events_by_day(
+    events: List[dict],
+    range_from: Optional[date] = None,
+) -> List[Tuple[date, List[dict]]]:
+    """Split events into day groups. Multi-day runs that started earlier are
+    shown under max(date_from, range_from) so past day headers never appear."""
     if not events:
         return []
+    floor = range_from or date.today()
+    cleaned: List[dict] = []
     for e in events:
         _coerce_event_dates(e)
-    return [(d, list(g)) for d, g in groupby(events, key=lambda e: e["date_from"])]
+        df = e.get("date_from")
+        dt = e.get("date_to")
+        if not isinstance(df, date):
+            continue
+        # Fully past events should not appear.
+        if isinstance(dt, date) and dt < floor:
+            continue
+        e2 = dict(e)
+        e2["_day"] = df if df >= floor else floor
+        cleaned.append(e2)
+    if not cleaned:
+        return []
+    cleaned.sort(key=lambda e: (e["_day"], (e.get("title") or "").lower()))
+    return [(d, list(g)) for d, g in groupby(cleaned, key=lambda e: e["_day"])]
 
 
 def _filter_events(events, args_like):

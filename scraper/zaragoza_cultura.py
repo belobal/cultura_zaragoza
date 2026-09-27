@@ -11,6 +11,7 @@ import json
 import os
 import re
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
 from html import unescape as html_unescape
 from pathlib import Path
@@ -27,6 +28,12 @@ CACHE_FILE = CACHE_DIR / "zaragoza_cultura_events.json"
 
 DEFAULT_TTL_SECONDS = 60 * 60
 _CACHE_SCHEMA_VERSION = 2
+# Sequential detail pages with timeout=30 used to hang for many minutes on cold cache.
+_HTTP_TIMEOUT = float(os.environ.get("FETCH_TIMEOUT", "8"))
+_DETAIL_TIMEOUT = float(os.environ.get("ZARAGOZA_CULTURA_DETAIL_TIMEOUT", "5"))
+_DETAIL_WORKERS = int(os.environ.get("ZARAGOZA_CULTURA_DETAIL_WORKERS", "4"))
+_DETAIL_BUDGET_SECONDS = float(os.environ.get("ZARAGOZA_CULTURA_DETAIL_BUDGET", "20"))
+_MAX_DETAIL_IDS = int(os.environ.get("ZARAGOZA_CULTURA_MAX_IDS", "40"))
 
 SOURCE = "zaragoza_cultura"
 CATEGORY_NAME = "Zaragoza Cultura"
@@ -64,32 +71,48 @@ def _slugify(s: str) -> str:
     return s or "unknown"
 
 
-def _fetch(url: str) -> str:
-    r = requests.get(url, headers=_headers(), timeout=30)
+def _fetch(url: str, timeout: Optional[float] = None) -> str:
+    r = requests.get(url, headers=_headers(), timeout=timeout or _HTTP_TIMEOUT)
     r.raise_for_status()
     return r.text
 
 
-def _load_cache(ttl_seconds: int) -> Optional[List[Dict[str, Any]]]:
+def _events_from_payload(payload: Dict[str, Any]) -> List[Dict[str, Any]]:
+    events = payload.get("events") or []
+    cleaned: List[Dict[str, Any]] = []
+    for e in events:
+        e2 = dict(e)
+        if isinstance(e2.get("date_from"), str):
+            e2["date_from"] = datetime.strptime(e2["date_from"], "%Y-%m-%d").date()
+        if isinstance(e2.get("date_to"), str):
+            e2["date_to"] = datetime.strptime(e2["date_to"], "%Y-%m-%d").date()
+        cleaned.append(e2)
+    return cleaned
+
+
+def _load_cache(ttl_seconds: int, *, ignore_ttl: bool = False) -> Optional[List[Dict[str, Any]]]:
     if not CACHE_FILE.exists():
         return None
     try:
         payload = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
         if payload.get("schema_version") != _CACHE_SCHEMA_VERSION:
             return None
-        fetched_at = datetime.fromisoformat(payload["fetched_at"]).date()
-        if (date.today() - fetched_at).days * 86400 <= ttl_seconds:
-            events = payload["events"]
-            for e in events:
-                e["date_from"] = datetime.strptime(e["date_from"], "%Y-%m-%d").date()
-                e["date_to"] = datetime.strptime(e["date_to"], "%Y-%m-%d").date()
-                e.setdefault("source", SOURCE)
-                e.setdefault("category", CATEGORY_NAME)
-                e.setdefault("category_slug", _slugify(CATEGORY_NAME))
-            return events
+        fetched_at = payload.get("fetched_at")
+        if fetched_at and ttl_seconds > 0 and not ignore_ttl:
+            try:
+                age = (datetime.utcnow() - datetime.fromisoformat(str(fetched_at))).total_seconds()
+                if age > ttl_seconds:
+                    return None
+            except Exception:
+                return None
+        events = _events_from_payload(payload)
+        for e in events:
+            e.setdefault("source", SOURCE)
+            e.setdefault("category", CATEGORY_NAME)
+            e.setdefault("category_slug", _slugify(CATEGORY_NAME))
+        return events
     except Exception:
         return None
-    return None
 
 
 def _save_cache(events: List[Dict[str, Any]]) -> None:
@@ -326,24 +349,45 @@ def _parse_event_detail(detail_html: str, detail_url: str) -> Optional[Dict[str,
     }
 
 
+def _fetch_one_detail(event_id: str) -> Optional[Dict[str, Any]]:
+    detail_url = f"{BASE}/sede/servicio/cultura/evento/{event_id}"
+    try:
+        detail_html = _fetch(detail_url, timeout=_DETAIL_TIMEOUT)
+    except Exception:
+        return None
+    return _parse_event_detail(detail_html, detail_url)
+
+
 def _scrape_events_list() -> List[Dict[str, Any]]:
     list_html = _fetch(LIST_URL)
-    ids = _extract_event_ids(list_html)
+    ids = _extract_event_ids(list_html)[: max(1, _MAX_DETAIL_IDS)]
     events: List[Dict[str, Any]] = []
     seen: Set[str] = set()
-    for event_id in ids:
-        detail_url = f"{BASE}/sede/servicio/cultura//evento/{event_id}"
-        if detail_url in seen:
-            continue
+    if not ids:
+        return events
+
+    workers = max(1, min(_DETAIL_WORKERS, len(ids)))
+    ex = ThreadPoolExecutor(max_workers=workers)
+    try:
+        future_map = {ex.submit(_fetch_one_detail, eid): eid for eid in ids}
         try:
-            detail_html = _fetch(detail_url)
-        except Exception:
-            continue
-        ev = _parse_event_detail(detail_html, detail_url)
-        if not ev:
-            continue
-        seen.add(detail_url)
-        events.append(ev)
+            for fut in as_completed(future_map, timeout=max(1.0, _DETAIL_BUDGET_SECONDS)):
+                try:
+                    ev = fut.result()
+                except Exception:
+                    continue
+                if not ev:
+                    continue
+                url = ev.get("detail_url") or ""
+                if url in seen:
+                    continue
+                seen.add(url)
+                events.append(ev)
+        except TimeoutError:
+            pass
+    finally:
+        ex.shutdown(wait=False, cancel_futures=True)
+
     events.sort(key=lambda e: (e["date_from"], e["title"]))
     return events
 
@@ -353,8 +397,14 @@ def get_events() -> List[Dict[str, Any]]:
     cached = _load_cache(ttl)
     if cached is not None:
         return cached
-    events = _scrape_events_list()
+    try:
+        events = _scrape_events_list()
+    except Exception:
+        events = []
     if events:
         _save_cache(events)
-    return events
+        return events
+    # Prefer stale cache over empty when the detail crawl is cut short.
+    stale = _load_cache(ttl, ignore_ttl=True)
+    return stale or []
 
