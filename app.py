@@ -1,12 +1,16 @@
 import os
 import re
 import threading
+import _strptime  # noqa: F401 — init before threaded scrapers call datetime.strptime
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, wait
 from datetime import date, datetime, timedelta
 from itertools import groupby
 from pathlib import Path
 from typing import Callable, DefaultDict, List, Optional, Tuple
+
+# Ensure _strptime is fully initialized on the main thread (avoids race under ThreadPoolExecutor).
+datetime.strptime("2000-01-01", "%Y-%m-%d")
 
 from flask import Flask, Response, jsonify, render_template, request, send_from_directory
 
