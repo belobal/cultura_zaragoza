@@ -349,31 +349,31 @@ _VENUE_ALIASES = {
     # Auditorio (Princesa Leonor, Multiusos, Mozart, etc. = same complex)
     "auditorio-de-zaragoza": (
         "Auditorio de Zaragoza",
-        "auditorio-de-zaragoza-princesa-leonor",
+        "auditorio-de-zaragoza",
     ),
     "auditorio-de-zaragoza-princesa-leonor": (
         "Auditorio de Zaragoza",
-        "auditorio-de-zaragoza-princesa-leonor",
+        "auditorio-de-zaragoza",
     ),
     "auditorio-de-zaragoza-sala-multiusos": (
         "Auditorio de Zaragoza",
-        "auditorio-de-zaragoza-princesa-leonor",
+        "auditorio-de-zaragoza",
     ),
     "auditorio-de-zaragoza-sala-mozart": (
         "Auditorio de Zaragoza",
-        "auditorio-de-zaragoza-princesa-leonor",
+        "auditorio-de-zaragoza",
     ),
     "sala-multiusos-del-auditorio": (
         "Auditorio de Zaragoza",
-        "auditorio-de-zaragoza-princesa-leonor",
+        "auditorio-de-zaragoza",
     ),
     "sala-mozart-del-auditorio": (
         "Auditorio de Zaragoza",
-        "auditorio-de-zaragoza-princesa-leonor",
+        "auditorio-de-zaragoza",
     ),
     "sala-mozart-auditorio": (
         "Auditorio de Zaragoza",
-        "auditorio-de-zaragoza-princesa-leonor",
+        "auditorio-de-zaragoza",
     ),
     # Sala López (alias con/sin tilde y slug histórico)
     "sala-lopez": (
@@ -480,6 +480,38 @@ _VENUE_ALIASES = {
         "Escenario Ámbar Fuente de Goya",
         "escenario-ambar-fuente-de-goya",
     ),
+    # Plaza del Pilar / Ayuntamiento
+    "plaza-del-pilar": (
+        "Plaza del Pilar",
+        "plaza-del-pilar",
+    ),
+    "ayuntamiento-de-zaragoza-plaza-del-pilar": (
+        "Plaza del Pilar",
+        "plaza-del-pilar",
+    ),
+    "oficina-de-turismo-plaza-del-pilar": (
+        "Plaza del Pilar",
+        "plaza-del-pilar",
+    ),
+    # Teatro del Mercado
+    "teatro-del-mercado": (
+        "Teatro del Mercado",
+        "teatro-del-mercado",
+    ),
+    # Vincci Zentro
+    "vincci-zaragoza-zentro": (
+        "Vincci Zaragoza Zentro",
+        "hotel-vincci-zaragoza-zentro",
+    ),
+    "hotel-vincci-zaragoza-zentro": (
+        "Vincci Zaragoza Zentro",
+        "hotel-vincci-zaragoza-zentro",
+    ),
+    # Recinto ferial / Zity
+    "recinto-ferial-valdespartera": (
+        "Espacio Zity",
+        "espacio-zity",
+    ),
     # Plaza Salamero / Escenario de Raíz
     "plaza-salamero": (
         "Plaza Salamero",
@@ -497,6 +529,15 @@ _VENUE_ALIASES = {
     "centro-civico-estacion-del-norte": (
         "Estación del Norte",
         "estacion-del-norte",
+    ),
+    # El Túnel — Centro de Artes Para Jóvenes (Oliver)
+    "el-tunel-centro-de-artes-para-jovenes": (
+        "El Túnel. Centro de Artes Para Jóvenes",
+        "el-tunel-centro-de-artes-para-jovenes",
+    ),
+    "el-tunel": (
+        "El Túnel. Centro de Artes Para Jóvenes",
+        "el-tunel-centro-de-artes-para-jovenes",
     ),
 }
 

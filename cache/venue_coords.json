@@ -3,14 +3,17 @@
   "saved_at": "2026-08-25T06:55:16.468024",
   "coords": {
     "rock-y-blues-cafe": {
-      "lat": 41.6529019,
-      "lon": -0.8803554
+      "lat": 41.6533006,
+      "lon": -0.8810604
     },
     "sala-oasis-club": {
       "lat": 41.6552154,
       "lon": -0.8855983
     },
-    "pabellon-de-deportes-principe-felipe": null,
+    "pabellon-de-deportes-principe-felipe": {
+      "lat": 41.6353666,
+      "lon": -0.8662366
+    },
     "auditorio-de-zaragoza": {
       "lat": 41.6380127,
       "lon": -0.9008569
@@ -44,7 +47,10 @@
       "lat": 41.6380127,
       "lon": -0.9008569
     },
-    "belushi-club-de-comedia": null,
+    "belushi-club-de-comedia": {
+      "lat": 41.646587,
+      "lon": -0.8906184
+    },
     "hotel-tibur": {
       "lat": 41.6550146,
       "lon": -0.876391
@@ -57,7 +63,10 @@
       "lat": 41.6584954,
       "lon": -0.8748586
     },
-    "auditorio-de-zaragoza-princesa-leonor": null,
+    "auditorio-de-zaragoza-princesa-leonor": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
     "teatro-principal": {
       "lat": 41.6520494,
       "lon": -0.8792281
@@ -113,7 +122,10 @@
     "centro-civico-isaac-valero-casablanca": null,
     "sala-venecia-centro-civico-torrero": null,
     "biblioteca-publica-inocencio-ruiz-lasala-santa-isabel": null,
-    "centro-civico-estacion-del-norte": null,
+    "centro-civico-estacion-del-norte": {
+      "lat": 41.6601083,
+      "lon": -0.8717459
+    },
     "centro-civico-penaflor": null,
     "el-corazon-verde": {
       "lat": 41.6316331,
@@ -135,8 +147,14 @@
       "lat": 41.6360109,
       "lon": -0.8909053
     },
-    "auditorio-de-zaragoza-sala-mozart": null,
-    "gran-hotel-de-zaragoza-nh-collection": null,
+    "auditorio-de-zaragoza-sala-mozart": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
+    "gran-hotel-de-zaragoza-nh-collection": {
+      "lat": 41.649131,
+      "lon": -0.8816177
+    },
     "el-plata": {
       "lat": 41.6529311,
       "lon": -0.8801118
@@ -145,7 +163,10 @@
       "lat": 41.6402126,
       "lon": -0.8851126
     },
-    "auditorio-de-zaragoza-sala-multiusos": null,
+    "auditorio-de-zaragoza-sala-multiusos": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
     "la-ley-seca": {
       "lat": 41.6386748,
       "lon": -0.8873044
@@ -182,8 +203,8 @@
     "fnac-plaza-espana": null,
     "ambito-cultural": null,
     "rock-y-blues": {
-      "lat": 41.6529019,
-      "lon": -0.8803554
+      "lat": 41.6533006,
+      "lon": -0.8810604
     },
     "plaza-del-pilar": {
       "lat": 41.6562964,
@@ -339,8 +360,8 @@
       "lon": -0.8544861
     },
     "oficina-de-turismo-plaza-del-pilar": {
-      "lat": 41.6551399,
-      "lon": -0.8783049
+      "lat": 41.6562964,
+      "lon": -0.878942
     },
     "iglesia-de-la-magdalena": {
       "lat": 41.6558818,
@@ -357,13 +378,19 @@
       "lat": 41.7194011,
       "lon": -1.0272258
     },
-    "paraninfo-de-la-universidad-de-zaragoza": null,
+    "paraninfo-de-la-universidad-de-zaragoza": {
+      "lat": 41.6473228,
+      "lon": -0.8866786
+    },
     "centro-civico-salvador-allende": {
       "lat": 41.6447857,
       "lon": -0.8686244
     },
     "pabellon-de-festejos-penaflor": null,
-    "sala-multiusos-del-auditorio": null,
+    "sala-multiusos-del-auditorio": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
     "hotel-nh-collection-gran-hotel-de-zaragoza": {
       "lat": 41.649009,
       "lon": -0.8814732
@@ -374,15 +401,15 @@
     },
     "espacio-zity-recinto-ferial-de-valdespartera": {
       "lat": 41.6197925,
-      "lon": -0.9374110
+      "lon": -0.937411
     },
     "espacio-zity": {
       "lat": 41.6197925,
-      "lon": -0.9374110
+      "lon": -0.937411
     },
     "espacio-zity-valdespartera": {
       "lat": 41.6197925,
-      "lon": -0.9374110
+      "lon": -0.937411
     },
     "roze": {
       "lat": 41.6406272,
@@ -397,7 +424,7 @@
       "lon": -0.8899354
     },
     "el-jardin-de-las-artes": {
-      "lat": 41.6707570,
+      "lat": 41.670757,
       "lon": -0.9223315
     },
     "escenario-ambar-fuente-de-goya": {
@@ -412,7 +439,10 @@
       "lat": 41.6523444,
       "lon": -0.8840256
     },
-    "jardin-de-invierno-parque-jose-antonio-labordeta": null,
+    "jardin-de-invierno-parque-jose-antonio-labordeta": {
+      "lat": 41.6317771,
+      "lon": -0.8927026
+    },
     "museo-del-puerto-fluvial-de-caesaraugusta": {
       "lat": 41.6552346,
       "lon": -0.8748477
@@ -424,6 +454,62 @@
     "terraza-experimental": {
       "lat": 41.6481731,
       "lon": -0.9093839
+    },
+    "rock-and-blues-cafe": {
+      "lat": 41.6533006,
+      "lon": -0.8810604
+    },
+    "rock-blues-cafe": {
+      "lat": 41.6533006,
+      "lon": -0.8810604
+    },
+    "belushi": {
+      "lat": 41.646587,
+      "lon": -0.8906184
+    },
+    "sala-mozart-del-auditorio": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
+    "sala-mozart-auditorio": {
+      "lat": 41.6380127,
+      "lon": -0.9008569
+    },
+    "ayuntamiento-de-zaragoza-plaza-del-pilar": {
+      "lat": 41.6562964,
+      "lon": -0.878942
+    },
+    "escenario-ambar---fuente-de-goya": {
+      "lat": 41.6562964,
+      "lon": -0.878942
+    },
+    "escenario-ambar-fuente-de-goya-plaza-del-pilar": {
+      "lat": 41.6562964,
+      "lon": -0.878942
+    },
+    "recinto-ferial-valdespartera": {
+      "lat": 41.6197925,
+      "lon": -0.937411
+    },
+    "vincci-zaragoza-zentro": {
+      "lat": 41.6508827,
+      "lon": -0.8782637
+    },
+    "cupula-geodesica": {
+      "lat": 41.6345895,
+      "lon": -0.8694427
+    },
+    "parque-pignatelli": {
+      "lat": 41.6371365,
+      "lon": -0.885187
+    },
+    "el-tunel-centro-de-artes-para-jovenes": {
+      "lat": 41.6510478,
+      "lon": -0.9244044
+    },
+    "el-tunel": {
+      "lat": 41.6510478,
+      "lon": -0.9244044
     }
   }
 }

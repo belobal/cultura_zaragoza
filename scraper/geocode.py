@@ -17,6 +17,84 @@ _NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 _MEM_CACHE: Dict[str, Optional[Tuple[float, float]]] = {}
 _LAST_REQUEST_TS: Optional[float] = None
 
+# Manual pins (override disk cache / Nominatim). Prefer exact venue addresses.
+_AUDITORIO = (41.6380127, -0.9008569)
+_PLAZA_PILAR = (41.6562964, -0.878942)
+_KNOWN_COORDS: Dict[str, Tuple[float, float]] = {
+    # Rock & Blues Café — C. del Cuatro de Agosto 5-7, 50003 Zaragoza
+    "rock-y-blues-cafe": (41.6533006, -0.8810604),
+    "rock-y-blues": (41.6533006, -0.8810604),
+    "rock-and-blues-cafe": (41.6533006, -0.8810604),
+    "rock-blues-cafe": (41.6533006, -0.8810604),
+    # Belushi Club de Comedia — C. de Bernardo Fita 11, 50005 Zaragoza
+    "belushi-club-de-comedia": (41.6465870, -0.8906184),
+    "belushi": (41.6465870, -0.8906184),
+    # Auditorio de Zaragoza (all rooms / aliases)
+    "auditorio-de-zaragoza": _AUDITORIO,
+    "auditorio-de-zaragoza-princesa-leonor": _AUDITORIO,
+    "auditorio-de-zaragoza-sala-mozart": _AUDITORIO,
+    "auditorio-de-zaragoza-sala-multiusos": _AUDITORIO,
+    "sala-multiusos-del-auditorio": _AUDITORIO,
+    "sala-mozart-del-auditorio": _AUDITORIO,
+    "sala-mozart-auditorio": _AUDITORIO,
+    # Plaza del Pilar / Escenario Ámbar
+    "plaza-del-pilar": _PLAZA_PILAR,
+    "ayuntamiento-de-zaragoza-plaza-del-pilar": _PLAZA_PILAR,
+    "oficina-de-turismo-plaza-del-pilar": _PLAZA_PILAR,
+    "escenario-ambar-fuente-de-goya": _PLAZA_PILAR,
+    "escenario-ambar---fuente-de-goya": _PLAZA_PILAR,
+    "escenario-ambar-fuente-de-goya-plaza-del-pilar": _PLAZA_PILAR,
+    # Teatro del Mercado — Plaza Santo Domingo
+    "teatro-del-mercado": (41.6571208, -0.8890132),
+    # Other frequent venues
+    "teatro-de-las-esquinas": (41.6471851, -0.907778),
+    "teatro-principal": (41.6520494, -0.8792281),
+    "teatro-principal-de-zaragoza": (41.6520494, -0.8792281),
+    "teatro-principal-zaragoza": (41.6520494, -0.8792281),
+    "sala-oasis-club": (41.6552154, -0.8855983),
+    "sala-oasis-club-zaragoza": (41.6552154, -0.8855983),
+    "oasis-club-teatro": (41.6552154, -0.8855983),
+    "pabellon-principe-felipe": (41.6353666, -0.8662366),
+    "pabellon-de-deportes-principe-felipe": (41.6353666, -0.8662366),
+    "paraninfo-de-la-universidad-de-zaragoza": (41.6473228, -0.8866786),
+    "edificio-paraninfo": (41.6473228, -0.8866786),
+    "jardin-de-invierno": (41.6317771, -0.8927026),
+    "jardin-de-invierno-parque-jose-antonio-labordeta": (41.6317771, -0.8927026),
+    "el-jardin-de-las-artes": (41.670757, -0.9223315),
+    "espacio-zity": (41.6197925, -0.937411),
+    "espacio-zity-valdespartera": (41.6197925, -0.937411),
+    "espacio-zity-recinto-ferial-de-valdespartera": (41.6197925, -0.937411),
+    "recinto-ferial-valdespartera": (41.6197925, -0.937411),
+    "hotel-vincci-zaragoza-zentro": (41.6508827, -0.8782637),
+    "vincci-zaragoza-zentro": (41.6508827, -0.8782637),
+    "cupula-geodesica": (41.6345895, -0.8694427),
+    "parque-pignatelli": (41.6371365, -0.8851870),
+    "gran-hotel-de-zaragoza-nh-collection": (41.6491310, -0.8816177),
+    "centro-civico-estacion-del-norte": (41.6601083, -0.8717459),
+    "estacion-del-norte": (41.6601083, -0.8717459),
+    "la-lata-de-bombillas": (41.654843, -0.878602),
+    "sala-lopez": (41.6584954, -0.8748586),
+    "sala-lopez-zaragoza": (41.6584954, -0.8748586),
+    # El Túnel — Pº María del Carmen Soldevila, s/n (Oliver)
+    "el-tunel-centro-de-artes-para-jovenes": (41.6510478, -0.9244044),
+    "el-tunel": (41.6510478, -0.9244044),
+}
+
+# If a cached slug is null/missing, try these related keys.
+_COORD_FALLBACKS: Dict[str, str] = {
+    "auditorio-de-zaragoza-princesa-leonor": "auditorio-de-zaragoza",
+    "auditorio-de-zaragoza-sala-mozart": "auditorio-de-zaragoza",
+    "auditorio-de-zaragoza-sala-multiusos": "auditorio-de-zaragoza",
+    "sala-multiusos-del-auditorio": "auditorio-de-zaragoza",
+    "pabellon-de-deportes-principe-felipe": "pabellon-principe-felipe",
+    "paraninfo-de-la-universidad-de-zaragoza": "edificio-paraninfo",
+    "jardin-de-invierno-parque-jose-antonio-labordeta": "jardin-de-invierno",
+    "ayuntamiento-de-zaragoza-plaza-del-pilar": "plaza-del-pilar",
+    "vincci-zaragoza-zentro": "hotel-vincci-zaragoza-zentro",
+    "recinto-ferial-valdespartera": "espacio-zity",
+    "escenario-ambar---fuente-de-goya": "escenario-ambar-fuente-de-goya",
+}
+
 
 def _slugify(s: str) -> str:
     s = (s or "").lower().strip()
@@ -111,15 +189,11 @@ def _geocode_nominatim(venue_name: str, query_city: str = "Zaragoza") -> Optiona
         f"{venue_norm}, España",
     ]
 
-    # Dirección conocida (del JSON-LD de Rock & Blues Café)
+    # Rock & Blues Café — C. del Cuatro de Agosto 5-7, 50003 Zaragoza
     if "rock" in venue_norm.lower() and "blues" in venue_norm.lower():
-        queries.insert(
-            0,
-            "Calle Cuatro de Agosto 5-7-9, 50003 Zaragoza, España",
-        )
-        # Nominatim localiza mejor el nombre de calle si lo pasamos como:
-        # "Cuatro de Agosto 5-7-9 Zaragoza"
-        queries.insert(0, "Cuatro de Agosto 5-7-9 Zaragoza")
+        queries.insert(0, "Calle del Cuatro de Agosto 5-7, 50003 Zaragoza, España")
+        queries.insert(0, "Cuatro de Agosto 5 Zaragoza")
+        queries.insert(0, "Rock & Blues, Calle del Cuatro de Agosto, Zaragoza")
 
     # Normalmente Nominatim no devuelve "Oasis Teatro Club" directamente,
     # pero sí "Sala Oasis Zaragoza".
@@ -138,6 +212,16 @@ def _geocode_nominatim(venue_name: str, query_city: str = "Zaragoza") -> Optiona
     if "roze" in venue_norm.lower():
         queries.insert(0, "Calle Cristóbal Colón 16, 50007 Zaragoza, España")
         queries.insert(0, "Cristóbal Colón 16 Zaragoza")
+
+    # Belushi Club de Comedia — C. de Bernardo Fita 11, 50005 Zaragoza
+    if "belushi" in venue_norm.lower():
+        queries.insert(0, "Calle Bernardo Fita 11, 50005 Zaragoza, España")
+        queries.insert(0, "Bernardo Fita 11 Zaragoza")
+
+    # El Túnel — Pº María del Carmen Soldevila, s/n (Oliver)
+    if "tunel" in venue_norm.lower():
+        queries.insert(0, "Calle María del Carmen Soldevila Menéndez, 50011 Zaragoza, España")
+        queries.insert(0, "María del Carmen Soldevila Menéndez Zaragoza")
 
     # Las Food Trucks / Fiestas del Pilar
     if "san pablo" in venue_norm.lower() and "parque" in venue_norm.lower():
@@ -217,6 +301,25 @@ def get_venue_coords(venue_name: str, venue_slug: Optional[str] = None) -> Optio
         _MEM_CACHE = _load_cache()
 
     key = venue_slug or _slugify(venue_name)
+    name_key = _slugify(venue_name)
+
+    def _lookup(k: str) -> Optional[Tuple[float, float]]:
+        if k in _KNOWN_COORDS:
+            return _KNOWN_COORDS[k]
+        fb = _COORD_FALLBACKS.get(k)
+        if fb and fb in _KNOWN_COORDS:
+            return _KNOWN_COORDS[fb]
+        if fb and fb in _MEM_CACHE and _MEM_CACHE[fb] is not None:
+            return _MEM_CACHE[fb]
+        if k in _MEM_CACHE and _MEM_CACHE[k] is not None:
+            return _MEM_CACHE[k]
+        return None
+
+    found = _lookup(key) or _lookup(name_key)
+    if found is not None:
+        return found
+
+    # Cached explicit null: still allow fallbacks above; only then give up.
     if key in _MEM_CACHE:
         return _MEM_CACHE[key]
 
