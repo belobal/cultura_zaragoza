@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-09-18T10:53:56.033631",
+  "fetched_at": "2026-09-30T18:56:02.306851",
   "events": [
     {
-      "title": "NIGHTRAIN",
+      "title": "SERGIO ALAMAR",
       "category": "Comedia",
       "category_slug": "comedia",
       "venue": "Belushi Club de Comedia",
@@ -11,13 +11,27 @@
       "time_text": "20:00",
       "price_text": null,
       "price_min_eur": null,
-      "detail_url": "https://www.atrapalo.com/entradas/pablo-portet-presenta-nightrain-zaragoza_e4952100/",
+      "detail_url": "https://www.dinaticket.com/es/provider/20297/event/4940117",
       "source": "belushi",
-      "date_from": "2026-09-18",
-      "date_to": "2026-09-18"
+      "date_from": "2026-10-02",
+      "date_to": "2026-10-02"
     },
     {
-      "title": "EL COLECIONISTA DE VOCES",
+      "title": "COLECTIVO DESASTRE",
+      "category": "Comedia",
+      "category_slug": "comedia",
+      "venue": "Belushi Club de Comedia",
+      "venue_slug": "belushi-club-de-comedia",
+      "time_text": "22:00",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://m.entradium.com/es/events/colectivo-desastre-en-zaragoza-comedia-y-musica",
+      "source": "belushi",
+      "date_from": "2026-10-02",
+      "date_to": "2026-10-02"
+    },
+    {
+      "title": "SILVIA SPARKS",
       "category": "Comedia",
       "category_slug": "comedia",
       "venue": "Belushi Club de Comedia",
@@ -25,27 +39,27 @@
       "time_text": "19:00",
       "price_text": null,
       "price_min_eur": null,
-      "detail_url": "https://entradium.com/events/david-angulo-en-belushi-club-de-comedia",
+      "detail_url": "https://entradium.com/events/silvia-sparks-en-zaragoza?utm_source=ig&utm_medium=social&utm_content=link_in_bio",
       "source": "belushi",
-      "date_from": "2026-09-19",
-      "date_to": "2026-09-19"
+      "date_from": "2026-10-03",
+      "date_to": "2026-10-03"
     },
     {
-      "title": "TONTA ,CRISTINA GOMEZ",
+      "title": "EL ROAST DEFINITIVO",
       "category": "Comedia",
       "category_slug": "comedia",
       "venue": "Belushi Club de Comedia",
       "venue_slug": "belushi-club-de-comedia",
-      "time_text": "21:30",
+      "time_text": "21:00",
       "price_text": null,
       "price_min_eur": null,
-      "detail_url": "https://entradium.com/events/monologo-de-cristina-gomez-en-zaragoza-zaragoza",
+      "detail_url": "https://entradium.com/es/events/el-roast-definitivo-zaragoza",
       "source": "belushi",
-      "date_from": "2026-09-19",
-      "date_to": "2026-09-19"
+      "date_from": "2026-10-03",
+      "date_to": "2026-10-03"
     },
     {
-      "title": "LUIS ÃLVARO EN ZARAGOZA",
+      "title": "ESTOY BIEN",
       "category": "Comedia",
       "category_slug": "comedia",
       "venue": "Belushi Club de Comedia",
@@ -53,10 +67,10 @@
       "time_text": "19:00",
       "price_text": null,
       "price_min_eur": null,
-      "detail_url": "https://entradium.com/es/events/luis-alvaro-en-zaragoza-zaragoza",
+      "detail_url": "https://www.atrapalo.com/entradas/estoy-bien-un-monologo-de-esther-gimeno_e4953034/",
       "source": "belushi",
-      "date_from": "2026-09-20",
-      "date_to": "2026-09-20"
+      "date_from": "2026-10-04",
+      "date_to": "2026-10-04"
     }
   ]
 }

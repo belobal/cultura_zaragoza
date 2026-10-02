@@ -1,46 +1,7 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-09-18T10:32:39.490040",
+  "fetched_at": "2026-09-27T18:20:21.046407",
   "events": [
-    {
-      "title": "EL DESVAN + VERSADOS",
-      "category": "Conciertos en Zaragoza",
-      "category_slug": "conciertos-en-zaragoza",
-      "venue": "Sala Creedence",
-      "venue_slug": "sala-creedence-zaragoza",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://creedencesound.com/agenda_creedence/el-desvan-versados",
-      "source": "creedence",
-      "date_from": "2026-09-19",
-      "date_to": "2026-09-19"
-    },
-    {
-      "title": "THE BOOJUMS (CANADA) – 15 AÑOS DE SALA CREEDENCE – ZARAGOZA",
-      "category": "Conciertos en Zaragoza",
-      "category_slug": "conciertos-en-zaragoza",
-      "venue": "Sala Creedence",
-      "venue_slug": "sala-creedence-zaragoza",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://creedencesound.com/agenda_creedence/the-boojums-canada-15-anos-de-sala-creedence-zaragoza",
-      "source": "creedence",
-      "date_from": "2026-09-24",
-      "date_to": "2026-09-24"
-    },
-    {
-      "title": "ROBER PERDUT EN SALA CREEDENCE – ZARAGOZA",
-      "category": "Conciertos en Zaragoza",
-      "category_slug": "conciertos-en-zaragoza",
-      "venue": "Sala Creedence",
-      "venue_slug": "sala-creedence-zaragoza",
-      "price_text": null,
-      "price_min_eur": null,
-      "detail_url": "https://creedencesound.com/agenda_creedence/rober-perdut-en-sala-creedence-zaragoza",
-      "source": "creedence",
-      "date_from": "2026-09-26",
-      "date_to": "2026-09-26"
-    },
     {
       "title": "FEW THOUGHTS + INCORDIAN",
       "category": "Conciertos en Zaragoza",
@@ -211,6 +172,19 @@
       "date_to": "2026-10-31"
     },
     {
+      "title": "Doc & The Mads + RAUNCHY!",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/doc-the-mads-raunchy",
+      "source": "creedence",
+      "date_from": "2026-11-06",
+      "date_to": "2026-11-06"
+    },
+    {
       "title": "MALAGANA + DJ. ROLL OVER MORENO",
       "category": "Conciertos en Zaragoza",
       "category_slug": "conciertos-en-zaragoza",
@@ -222,6 +196,19 @@
       "source": "creedence",
       "date_from": "2026-11-13",
       "date_to": "2026-11-13"
+    },
+    {
+      "title": "CHILD OF PANOPTES (FR) + POST PARTY GARAGE PSYCH!",
+      "category": "Conciertos en Zaragoza",
+      "category_slug": "conciertos-en-zaragoza",
+      "venue": "Sala Creedence",
+      "venue_slug": "sala-creedence-zaragoza",
+      "price_text": null,
+      "price_min_eur": null,
+      "detail_url": "https://creedencesound.com/agenda_creedence/child-of-panoptes-fr-post-party-garage-psych",
+      "source": "creedence",
+      "date_from": "2026-11-20",
+      "date_to": "2026-11-20"
     },
     {
       "title": "BENGO – ARTISTAS EN RUTA 2016",

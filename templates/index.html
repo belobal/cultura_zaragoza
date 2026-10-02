@@ -279,7 +279,6 @@
           </div>
         </div>
 
-        {% set pick_idx = namespace(n=0) %}
         {% for day, day_events in events_by_day %}
         <section class="day-group">
           <h2 class="day-title">
@@ -298,7 +297,7 @@
             </p>
             <div class="event-line-2">
               <label class="card-pick" style="margin: 0;">
-                <input type="checkbox" class="event-pick" data-idx="{{ pick_idx.n }}" checked />
+                <input type="checkbox" class="event-pick" data-idx="{{ e._export_idx }}" checked />
                 <span>Me interesa</span>
               </label>
               <span class="category-tag">{{ e.category }}</span>
@@ -313,7 +312,6 @@
               {% endif %}
             </div>
             </li>
-            {% set pick_idx.n = pick_idx.n + 1 %}
             {% endfor %}
           </ul>
         </section>
@@ -457,11 +455,15 @@
             btn.textContent = open ? "Ocultar opciones de guardado" : "Guardar información";
             if (open) {
               const hint = document.getElementById("export-selected-hint");
-              const n = document.querySelectorAll("input.event-pick:checked").length;
-              const total = document.querySelectorAll("input.event-pick").length;
+              const idxs = new Set(
+                Array.from(document.querySelectorAll("input.event-pick:checked")).map((el) => el.dataset.idx)
+              );
+              const total = document.getElementById("events-export-json")
+                ? JSON.parse(document.getElementById("events-export-json").textContent || "[]").length
+                : idxs.size;
               if (hint) {
                 hint.textContent =
-                  n === 0 ? "Ningún evento seleccionado." : n + " de " + total + " incluidos en el documento.";
+                  idxs.size === 0 ? "Ningún evento seleccionado." : idxs.size + " de " + total + " incluidos en el documento.";
               }
             }
           });
@@ -483,11 +485,12 @@
         }
 
         const picks = () => Array.from(document.querySelectorAll("input.event-pick:checked")).map((el) => Number(el.dataset.idx));
+        const uniquePicks = () => [...new Set(picks())];
         const hint = document.getElementById("export-selected-hint");
 
         function updateHint() {
           if (!hint) return;
-          const n = picks().length;
+          const n = uniquePicks().length;
           const total = allEvents.length;
           hint.textContent = n === 0 ? "Ningún evento seleccionado." : n + " de " + total + " incluidos en el documento.";
         }

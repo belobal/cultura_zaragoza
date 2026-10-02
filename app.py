@@ -140,7 +140,9 @@ def create_app() -> Flask:
         events = _filter_events(all_events, parsed)
         categories = _available_categories(all_events)
         venues_for_select = _available_venues_for_select(all_events)
-        events_by_day = _group_events_by_day(events, range_from=parsed["date_from"])
+        events_by_day = _group_events_by_day(
+            events, range_from=parsed["date_from"], range_to=parsed["date_to"]
+        )
         span_days = (parsed["date_to"] - parsed["date_from"]).days + 1
         # Day chips only for short ranges; long ranges still list events by day below.
         week_days = []
@@ -199,7 +201,9 @@ def create_app() -> Flask:
         all_events = get_events_cached()
         events = _filter_events(all_events, parsed)
         events = _with_venue_coords(events)
-        events_by_day = _group_events_by_day(events, range_from=parsed["date_from"])
+        events_by_day = _group_events_by_day(
+            events, range_from=parsed["date_from"], range_to=parsed["date_to"]
+        )
         categories = _available_categories(all_events)
         venues_for_select = _available_venues_for_select(all_events)
         events_export = _events_export_payload(events)
@@ -1381,13 +1385,44 @@ def _event_details_line(ev: dict) -> str:
     return " · ".join(parts)
 
 
-def _group_export_events_by_day(events: List[dict]) -> List[dict]:
-    """Group export payload (ISO date strings) by day for HTML rendering."""
-    sorted_ev = _sort_events_for_export(events)
+def _group_export_events_by_day(
+    events: List[dict],
+    range_from: Optional[date] = None,
+    range_to: Optional[date] = None,
+) -> List[dict]:
+    """Group export payload by day; multi-day events appear on each overlapping day."""
+    floor = range_from
+    ceiling = range_to
+    expanded: List[dict] = []
+    for ev in events:
+        try:
+            df = _parse_iso_date_str(str(ev.get("date_from") or ""))
+            dt = _parse_iso_date_str(str(ev.get("date_to") or ev.get("date_from") or ""))
+        except ValueError:
+            continue
+        start = df
+        end = dt
+        if floor is not None:
+            start = max(start, floor)
+        if ceiling is not None:
+            end = min(end, ceiling)
+        if end < start:
+            continue
+        day = start
+        while day <= end:
+            row = dict(ev)
+            row["_day"] = day
+            expanded.append(row)
+            day += timedelta(days=1)
+    expanded.sort(
+        key=lambda e: (
+            e["_day"],
+            (e.get("venue") or "").lower(),
+            (e.get("title") or "").lower(),
+        )
+    )
     groups: List[dict] = []
-    for day, chunk in groupby(
-        sorted_ev, key=lambda e: _parse_iso_date_str(str(e.get("date_from") or ""))
-    ):
+    for day, chunk in groupby(expanded, key=lambda e: e["_day"]):
         day_events = []
         for ev in chunk:
             day_events.append(
@@ -1405,7 +1440,7 @@ def _build_agenda_html(meta: dict, events: List[dict]) -> str:
     """Self-contained HTML export for the selected events."""
     df = _parse_iso_date_str(meta["date_from"])
     dt = _parse_iso_date_str(meta["date_to"])
-    events_by_day = _group_export_events_by_day(events)
+    events_by_day = _group_export_events_by_day(events, range_from=df, range_to=dt)
     return render_template(
         "agenda_export.html",
         meta=meta,
@@ -1469,28 +1504,47 @@ def _sort_key_date_venue_title(e: dict) -> tuple:
 def _group_events_by_day(
     events: List[dict],
     range_from: Optional[date] = None,
+    range_to: Optional[date] = None,
 ) -> List[Tuple[date, List[dict]]]:
-    """Split events into day groups. Multi-day runs that started earlier are
-    shown under max(date_from, range_from) so past day headers never appear."""
+    """Split events into day groups. Multi-day events appear on every day they
+    overlap the visible range (never before range_from / today)."""
     if not events:
         return []
     floor = range_from or date.today()
+    ceiling = range_to
     cleaned: List[dict] = []
-    for e in events:
+    for idx, e in enumerate(events):
         _coerce_event_dates(e)
         df = e.get("date_from")
         dt = e.get("date_to")
         if not isinstance(df, date):
             continue
-        # Fully past events should not appear.
-        if isinstance(dt, date) and dt < floor:
+        if not isinstance(dt, date):
+            dt = df
+        if dt < floor:
             continue
-        e2 = dict(e)
-        e2["_day"] = df if df >= floor else floor
-        cleaned.append(e2)
+        start = df if df >= floor else floor
+        end = dt
+        if ceiling is not None:
+            end = min(end, ceiling)
+        if end < start:
+            continue
+        day = start
+        while day <= end:
+            e2 = dict(e)
+            e2["_day"] = day
+            e2["_export_idx"] = idx
+            cleaned.append(e2)
+            day += timedelta(days=1)
     if not cleaned:
         return []
-    cleaned.sort(key=lambda e: (e["_day"], (e.get("title") or "").lower()))
+    cleaned.sort(
+        key=lambda e: (
+            e["_day"],
+            (e.get("venue") or "").lower(),
+            (e.get("title") or "").lower(),
+        )
+    )
     return [(d, list(g)) for d, g in groupby(cleaned, key=lambda e: e["_day"])]
 
 

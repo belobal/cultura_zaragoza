@@ -1,119 +1,7 @@
 {
-  "fetched_at": "2026-09-18T10:32:27.113263",
+  "fetched_at": "2026-09-27T18:19:58.630001",
   "schema_version": 5,
   "events": [
-    {
-      "title": "DOCTOR VELVET REVIVAL",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "21:00",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2041",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-18",
-      "date_to": "2026-09-18"
-    },
-    {
-      "title": "NOWHERE BEAT",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "21:00",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2105",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-19",
-      "date_to": "2026-09-19"
-    },
-    {
-      "title": "DDM",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "20:00",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2057",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-20",
-      "date_to": "2026-09-20"
-    },
-    {
-      "title": "CON V DE VOZ",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "19:00",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2254",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-22",
-      "date_to": "2026-09-22"
-    },
-    {
-      "title": "LUKE WINSLOW KING",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": null,
-      "price_text": "Con Entrada",
-      "price_min_eur": null,
-      "detail_url": "https://sweetcaroline.app/venta-de-entradas/concierto-de-luke-winslow-king-en-zaragoza",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-23",
-      "date_to": "2026-09-23"
-    },
-    {
-      "title": "DR. FEELGOOD",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": null,
-      "price_text": "Con Entrada",
-      "price_min_eur": null,
-      "detail_url": "https://sweetcaroline.app/venta-de-entradas/concierto-de-dr-feelgood-en-zaragoza",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-24",
-      "date_to": "2026-09-24"
-    },
-    {
-      "title": "THE DAHLMANNS",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "21:00",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2111",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-25",
-      "date_to": "2026-09-25"
-    },
-    {
-      "title": "DESERT VIPERS",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": "21:00",
-      "price_text": "Acceso Libre",
-      "price_min_eur": 0.0,
-      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=1946",
-      "source": "rockandbluescafe",
-      "date_from": "2026-09-26",
-      "date_to": "2026-09-26"
-    },
     {
       "title": "JAZZ & JAM VOL VI",
       "category": "Rock & Blues Café (Conciertos)",
@@ -143,7 +31,7 @@
       "date_to": "2026-09-27"
     },
     {
-      "title": "THE REVEREND PEYTON'S BIG DAMN BAND",
+      "title": "THE REVEREND PEYTONS BIG DAMN BAND",
       "category": "Rock & Blues Café (Conciertos)",
       "category_slug": "rock-y-blues-cafe-conciertos",
       "venue": "Rock & Blues Café",
@@ -381,6 +269,20 @@
       "date_to": "2026-10-25"
     },
     {
+      "title": "NOCHE FLAMENCO",
+      "category": "Rock & Blues Café (Conciertos)",
+      "category_slug": "rock-y-blues-cafe-conciertos",
+      "venue": "Rock & Blues Café",
+      "venue_slug": "rock-y-blues-cafe",
+      "time_text": "21:00",
+      "price_text": "Acceso Libre",
+      "price_min_eur": 0.0,
+      "detail_url": "https://www.sweetcaroline.app/programacion10.php?idevento=2134",
+      "source": "rockandbluescafe",
+      "date_from": "2026-10-28",
+      "date_to": "2026-10-28"
+    },
+    {
       "title": "BLUE MOON MARQUEE",
       "category": "Rock & Blues Café (Conciertos)",
       "category_slug": "rock-y-blues-cafe-conciertos",
@@ -407,20 +309,6 @@
       "source": "rockandbluescafe",
       "date_from": "2026-10-30",
       "date_to": "2026-10-30"
-    },
-    {
-      "title": "OTRA RONDA",
-      "category": "Rock & Blues Café (Conciertos)",
-      "category_slug": "rock-y-blues-cafe-conciertos",
-      "venue": "Rock & Blues Café",
-      "venue_slug": "rock-y-blues-cafe",
-      "time_text": null,
-      "price_text": "Con Entrada",
-      "price_min_eur": null,
-      "detail_url": "https://sweetcaroline.app/venta-de-entradas/concierto-de-jorge-mcfly-en-zaragoza",
-      "source": "rockandbluescafe",
-      "date_from": "2026-10-31",
-      "date_to": "2026-10-31"
     },
     {
       "title": "SILENT 4TET",
@@ -841,6 +729,20 @@
       "source": "rockandbluescafe",
       "date_from": "2026-12-26",
       "date_to": "2026-12-26"
+    },
+    {
+      "title": "MAMA LADILLA",
+      "category": "Rock & Blues Café (Conciertos)",
+      "category_slug": "rock-y-blues-cafe-conciertos",
+      "venue": "Rock & Blues Café",
+      "venue_slug": "rock-y-blues-cafe",
+      "time_text": null,
+      "price_text": "Con Entrada",
+      "price_min_eur": null,
+      "detail_url": "https://sweetcaroline.app/venta-de-entradas/concierto-de-mama-ladilla-en-zaragoza",
+      "source": "rockandbluescafe",
+      "date_from": "2027-01-15",
+      "date_to": "2027-01-15"
     },
     {
       "title": "THE PINK STONES + RESTOS",

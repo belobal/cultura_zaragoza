@@ -1,20 +1,7 @@
 {
   "schema_version": 1,
-  "fetched_at": "2026-09-18T10:53:56.650072",
+  "fetched_at": "2026-09-27T18:20:26.726092",
   "events": [
-    {
-      "title": "GIGANTE",
-      "category": "Teatro",
-      "category_slug": "teatro",
-      "venue": "Teatro Principal de Zaragoza",
-      "venue_slug": "teatro-principal-de-zaragoza",
-      "price_text": "Desde 5,00€",
-      "price_min_eur": 5.0,
-      "detail_url": "https://entradas.ibercaja.es/compra/gigante/17093900/",
-      "source": "ibercaja_teatro_principal",
-      "date_from": "2026-09-18",
-      "date_to": "2026-09-18"
-    },
     {
       "title": "HOUDINI",
       "category": "Musical",
@@ -25,8 +12,8 @@
       "price_min_eur": 5.0,
       "detail_url": "https://entradas.ibercaja.es/compra/houdini/20261018TP/",
       "source": "ibercaja_teatro_principal",
-      "date_from": "2026-09-24",
-      "date_to": "2026-09-24"
+      "date_from": "2026-09-30",
+      "date_to": "2026-09-30"
     },
     {
       "title": "LA FLAUTA MÁGICA",
@@ -157,6 +144,19 @@
       "source": "ibercaja_teatro_principal",
       "date_from": "2026-12-16",
       "date_to": "2026-12-16"
+    },
+    {
+      "title": "OLIVER TWIST EL MUSICAL",
+      "category": "Musical",
+      "category_slug": "musical",
+      "venue": "Teatro Principal de Zaragoza",
+      "venue_slug": "teatro-principal-de-zaragoza",
+      "price_text": "Desde 5,00€",
+      "price_min_eur": 5.0,
+      "detail_url": "https://entradas.ibercaja.es/compra/oliver-twist-el-musical/23123900/",
+      "source": "ibercaja_teatro_principal",
+      "date_from": "2026-12-23",
+      "date_to": "2026-12-23"
     }
   ]
 }
