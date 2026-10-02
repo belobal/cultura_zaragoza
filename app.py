@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import threading
@@ -34,6 +35,7 @@ from scraper.cache_policy import force_cache_refresh
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    app.url_map.strict_slashes = False
     app_root = Path(__file__).resolve().parent
     cache_dir = app_root / "cache"
 
@@ -65,6 +67,58 @@ def create_app() -> Flask:
     @app.get("/healthz")
     def healthz():
         return {"ok": True}
+
+    @app.get("/json")
+    @app.get("/json/")
+    def cache_json_index():
+        """List on-disk scraper cache JSON files."""
+        caches = []
+        if cache_dir.is_dir():
+            for path in sorted(cache_dir.glob("*.json")):
+                try:
+                    st = path.stat()
+                    entry = {
+                        "name": path.name,
+                        "url": f"/json/{path.name}",
+                        "bytes": st.st_size,
+                        "mtime": datetime.utcfromtimestamp(st.st_mtime).isoformat() + "Z",
+                    }
+                    try:
+                        payload = json.loads(path.read_text(encoding="utf-8"))
+                        if isinstance(payload, dict):
+                            events = payload.get("events")
+                            if isinstance(events, list):
+                                entry["events"] = len(events)
+                            if payload.get("fetched_at"):
+                                entry["fetched_at"] = payload.get("fetched_at")
+                            if payload.get("schema_version") is not None:
+                                entry["schema_version"] = payload.get("schema_version")
+                            if isinstance(payload.get("coords"), dict):
+                                entry["coords"] = len(payload["coords"])
+                        elif isinstance(payload, list):
+                            entry["items"] = len(payload)
+                    except Exception:
+                        entry["parse_error"] = True
+                    caches.append(entry)
+                except OSError:
+                    continue
+        return jsonify({"caches": caches})
+
+    @app.get("/json/<name>")
+    def cache_json_file(name: str):
+        """Serve one cache JSON file by name (e.g. /json/elcrapula_events.json)."""
+        safe = Path(name).name
+        if safe != name or not safe.endswith(".json") or "/" in name or "\\" in name:
+            return jsonify({"ok": False, "error": "invalid_name"}), 400
+        path = cache_dir / safe
+        if not path.is_file() or not path.resolve().is_relative_to(cache_dir.resolve()):
+            return jsonify({"ok": False, "error": "not_found"}), 404
+        return send_from_directory(
+            cache_dir,
+            safe,
+            mimetype="application/json",
+            max_age=0,
+        )
 
     @app.get("/api/events")
     def api_events():

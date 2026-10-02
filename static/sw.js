@@ -1,5 +1,5 @@
 /* Minimal service worker: offline shell for the mobile agenda. */
-const CACHE = "cultura-zgz-v1";
+const CACHE = "cultura-zgz-v2";
 const PRECACHE = ["/m", "/favicon.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -22,13 +22,26 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
+  // Never cache debug/cache-browser or health endpoints.
+  if (
+    url.pathname === "/json" ||
+    url.pathname === "/json/" ||
+    url.pathname.startsWith("/json/") ||
+    url.pathname === "/healthz"
+  ) {
+    event.respondWith(fetch(req));
+    return;
+  }
+
   // Network-first for agenda HTML/API so filters stay fresh.
   if (url.pathname === "/m" || url.pathname.startsWith("/api/")) {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((cache) => cache.put(req, copy));
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((cache) => cache.put(req, copy));
+          }
           return res;
         })
         .catch(() => caches.match(req))
@@ -37,10 +50,15 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req).then((res) => {
-      const copy = res.clone();
-      caches.open(CACHE).then((cache) => cache.put(req, copy));
-      return res;
-    }))
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+      return fetch(req).then((res) => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, copy));
+        }
+        return res;
+      });
+    })
   );
 });
