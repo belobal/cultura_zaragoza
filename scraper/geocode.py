@@ -78,6 +78,9 @@ _KNOWN_COORDS: Dict[str, Tuple[float, float]] = {
     # El Túnel — Pº María del Carmen Soldevila, s/n (Oliver)
     "el-tunel-centro-de-artes-para-jovenes": (41.6510478, -0.9244044),
     "el-tunel": (41.6510478, -0.9244044),
+    # El Sótano Mágico — C. San Pablo 43, 50003 Zaragoza
+    "el-sotano-magico": (41.6557700, -0.8858410),
+    "sotano-magico": (41.6557700, -0.8858410),
 }
 
 # If a cached slug is null/missing, try these related keys.
@@ -217,6 +220,11 @@ def _geocode_nominatim(venue_name: str, query_city: str = "Zaragoza") -> Optiona
     if "belushi" in venue_norm.lower():
         queries.insert(0, "Calle Bernardo Fita 11, 50005 Zaragoza, España")
         queries.insert(0, "Bernardo Fita 11 Zaragoza")
+
+    # El Sótano Mágico — C. San Pablo 43, 50003 Zaragoza
+    if "sotano" in venue_norm.lower() and "magico" in venue_norm.lower():
+        queries.insert(0, "Calle San Pablo 43, 50003 Zaragoza, España")
+        queries.insert(0, "San Pablo 43 Zaragoza")
 
     # El Túnel — Pº María del Carmen Soldevila, s/n (Oliver)
     if "tunel" in venue_norm.lower():

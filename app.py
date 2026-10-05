@@ -30,7 +30,40 @@ from scraper.foodtrucks import get_events as get_foodtrucks_events
 from scraper.jardin_de_las_artes import get_events as get_jardin_de_las_artes_events
 from scraper.fiestas_pilar import get_events as get_fiestas_pilar_events
 from scraper.teatro_esquinas import get_events as get_teatro_esquinas_events
+from scraper.sotano_magico import get_events as get_sotano_magico_events
 from scraper.cache_policy import force_cache_refresh
+
+
+def _git_last_commit_at(app_root: Path) -> Optional[datetime]:
+    """Return the committer datetime of HEAD, or None if git is unavailable."""
+    try:
+        import subprocess
+
+        out = subprocess.check_output(
+            ["git", "-C", str(app_root), "log", "-1", "--format=%cI"],
+            stderr=subprocess.DEVNULL,
+            timeout=2,
+        )
+        text = out.decode("utf-8", errors="replace").strip()
+        if not text:
+            return None
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+        if dt.tzinfo is not None:
+            try:
+                from zoneinfo import ZoneInfo
+
+                dt = dt.astimezone(ZoneInfo("Europe/Madrid"))
+            except Exception:
+                pass
+            dt = dt.replace(tzinfo=None)
+        return dt
+    except Exception:
+        return None
+
+
+def _code_updated_at(app_root: Path) -> Optional[datetime]:
+    """Date shown in the footer: always the last git commit when possible."""
+    return _git_last_commit_at(app_root)
 
 
 def create_app() -> Flask:
@@ -38,6 +71,11 @@ def create_app() -> Flask:
     app.url_map.strict_slashes = False
     app_root = Path(__file__).resolve().parent
     cache_dir = app_root / "cache"
+    code_updated_at = _code_updated_at(app_root)
+
+    @app.context_processor
+    def _inject_code_updated_at():
+        return {"code_updated_at": code_updated_at}
 
     @app.template_filter("fmt_mmm_dd_yyyy")
     def _fmt_mmm_dd_yyyy_jinja(d):
@@ -597,6 +635,15 @@ _VENUE_ALIASES = {
         "El Túnel. Centro de Artes Para Jóvenes",
         "el-tunel-centro-de-artes-para-jovenes",
     ),
+    # El Sótano Mágico
+    "el-sotano-magico": (
+        "El Sótano Mágico",
+        "el-sotano-magico",
+    ),
+    "sotano-magico": (
+        "El Sótano Mágico",
+        "el-sotano-magico",
+    ),
 }
 
 
@@ -1126,6 +1173,7 @@ def _load_all_sources_parallel(
         get_foodtrucks_events,
         get_jardin_de_las_artes_events,
         get_fiestas_pilar_events,
+        get_sotano_magico_events,
     ]
     workers_cap = _AGGREGATOR_MAX_WORKERS if max_workers is None else int(max_workers)
     workers = min(max(1, workers_cap), len(fetchers))
@@ -1214,6 +1262,7 @@ def get_events_cached():
                     get_foodtrucks_events(),
                     get_jardin_de_las_artes_events(),
                     get_fiestas_pilar_events(),
+                    get_sotano_magico_events(),
                 ]
             )
         else:

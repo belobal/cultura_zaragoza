@@ -336,6 +336,7 @@
               <a href="https://entradas.lalatadebombillas.es/web/?menu=36&amp;pagina=&amp;siteID=latadebombillas" target="_blank" rel="noopener noreferrer">venta de entradas La Lata</a></li>
           <li><a href="https://creedencesound.com/sala-creedence-conciertos-y-sesiones" target="_blank" rel="noopener noreferrer">Sala Creedence (Creedence Sound)</a></li>
           <li><a href="https://belushicomedia.com/" target="_blank" rel="noopener noreferrer">Belushi Club de Comedia</a></li>
+          <li><a href="https://elsotanomagico.com/reservas/" target="_blank" rel="noopener noreferrer">El Sótano Mágico — programación</a></li>
           <li><a href="https://www.elcrapula.es/" target="_blank" rel="noopener noreferrer">El Refugio del Crápula</a></li>
           <li><a href="https://compraentradas.ibercaja.es/teatroprincipal/public/janto/main.php" target="_blank" rel="noopener noreferrer">Teatro Principal — Entradas Ibercaja</a>
               (<a href="https://entradas.ibercaja.es/eventos/teatro-principal-de-zaragoza/" target="_blank" rel="noopener noreferrer">listado público</a>)</li>
@@ -349,6 +350,9 @@
           <li>Mapa: teselas <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap</a></li>
         </ul>
         <p class="note">Los titulares de cada web son responsables de sus contenidos y condiciones de uso.</p>
+        {% if code_updated_at %}
+        <p class="note">Último commit: {{ code_updated_at|fmt_long_es }}.</p>
+        {% endif %}
       </footer>
     </div>
 
