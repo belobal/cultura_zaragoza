@@ -81,6 +81,10 @@ _KNOWN_COORDS: Dict[str, Tuple[float, float]] = {
     # El Sótano Mágico — C. San Pablo 43, 50003 Zaragoza
     "el-sotano-magico": (41.6557700, -0.8858410),
     "sotano-magico": (41.6557700, -0.8858410),
+    # El Refugio del Crápula — C. Mayor 54, 50001 Zaragoza
+    "el-refugio-del-crapula": (41.6524137, -0.8741982),
+    "refugio-del-crapula": (41.6524137, -0.8741982),
+    "elcrapula": (41.6524137, -0.8741982),
 }
 
 # If a cached slug is null/missing, try these related keys.
