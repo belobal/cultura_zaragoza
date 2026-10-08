@@ -34,6 +34,34 @@ from scraper.sotano_magico import get_events as get_sotano_magico_events
 from scraper.cache_policy import force_cache_refresh
 
 
+def _parse_code_updated_at(raw: str) -> Optional[datetime]:
+    """Parse CODE_UPDATED_AT / BUILD_DATE into a naive local datetime."""
+    text = (raw or "").strip()
+    if not text:
+        return None
+    try:
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        dt = None
+        for fmt in ("%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%d/%m/%Y"):
+            try:
+                dt = datetime.strptime(text[:19], fmt)
+                break
+            except ValueError:
+                continue
+        if dt is None:
+            return None
+    if dt.tzinfo is not None:
+        try:
+            from zoneinfo import ZoneInfo
+
+            dt = dt.astimezone(ZoneInfo("Europe/Madrid"))
+        except Exception:
+            pass
+        dt = dt.replace(tzinfo=None)
+    return dt
+
+
 def _git_last_commit_at(app_root: Path) -> Optional[datetime]:
     """Return the committer datetime of HEAD, or None if git is unavailable."""
     try:
@@ -47,23 +75,30 @@ def _git_last_commit_at(app_root: Path) -> Optional[datetime]:
         text = out.decode("utf-8", errors="replace").strip()
         if not text:
             return None
-        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
-        if dt.tzinfo is not None:
-            try:
-                from zoneinfo import ZoneInfo
-
-                dt = dt.astimezone(ZoneInfo("Europe/Madrid"))
-            except Exception:
-                pass
-            dt = dt.replace(tzinfo=None)
-        return dt
+        return _parse_code_updated_at(text)
     except Exception:
         return None
 
 
 def _code_updated_at(app_root: Path) -> Optional[datetime]:
-    """Date shown in the footer: always the last git commit when possible."""
-    return _git_last_commit_at(app_root)
+    """
+    Date shown in the footer.
+    Prefer CODE_UPDATED_AT (or BUILD_DATE) — required on servers without git —
+    then last git commit in development, then app.py mtime as last resort.
+    """
+    for key in ("CODE_UPDATED_AT", "BUILD_DATE"):
+        parsed = _parse_code_updated_at(os.environ.get(key) or "")
+        if parsed is not None:
+            return parsed
+
+    git_dt = _git_last_commit_at(app_root)
+    if git_dt is not None:
+        return git_dt
+
+    try:
+        return datetime.fromtimestamp((app_root / "app.py").stat().st_mtime)
+    except OSError:
+        return None
 
 
 def create_app() -> Flask:
@@ -869,6 +904,18 @@ def _filter_out_deportes(events: List[dict]) -> List[dict]:
     return [e for e in events if not _is_deportes_event(e)]
 
 
+def _is_infantil_event(e: dict) -> bool:
+    slug = (e.get("category_slug") or "").strip().lower()
+    cat = (e.get("category") or "").strip().lower()
+    if slug == "infantil":
+        return True
+    return cat in ("infantil", "infancia") or cat.startswith("infantil")
+
+
+def _filter_out_infantil(events: List[dict]) -> List[dict]:
+    return [e for e in events if not _is_infantil_event(e)]
+
+
 def _norm_title_for_dedupe(title: str) -> str:
     t = (title or "").lower()
     for a, b in (
@@ -877,6 +924,9 @@ def _norm_title_for_dedupe(title: str) -> str:
         ("í", "i"),
         ("ó", "o"),
         ("ú", "u"),
+        ("ü", "u"),
+        ("ö", "o"),
+        ("ä", "a"),
         ("ñ", "n"),
         ("’", "'"),
         ("‘", "'"),
@@ -893,18 +943,20 @@ def _norm_title_for_dedupe(title: str) -> str:
 _SOURCE_PRIORITY = {
     # Prefer the venue's own agenda when the same show appears elsewhere.
     "rockandbluescafe": 0,
-    "creedence": 1,
+    "creedence": 0,
+    "belushi": 0,
+    "teatro_esquinas": 0,
+    "sotano_magico": 0,
+    "foodtrucks": 0,
+    "jardin_de_las_artes": 0,
     "lalata": 2,
     "lalata_entradas": 2,
     "ibercaja_teatro_principal": 3,
-    "teatro_esquinas": 1,
-    "belushi": 3,
+    # City-wide / transversal aggregators lose to venue scrapers.
+    "fiestas_pilar": 7,
     "conciertos_club": 8,
     "aragonenvivo": 9,
     "bomboyplatillo": 10,
-    "foodtrucks": 1,
-    "jardin_de_las_artes": 1,
-    "fiestas_pilar": 1,
 }
 
 
@@ -921,28 +973,31 @@ def _sala_day_dedupe_key(e: dict) -> tuple:
     return (vs, ds, tt, _norm_title_for_dedupe(e.get("title", "")))
 
 
-def _title_date_venue_dedupe_key(e: dict) -> Tuple[str, str, str]:
-    """Same day + normalized title + venue → one listing."""
+def _title_date_venue_dedupe_key(e: dict) -> Tuple[str, str, str, str]:
+    """Same day + normalized title + venue + time → one listing."""
     d = e["date_from"]
     ds = d.isoformat() if hasattr(d, "isoformat") else str(d)
     vs = (e.get("venue_slug") or "").strip().lower()
     if not vs:
         vs = _slugify_venue_label(e.get("venue") or "")
-    return (ds, _norm_title_for_dedupe(e.get("title", "")), vs)
+    tt = (e.get("time_text") or "").strip()
+    return (ds, _norm_title_for_dedupe(e.get("title", "")), vs, tt)
 
 
 def _dedupe_prefer_source_by_title_date_venue(events: List[dict]) -> List[dict]:
     """
-    Collapse same title + date + venue, preferring Rock & Blues Café (and other
-    high-priority venue sources) over transversal aggregators like Aragón en Vivo.
+    Collapse same title + date + venue + time, preferring venue-owned sources
+    over transversal aggregators like Aragón en Vivo.
+    Untimed rows still collapse against other untimed rows; timed matinee and
+    evening of the same show stay distinct.
     """
-    best: dict[Tuple[str, str, str], dict] = {}
-    order: List[Tuple[str, str, str]] = []
+    best: dict[Tuple[str, str, str, str], dict] = {}
+    order: List[Tuple[str, str, str, str]] = []
     for e in events:
         key = _title_date_venue_dedupe_key(e)
         # Events without a usable title still pass through once.
         if not key[1]:
-            order.append(("__raw__", str(id(e)), ""))
+            order.append(("__raw__", str(id(e)), "", ""))
             best[order[-1]] = e
             continue
         prev = best.get(key)
@@ -950,7 +1005,7 @@ def _dedupe_prefer_source_by_title_date_venue(events: List[dict]) -> List[dict]:
             best[key] = e
             order.append(key)
             continue
-        if _source_priority(e) < _source_priority(prev):
+        if _prefer_event_in_dedupe_pair(0, 1, [prev, e]) == 1:
             best[key] = e
     return [best[k] for k in order if k in best]
 
@@ -975,6 +1030,43 @@ def _dedupe_first_by_title_and_date(events: List[dict]) -> List[dict]:
     return out
 
 
+_TITLE_BOILERPLATE_RE = re.compile(
+    r"\b("
+    r"(las?\s+)?food\s*trucks?(\s+zaragoza)?|"
+    r"especial\s+pilares?|"
+    r"fiestas?\s+del\s+pilar|"
+    r"club\s+de\s+comedia"
+    r")\b",
+    re.IGNORECASE,
+)
+
+_TITLE_STOPWORDS = {
+    "y",
+    "de",
+    "la",
+    "el",
+    "los",
+    "las",
+    "del",
+    "en",
+    "con",
+    "un",
+    "una",
+    "por",
+    "para",
+    "al",
+    "a",
+    "o",
+    "e",
+    "the",
+    "and",
+    "vs",
+    "no",
+    "es",
+    "esto",
+}
+
+
 def _title_simplified_for_similarity(title: str) -> str:
     """
     Produce a simplified title to compare near-duplicates.
@@ -988,17 +1080,48 @@ def _title_simplified_for_similarity(title: str) -> str:
     # Drop bracketed qualifiers: "(...)" or "[...]"
     t = re.sub(r"\([^)]{0,80}\)", " ", t)
     t = re.sub(r"\[[^\]]{0,80}\]", " ", t)
-    # Keep the left side of common separators (often used for qualifiers)
-    # Supports both spaced and unspaced separators (e.g. "A / B", "A/B", "A · B").
-    t = re.split(r"\s*[/|·]\s*|\s+[-–—]\s+", t, maxsplit=1)[0]
+    t = _TITLE_BOILERPLATE_RE.sub(" ", t)
+    # Prefer the informative side of separators (e.g. "Las Food Trucks · ARTISTA").
+    parts = re.split(r"\s*[/|·]\s*|\s+[-–—]\s+", t, maxsplit=1)
+    if len(parts) == 2:
+        left, right = parts[0].strip(), parts[1].strip()
+        left_core = _TITLE_BOILERPLATE_RE.sub(" ", left).strip()
+        right_core = _TITLE_BOILERPLATE_RE.sub(" ", right).strip()
+        if left_core and right_core:
+            t = left  # "BAND - Rock / USA" style: keep left
+        else:
+            t = right_core or left_core or left or right
+    else:
+        t = parts[0]
     # Normalize and remove punctuation
     return _norm_title_for_dedupe(t)
+
+
+def _significant_title_tokens(title: str) -> set:
+    """Tokens useful for fuzzy matching (boilerplate and stopwords removed)."""
+    t = _title_simplified_for_similarity(title)
+    # Also strip boilerplate that sits after a separator (e.g. "Act · Las Food Trucks")
+    t = _TITLE_BOILERPLATE_RE.sub(" ", t)
+    t = _norm_title_for_dedupe(t)
+    out: set = set()
+    for w in t.split():
+        if w in _TITLE_STOPWORDS:
+            continue
+        # Keep digits ("2 kinders"); drop other 1-char noise.
+        if len(w) < 2 and not w.isdigit():
+            continue
+        if w.endswith("s") and len(w) > 4 and not w.isdigit():
+            w = w[:-1]
+        out.add(w)
+    return out
 
 
 def _titles_near_duplicate(a: str, b: str) -> bool:
     """
     True when titles are almost the same, differing mainly in qualifiers.
-    Heuristic: substring match OR high token overlap on simplified forms.
+    Heuristic: substring match, high token overlap, or shorter title's
+    significant tokens contained in the longer (e.g. Belushi "2 KINDERS"
+    vs Ayuntamiento "Mariano… 2 kinder güenos").
     """
     sa = _title_simplified_for_similarity(a)
     sb = _title_simplified_for_similarity(b)
@@ -1010,28 +1133,113 @@ def _titles_near_duplicate(a: str, b: str) -> bool:
         # Guard: require at least 3 chars to avoid noise like "dj"
         return min(len(sa), len(sb)) >= 3
     ta, tb = set(sa.split()), set(sb.split())
-    if not ta or not tb:
+    if ta and tb:
+        inter = len(ta & tb)
+        union = len(ta | tb)
+        jacc = inter / union if union else 0.0
+        if jacc >= 0.85 and min(len(ta), len(tb)) >= 2:
+            return True
+
+    sa_tok = _significant_title_tokens(a)
+    sb_tok = _significant_title_tokens(b)
+    if not sa_tok or not sb_tok:
         return False
-    inter = len(ta & tb)
-    union = len(ta | tb)
-    jacc = inter / union if union else 0.0
-    return jacc >= 0.85 and min(len(ta), len(tb)) >= 2
+    small, large = (sa_tok, sb_tok) if len(sa_tok) <= len(sb_tok) else (sb_tok, sa_tok)
+    # Full containment of the shorter distinctive title (allows a single strong token).
+    if small <= large and (len(small) >= 2 or (len(small) == 1 and len(next(iter(small))) >= 5)):
+        return True
+    # Partial overlap must be strong — avoid merging "Galder Varas" solo with "Lamine VS Varas".
+    if len(small) < 2:
+        return False
+    return (len(small & large) / len(small)) >= 0.75
+
+def _as_date(v) -> Optional[date]:
+    if isinstance(v, datetime):
+        return v.date()
+    if isinstance(v, date):
+        return v
+    if v:
+        try:
+            return datetime.strptime(str(v)[:10], "%Y-%m-%d").date()
+        except ValueError:
+            return None
+    return None
 
 
-def _dedupe_near_titles_same_venue_day_keep_simplest(events: List[dict]) -> List[dict]:
+def _event_date_span(e: dict) -> Tuple[Optional[date], Optional[date]]:
+    d0 = _as_date(e.get("date_from"))
+    d1 = _as_date(e.get("date_to")) or d0
+    return d0, d1
+
+
+def _dates_overlap(a: dict, b: dict) -> bool:
+    a0, a1 = _event_date_span(a)
+    b0, b1 = _event_date_span(b)
+    if not a0 or not b0 or not a1 or not b1:
+        return False
+    return a0 <= b1 and b0 <= a1
+
+
+def _category_genericity(e: dict) -> int:
+    """Higher = more generic. Espectáculos loses to Teatro/Musical/etc."""
+    slug = (e.get("category_slug") or "").strip().lower()
+    cat = (e.get("category") or "").strip().lower()
+    if slug in ("espectaculos-en-zaragoza",) or cat in (
+        "espectáculos",
+        "espectaculos",
+        "espectáculos en zaragoza",
+        "espectaculos en zaragoza",
+    ):
+        return 100
+    return 0
+
+
+def _date_span_days(e: dict) -> int:
+    d0, d1 = _event_date_span(e)
+    if not d0 or not d1:
+        return 10**6
+    return max(0, (d1 - d0).days)
+
+
+def _prefer_event_in_dedupe_pair(keep_i: int, other_j: int, events: List[dict]) -> int:
     """
-    If two events share venue + day and their titles are near-duplicates,
-    keep only one: prefer Rock & Blues / venue-owned sources, else simplest title.
-    Time of day is ignored so SweetCaroline vs Aragón en Vivo still collapse.
+    Return the index to keep between two near-duplicate events.
+    Prefer specific categories over Espectáculos, then timed / shorter-span
+    listings, then venue-owned sources, else the simpler title.
     """
-    groups: DefaultDict[Tuple[str, str], List[int]] = defaultdict(list)
+    ei, ej = events[keep_i], events[other_j]
+    ci, cj = _category_genericity(ei), _category_genericity(ej)
+    if ci != cj:
+        return keep_i if ci < cj else other_j
+    ti_has = 0 if (ei.get("time_text") or "").strip() else 1
+    tj_has = 0 if (ej.get("time_text") or "").strip() else 1
+    if ti_has != tj_has:
+        return keep_i if ti_has < tj_has else other_j
+    si_span, sj_span = _date_span_days(ei), _date_span_days(ej)
+    if si_span != sj_span:
+        return keep_i if si_span < sj_span else other_j
+    pi, pj = _source_priority(ei), _source_priority(ej)
+    if pi != pj:
+        return keep_i if pi < pj else other_j
+    ti, tj = ei.get("title") or "", ej.get("title") or ""
+    si = _title_simplified_for_similarity(ti)
+    sj = _title_simplified_for_similarity(tj)
+    if (len(si), len(ti.strip())) <= (len(sj), len(tj.strip())):
+        return keep_i
+    return other_j
+def _dedupe_near_titles_grouped(
+    events: List[dict],
+    group_key_fn: Callable[[dict], Optional[tuple]],
+    *,
+    respect_distinct_times: bool = False,
+) -> List[dict]:
+    """Collapse near-duplicate titles within each group key."""
+    groups: DefaultDict[tuple, List[int]] = defaultdict(list)
     for i, e in enumerate(events):
-        vs = (e.get("venue_slug") or "").strip()
-        d = e.get("date_from")
-        ds = d.isoformat() if hasattr(d, "isoformat") else str(d or "")
-        if not vs or not ds:
+        key = group_key_fn(e)
+        if not key:
             continue
-        groups[(vs, ds)].append(i)
+        groups[key].append(i)
 
     drop: set[int] = set()
     for idxs in groups.values():
@@ -1042,30 +1250,23 @@ def _dedupe_near_titles_same_venue_day_keep_simplest(events: List[dict]) -> List
             if i in drop:
                 continue
             ti = events[i].get("title") or ""
+            time_i = (events[i].get("time_text") or "").strip()
             matched = False
             for j in kept:
                 tj = events[j].get("title") or ""
                 if not _titles_near_duplicate(ti, tj):
                     continue
-                # Prefer Rock & Blues (and other venue-owned sources) over aggregators.
-                if _source_priority(events[i]) < _source_priority(events[j]):
-                    drop.add(j)
+                if respect_distinct_times:
+                    time_j = (events[j].get("time_text") or "").strip()
+                    # Matinee vs evening of the same show must both stay.
+                    if time_i and time_j and time_i != time_j:
+                        continue
+                winner = _prefer_event_in_dedupe_pair(j, i, events)
+                loser = i if winner == j else j
+                drop.add(loser)
+                if winner == i:
                     kept.remove(j)
                     kept.append(i)
-                elif _source_priority(events[j]) < _source_priority(events[i]):
-                    drop.add(i)
-                else:
-                    # Choose simplest title among the pair
-                    si = _title_simplified_for_similarity(ti)
-                    sj = _title_simplified_for_similarity(tj)
-                    key_i = (len(si), len(ti.strip()))
-                    key_j = (len(sj), len(tj.strip()))
-                    if key_i < key_j:
-                        drop.add(j)
-                        kept.remove(j)
-                        kept.append(i)
-                    else:
-                        drop.add(i)
                 matched = True
                 break
             if not matched and i not in drop:
@@ -1076,6 +1277,103 @@ def _dedupe_near_titles_same_venue_day_keep_simplest(events: List[dict]) -> List
     return [e for k, e in enumerate(events) if k not in drop]
 
 
+def _dedupe_near_titles_same_venue_day_keep_simplest(events: List[dict]) -> List[dict]:
+    """
+    If two events share venue + day and their titles are near-duplicates,
+    keep only one: prefer venue-owned sources, else simplest title.
+    Distinct clock times (matinee/evening) are kept; a timed listing still
+    collapses an untimed duplicate from another source.
+    """
+
+    def key_fn(e: dict) -> Optional[tuple]:
+        vs = (e.get("venue_slug") or "").strip()
+        d = e.get("date_from")
+        ds = d.isoformat() if hasattr(d, "isoformat") else str(d or "")
+        if not vs or not ds:
+            return None
+        return (vs, ds)
+
+    return _dedupe_near_titles_grouped(
+        events, key_fn, respect_distinct_times=True
+    )
+
+def _dedupe_near_titles_same_venue_day_time(events: List[dict]) -> List[dict]:
+    """
+    Same venue + calendar day + clock time with near-duplicate titles → one row.
+    Catches cases like Belushi "2 KINDERS ESPECIAL PILARES" vs Ayuntamiento
+    "Mariano Bartolomé… 2 kinder güenos" at 20:00.
+    """
+
+    def key_fn(e: dict) -> Optional[tuple]:
+        vs = (e.get("venue_slug") or "").strip()
+        d = e.get("date_from")
+        ds = d.isoformat() if hasattr(d, "isoformat") else str(d or "")
+        tt = (e.get("time_text") or "").strip()
+        if not vs or not ds or not tt:
+            return None
+        return (vs, ds, tt)
+
+    return _dedupe_near_titles_grouped(events, key_fn)
+
+
+def _dedupe_near_titles_same_venue_overlapping_dates(events: List[dict]) -> List[dict]:
+    """
+    Same venue + near title + overlapping date ranges → one row.
+    Drops generic multi-day "Espectáculos" listings (e.g. Houdini on Cultura)
+    when a more specific Teatro/Musical session covers the same run.
+    Does not collapse matinee vs evening of the same show.
+    """
+    by_venue: DefaultDict[str, List[int]] = defaultdict(list)
+    for i, e in enumerate(events):
+        vs = (e.get("venue_slug") or "").strip()
+        if not vs:
+            continue
+        by_venue[vs].append(i)
+
+    drop: set[int] = set()
+    for idxs in by_venue.values():
+        if len(idxs) < 2:
+            continue
+        for a_pos, i in enumerate(idxs):
+            if i in drop:
+                continue
+            ti = events[i].get("title") or ""
+            for j in idxs[a_pos + 1 :]:
+                if j in drop:
+                    continue
+                tj = events[j].get("title") or ""
+                if not _titles_near_duplicate(ti, tj):
+                    continue
+                if not _dates_overlap(events[i], events[j]):
+                    continue
+
+                span_i, span_j = _date_span_days(events[i]), _date_span_days(events[j])
+                time_i = (events[i].get("time_text") or "").strip()
+                time_j = (events[j].get("time_text") or "").strip()
+                # Keep distinct clock times on the same day (matinee / evening).
+                if (
+                    span_i == 0
+                    and span_j == 0
+                    and time_i
+                    and time_j
+                    and time_i != time_j
+                ):
+                    continue
+                # Only collapse generic-vs-specific or multi-day vs session.
+                gen_i = _category_genericity(events[i])
+                gen_j = _category_genericity(events[j])
+                if gen_i == gen_j == 0 and span_i == 0 and span_j == 0:
+                    continue
+
+                winner = _prefer_event_in_dedupe_pair(i, j, events)
+                loser = j if winner == i else i
+                drop.add(loser)
+                if loser == i:
+                    break
+
+    if not drop:
+        return events
+    return [e for k, e in enumerate(events) if k not in drop]
 def _drop_conciertos_club_if_duplicate_sala(events: List[dict]) -> List[dict]:
     """
     Si el mismo concierto (sala + día + título normalizado) viene de otra fuente,
@@ -1096,6 +1394,95 @@ def _drop_conciertos_club_if_duplicate_sala(events: List[dict]) -> List[dict]:
             if events[i].get("source") == "conciertos_club":
                 remove.add(i)
     return [e for i, e in enumerate(events) if i not in remove]
+
+
+def _extract_hhmm_times(time_text: Optional[str]) -> List[str]:
+    """Parse HH:MM tokens from a time_text (supports '17:00 / 20:30')."""
+    if not time_text:
+        return []
+    out: List[str] = []
+    for m in re.finditer(r"\b(\d{1,2}):(\d{2})\b", time_text):
+        out.append(f"{int(m.group(1)):02d}:{m.group(2)}")
+    return out
+
+
+def _combine_time_texts(*texts: Optional[str]) -> Optional[str]:
+    """Merge showtimes into a single 'HH:MM / HH:MM' string (sorted, unique)."""
+    times: List[str] = []
+    seen: set[str] = set()
+    for raw in texts:
+        for t in _extract_hhmm_times(raw):
+            if t in seen:
+                continue
+            seen.add(t)
+            times.append(t)
+    if not times:
+        return None
+    times.sort()
+    return " / ".join(times)
+
+
+def _merge_same_day_showtimes(events: List[dict]) -> List[dict]:
+    """
+    Same venue + same calendar day + near-duplicate title at different hours
+    → one event with combined time_text (e.g. Houdini "17:00 / 20:30").
+    """
+    by_venue_day: DefaultDict[Tuple[str, str], List[int]] = defaultdict(list)
+    for i, e in enumerate(events):
+        vs = (e.get("venue_slug") or "").strip()
+        d = e.get("date_from")
+        ds = d.isoformat() if hasattr(d, "isoformat") else str(d or "")
+        if not vs or not ds:
+            continue
+        by_venue_day[(vs, ds)].append(i)
+
+    drop: set[int] = set()
+    merged_into: dict[int, dict] = {}
+
+    for idxs in by_venue_day.values():
+        if len(idxs) < 2:
+            continue
+        clusters: List[List[int]] = []
+        for i in idxs:
+            if i in drop:
+                continue
+            ti = events[i].get("title") or ""
+            placed = False
+            for cluster in clusters:
+                tj = events[cluster[0]].get("title") or ""
+                if _titles_near_duplicate(ti, tj):
+                    cluster.append(i)
+                    placed = True
+                    break
+            if not placed:
+                clusters.append([i])
+
+        for cluster in clusters:
+            if len(cluster) < 2:
+                continue
+            # Pick the preferred row as base, then fold all times into it.
+            winner = cluster[0]
+            for other in cluster[1:]:
+                winner = _prefer_event_in_dedupe_pair(winner, other, events)
+            base = dict(events[winner])
+            times = _combine_time_texts(
+                *(events[k].get("time_text") for k in cluster)
+            )
+            if times:
+                base["time_text"] = times
+            merged_into[winner] = base
+            for k in cluster:
+                if k != winner:
+                    drop.add(k)
+
+    if not drop and not merged_into:
+        return events
+    out: List[dict] = []
+    for i, e in enumerate(events):
+        if i in drop:
+            continue
+        out.append(merged_into.get(i, e))
+    return out
 
 
 def _coerce_event_dates(event: dict) -> None:
@@ -1131,14 +1518,20 @@ def _merge_source_results(chunks: List[List[dict]]) -> List[dict]:
             e["category_slug"] = "conciertos-en-zaragoza"
     events = _drop_conciertos_club_if_duplicate_sala(events)
     events = _filter_out_deportes(events)
+    events = _filter_out_infantil(events)
     events = _filter_out_taquilla_com(events)
     for e in events:
         _shorten_category_display(e)
         _shorten_venue_display(e)
         _canonicalize_venue(e)
-    # Same title+date+venue → one row; Rock & Blues own site wins over Aragón en Vivo.
+    # Same title+date+venue → one row; venue-owned sources win over aggregators.
+    # Prefer specific categories (Teatro/Musical) over generic Espectáculos.
     events = _dedupe_prefer_source_by_title_date_venue(events)
+    events = _dedupe_near_titles_same_venue_day_time(events)
     events = _dedupe_near_titles_same_venue_day_keep_simplest(events)
+    events = _dedupe_near_titles_same_venue_overlapping_dates(events)
+    # Same show on the same day at 17:00 and 20:30 → one row "17:00 / 20:30".
+    events = _merge_same_day_showtimes(events)
     for e in events:
         _canonicalize_venue(e)
     return events
@@ -1300,7 +1693,6 @@ def _available_categories(events):
         "danza",
         "cine",
         "exposiciones",
-        "infantil",
     ]
 
     def _sort_key(slug):

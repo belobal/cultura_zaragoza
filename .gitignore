@@ -1,17 +1,39 @@
+# Python
 __pycache__/
 *.py[cod]
-.venv/
-venv/
-.env
-.env.*
-!.env.example
+*$py.class
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
-.DS_Store
-android-apk/
-*.apk
-*.aab
+.ruff_cache/
+
+# Virtualenvs
+.venv/
+venv/
+
+# Local / server secrets and runtime config (must not fight git pull)
+.env
+.env.*
+!.env.example
+
+# Runtime data generated on the server (scrapers, geocoding)
 cache/*
 !cache/.gitkeep
 
+# Logs and temp
+*.log
+logs/
+tmp/
+*.swp
+*.swo
+*~
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Android packaging artifacts
+android-apk/
+*.apk
+*.aab

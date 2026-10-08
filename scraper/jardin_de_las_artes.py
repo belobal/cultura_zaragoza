@@ -97,14 +97,17 @@ def _parse_schedule(text: str) -> Tuple[Optional[date], Optional[str]]:
     return d, time_text
 
 
-def _section_category(node) -> Tuple[str, str]:
-    """Infer category from the nearest preceding section heading."""
+def _section_category(node) -> Optional[Tuple[str, str]]:
+    """Infer category from the nearest preceding section heading.
+
+    Returns None for familiar/kids sections (Infantil is excluded from the agenda).
+    """
     for prev in node.find_all_previous(["h2", "h3"]):
         label = (prev.get_text(" ", strip=True) or "").lower()
         if not label:
             continue
-        if "familiar" in label:
-            return "Infantil", "infantil"
+        if "familiar" in label or "infantil" in label:
+            return None
         if "general" in label:
             return "Teatro", "teatro"
         break
@@ -158,7 +161,10 @@ def _parse_page(html: str) -> List[Dict[str, Any]]:
         if detail_url and not detail_url.startswith("http"):
             detail_url = URL
 
-        category, category_slug = _section_category(box)
+        mapped = _section_category(box)
+        if mapped is None:
+            continue
+        category, category_slug = mapped
         key = (title.lower(), d.isoformat(), time_text or "", detail_url)
         if key in seen:
             continue

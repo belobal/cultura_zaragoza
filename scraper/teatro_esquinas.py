@@ -42,12 +42,13 @@ _DATE_RE = re.compile(
     re.IGNORECASE,
 )
 
+_SKIP_GENRE_RE = re.compile(r"\b(?:FAMILIAR|INFANTIL)\b", re.I)
+
 _GENRE_MAP = [
     (re.compile(r"\bHUMOR\b", re.I), ("Comedia", "comedia")),
     (re.compile(r"\bTEATRO\b", re.I), ("Teatro", "teatro")),
     (re.compile(r"\bM[UÚ]SICA\b", re.I), ("Conciertos", "conciertos-en-zaragoza")),
     (re.compile(r"\bDANZA\b", re.I), ("Danza", "danza")),
-    (re.compile(r"\bFAMILIAR\b", re.I), ("Infantil", "infantil")),
     (re.compile(r"\bMAGIA\b", re.I), ("Espectáculos", "espectaculos-en-zaragoza")),
 ]
 
@@ -91,7 +92,10 @@ def _parse_schedule(text: str) -> Tuple[Optional[date], Optional[date], Optional
     return d0, d1, time_text
 
 
-def _category_from_blob(blob: str) -> Tuple[str, str]:
+def _category_from_blob(blob: str) -> Optional[Tuple[str, str]]:
+    """Return category pair, or None for familiar/kids shows (excluded)."""
+    if _SKIP_GENRE_RE.search(blob or ""):
+        return None
     for rx, pair in _GENRE_MAP:
         if rx.search(blob or ""):
             return pair
@@ -129,7 +133,10 @@ def scrape_events_list() -> List[Dict[str, Any]]:
         genre_blob = blob
         if "esquinas" in genre_blob.lower():
             genre_blob = re.split(r"esquinas", genre_blob, maxsplit=1, flags=re.I)[-1]
-        category, category_slug = _category_from_blob(genre_blob)
+        mapped = _category_from_blob(genre_blob)
+        if mapped is None:
+            continue
+        category, category_slug = mapped
         key = (title.lower(), d0.isoformat(), d1.isoformat(), time_text or "")
         if key in seen:
             continue
