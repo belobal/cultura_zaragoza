@@ -1,3 +1,4 @@
+import calendar
 import json
 import os
 import re
@@ -8,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor, wait
 from datetime import date, datetime, timedelta
 from itertools import groupby
 from pathlib import Path
-from typing import Callable, DefaultDict, List, Optional, Tuple
+from typing import Callable, DefaultDict, Dict, List, Optional, Tuple
 
 # Ensure _strptime is fully initialized on the main thread (avoids race under ThreadPoolExecutor).
 datetime.strptime("2000-01-01", "%Y-%m-%d")
@@ -1704,26 +1705,87 @@ def _available_categories(events):
     return [{"slug": k, "name": cats[k]} for k in sorted_slugs]
 
 
-def _available_venues_for_select(events: List[dict]) -> List[dict]:
+def _add_months(d: date, months: int) -> date:
+    """Return d shifted by `months` calendar months (day clamped to month length)."""
+    m0 = d.month - 1 + months
+    y = d.year + m0 // 12
+    m = m0 % 12 + 1
+    return date(y, m, min(d.day, calendar.monthrange(y, m)[1]))
+
+
+# Dedicated venue scrapers — always listed even if disk cache is stale/past-only.
+_CORE_VENUES: Dict[str, str] = {
+    "auditorio-de-zaragoza": "Auditorio de Zaragoza",
+    "belushi-club-de-comedia": "Belushi Club de Comedia",
+    "el-jardin-de-las-artes": "El Jardín de las Artes",
+    "el-refugio-del-crapula": "El Refugio del Crápula",
+    "el-sotano-magico": "El Sótano Mágico",
+    "la-lata-de-bombillas": "La Lata de Bombillas",
+    "parque-san-pablo": "Parque San Pablo",
+    "rock-y-blues-cafe": "Rock & Blues Café",
+    "sala-creedence-zaragoza": "Sala Creedence",
+    "teatro-de-las-esquinas": "Teatro de las Esquinas",
+    "teatro-principal-zaragoza": "Teatro Principal",
+}
+
+
+def _available_venues_for_select(
+    events: List[dict],
+    *,
+    horizon_months: int = 6,
+) -> List[dict]:
     """
-    Lista plana de salas para el desplegable (sin grupos).
-    Una entrada «Auditorio de Zaragoza»; incluye salas de centros cívicos.
+    Flat venue list for the filter dropdown.
+
+    Includes:
+    - core rooms we scrape directly (always, so a stale cache does not hide them)
+    - any other room with at least one event in the next `horizon_months` months
+    Auditorio de Zaragoza is one entry covering all its rooms.
     """
-    venues: dict[str, str] = {}
-    has_auditorio = False
+    today = date.today()
+    horizon_to = _add_months(today, horizon_months)
+    venues: dict[str, str] = dict(_CORE_VENUES)
+    has_auditorio = True  # always offer the Auditorio aggregate entry
     for e in events:
         vs = e.get("venue_slug")
         if not vs:
             continue
+        _coerce_event_dates(e)
+        df = e.get("date_from")
+        dt = e.get("date_to") or df
+        if not isinstance(df, date):
+            continue
+        if not isinstance(dt, date):
+            dt = df
+        # Prefer live display names from events for core venues.
+        if vs in venues and e.get("venue"):
+            if vs != AUDITORIO_ZARAGOZA_FILTER_SLUG and not _slug_is_auditorio_zaragoza(vs):
+                venues[vs] = e.get("venue") or venues[vs]
+        # Overlaps [today, horizon_to] → keep non-core rooms with upcoming shows.
+        if dt < today or df > horizon_to:
+            continue
         if _slug_is_auditorio_zaragoza(vs):
             has_auditorio = True
             continue
-        venues[vs] = e.get("venue") or vs
+        if vs not in venues:
+            venues[vs] = e.get("venue") or vs
+
+    # Auditorio is listed once via the aggregate slug, not per-room.
+    venues.pop("auditorio-de-zaragoza", None)
+    for slug in list(venues):
+        if _slug_is_auditorio_zaragoza(slug):
+            venues.pop(slug, None)
+            has_auditorio = True
 
     rows: List[dict] = []
     if has_auditorio:
         rows.append(
-            {"slug": AUDITORIO_ZARAGOZA_FILTER_SLUG, "name": "Auditorio de Zaragoza"}
+            {
+                "slug": AUDITORIO_ZARAGOZA_FILTER_SLUG,
+                "name": _CORE_VENUES.get(
+                    AUDITORIO_ZARAGOZA_FILTER_SLUG, "Auditorio de Zaragoza"
+                ),
+            }
         )
     for slug, name in venues.items():
         rows.append({"slug": slug, "name": name})
